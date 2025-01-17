@@ -7,50 +7,50 @@ import { motion } from "framer-motion";
 
 const featuredGames = [
   {
-    title: "Neon Horizon",
-    image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80",
+    title: "Meme Legends",
+    image: "https://media.discordapp.net/attachments/808738288411476040/1329634346189197425/IMG_9511.png?ex=678b0dfb&is=6789bc7b&hm=461f77a9830667769b808cd721ace3b39c46ab8f57da7dc826ef2e220979fe91&=&format=webp&quality=lossless&width=507&height=676",
     genre: "Action RPG",
-    developer: "Future Studios",
+    developer: "Metazooie Studios",
     marketCap: "$2.3M",
     dateAdded: "3 days ago"
   },
   {
-    title: "Quantum Break",
-    image: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?auto=format&fit=crop&q=80",
+    title: "Eclipse of Shadows",
+    image: "https://cdn.midjourney.com/a011d27d-bb04-4125-969b-0e5e1d44d98b/0_3.png",
     genre: "Adventure",
-    developer: "Quantum Games",
+    developer: "Nebula Forge Games",
     marketCap: "$890K",
     dateAdded: "1 week ago"
   },
   {
-    title: "Star Voyager",
-    image: "https://images.unsplash.com/photo-1614728263952-84ea256f9679?auto=format&fit=crop&q=80",
+    title: "Frostspire Ascendancy",
+    image: "https://cdn.midjourney.com/39fe3205-7c86-44f1-91c2-c33ecc3acf7a/0_2.png",
     genre: "Space Sim",
-    developer: "Stellar Interactive",
+    developer: "Glacier Veil Interactive",
     marketCap: "$1.5M",
     dateAdded: "2 weeks ago"
   },
   {
-    title: "Cyber Protocol",
-    image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&q=80",
+    title: "The Golden Ambush",
+    image: "https://cdn.midjourney.com/8ed0c6f7-8385-4b86-ad1d-d32987276d72/0_2.png",
     genre: "Strategy",
-    developer: "Digital Dreams",
+    developer: "Verdant Echo Studio",
     marketCap: "$450K",
     dateAdded: "1 month ago"
   },
   {
-    title: "Tech Empire",
-    image: "https://images.unsplash.com/photo-1496096265110-f83ad7f96608?auto=format&fit=crop&q=80",
+    title: "Runes of Mythra Canyon",
+    image: "https://cdn.midjourney.com/7eb40cc3-79c7-4021-9622-24d4e2a966c0/0_3.png",
     genre: "Simulation",
-    developer: "Future Tech Games",
+    developer: "Celestial Quill Games",
     marketCap: "$3.1M",
     dateAdded: "2 months ago"
   },
   {
-    title: "Digital Frontier",
-    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80",
+    title: "Edge of Eternity",
+    image: "https://cdn.midjourney.com/2eb4a59c-fc76-459a-b3cc-04c40a5224ae/0_1.png",
     genre: "RPG",
-    developer: "Frontier Studios",
+    developer: "Obsidian Rift Studios",
     marketCap: "$720K",
     dateAdded: "3 months ago"
   }
