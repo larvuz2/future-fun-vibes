@@ -50,8 +50,9 @@ export function Hero() {
         </div>
 
         {/* Sparkles effect at the bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-32">
+        <div className="absolute bottom-0 left-0 right-0 h-32 z-10">
           <SparklesCore
+            id="hero-sparkles"
             background="transparent"
             minSize={0.4}
             maxSize={1}
