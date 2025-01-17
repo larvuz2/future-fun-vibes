@@ -3,6 +3,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ExternalLink, Twitter } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useEffect } from "react";
 import {
   Carousel,
   CarouselContent,
@@ -13,7 +15,6 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { useState } from "react";
 
 // Mock images for the carousel
 const gameImages = [
@@ -26,108 +27,17 @@ const gameImages = [
 export default function GameDetails() {
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState(gameImages[0]);
+  const isMobile = useIsMobile();
   
-  return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="container py-6 mt-20">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Content - Takes up 2 columns on large screens */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Hero Section with Game Display */}
-            <div className="relative rounded-lg overflow-hidden">
-              <div className="aspect-video bg-card relative">
-                <img 
-                  src={selectedImage} 
-                  alt="Game Screenshot" 
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white">
-                  <p className="text-xl mb-4">You need tokens to start</p>
-                  <Button className="bg-primary hover:bg-primary/90">
-                    Launch Game
-                  </Button>
-                </div>
-              </div>
-              
-              {/* Thumbnail Carousel */}
-              <div className="mt-4">
-                <Carousel className="w-full">
-                  <CarouselContent>
-                    {gameImages.map((image, index) => (
-                      <CarouselItem key={index} className="basis-1/4 cursor-pointer" onClick={() => setSelectedImage(image)}>
-                        <div className="relative aspect-video">
-                          <img 
-                            src={image} 
-                            alt={`Screenshot ${index + 1}`}
-                            className={`w-full h-full object-cover rounded-lg transition-opacity ${selectedImage === image ? 'opacity-100 ring-2 ring-primary' : 'opacity-70 hover:opacity-100'}`}
-                          />
-                        </div>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious className="left-0" />
-                  <CarouselNext className="right-0" />
-                </Carousel>
-              </div>
-            </div>
-
-            {/* GeckoTerminal Chart */}
-            <Card className="p-4">
-              <div className="aspect-[16/9] bg-black/90 rounded-lg">
-                <iframe 
-                  height="100%" 
-                  width="100%" 
-                  id="geckoterminal-embed" 
-                  title="GeckoTerminal Embed" 
-                  src="https://www.geckoterminal.com/solana/pools/22WrmyTj8x2TRVQen3fxxi2r4Rn6JDHWoMTpsSmn8RUd?embed=1&info=0&swaps=0&grayscale=0&light_chart=0" 
-                  frameBorder="0" 
-                  allow="clipboard-write" 
-                  allowFullScreen
-                  className="w-full h-full rounded-lg"
-                />
-              </div>
-            </Card>
-
-            {/* Comments Section */}
-            <Card className="p-4">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold">Comments</h3>
-                <Button variant="outline">Post a Reply</Button>
-              </div>
-              <div className="space-y-4">
-                {[
-                  { user: "CryptoWhale", time: "2h ago", comment: "This game looks amazing!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=1" },
-                  { user: "GameMaster", time: "3h ago", comment: "The graphics are next level!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=2" },
-                  { user: "TokenHunter", time: "4h ago", comment: "Can't wait to earn some tokens!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=3" },
-                  { user: "Web3Gamer", time: "5h ago", comment: "The mechanics are so smooth.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=4" },
-                  { user: "NFTCollector", time: "6h ago", comment: "Love the art style!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=5" },
-                  { user: "BlockchainDev", time: "7h ago", comment: "Smart contracts look solid.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=6" },
-                  { user: "MetaGamer", time: "8h ago", comment: "Best P2E game I've seen!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=7" },
-                  { user: "DeFiExplorer", time: "9h ago", comment: "Token economics are well thought out.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=8" },
-                  { user: "GameInvestor", time: "10h ago", comment: "This has huge potential!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=9" },
-                  { user: "CryptoArtist", time: "11h ago", comment: "Visual effects are stunning!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=10" },
-                  { user: "Web3Pioneer", time: "12h ago", comment: "Revolutionary gameplay!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=11" }
-                ].map((comment, index) => (
-                  <div key={index} className="flex gap-4 p-4 bg-card/50 rounded-lg">
-                    <img src={comment.avatar} alt={comment.user} className="w-10 h-10 rounded-full" />
-                    <div className="flex-1">
-                      <div className="flex justify-between">
-                        <p className="font-medium">{comment.user}</p>
-                        <span className="text-sm text-muted-foreground">{comment.time}</span>
-                      </div>
-                      <p className="text-sm mt-1">{comment.comment}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          </div>
-
-          {/* Right Panel */}
-          <div className="space-y-6">
-            {/* Buy/Sell Card */}
-            <Card className="p-4">
+  // Scroll to top on component mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
+  const SidebarContent = () => (
+    <div className="space-y-6">
+      {/* Buy/Sell Card */}
+      <Card className="p-4">
               <div className="flex gap-2 mb-4">
                 <Button className="flex-1" variant="default">Buy</Button>
                 <Button className="flex-1" variant="outline">Sell</Button>
@@ -150,10 +60,10 @@ export default function GameDetails() {
                 </div>
                 <Button className="w-full">Place Trade</Button>
               </div>
-            </Card>
+      </Card>
 
-            {/* Project Details */}
-            <Card className="p-4">
+      {/* Project Details */}
+      <Card className="p-4">
               <h2 className="text-2xl font-bold mb-2">Meme Legends</h2>
               <p className="text-muted-foreground mb-4">
                 Help save peanut the squirrel! Sign the petition!
@@ -219,8 +129,116 @@ export default function GameDetails() {
                   </ScrollArea>
                 </div>
               </div>
+      </Card>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <div className="container py-6 mt-20">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main Content - Takes up 2 columns on large screens */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Hero Section with Game Display */}
+            <div className="relative rounded-lg overflow-hidden">
+              <div className="aspect-video bg-card relative">
+                <img 
+                  src={selectedImage} 
+                  alt="Game Screenshot" 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white">
+                  <p className="text-xl mb-4">You need tokens to start</p>
+                  <Button className="bg-primary hover:bg-primary/90">
+                    Launch Game
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Thumbnail Carousel */}
+              <div className="mt-4">
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    {gameImages.map((image, index) => (
+                      <CarouselItem key={index} className="basis-1/4 cursor-pointer" onClick={() => setSelectedImage(image)}>
+                        <div className="relative aspect-video">
+                          <img 
+                            src={image} 
+                            alt={`Screenshot ${index + 1}`}
+                            className={`w-full h-full object-cover rounded-lg transition-opacity ${selectedImage === image ? 'opacity-100 ring-2 ring-primary' : 'opacity-70 hover:opacity-100'}`}
+                          />
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="left-0" />
+                  <CarouselNext className="right-0" />
+                </Carousel>
+              </div>
+            </div>
+
+            {/* Show sidebar content here on mobile, after carousel */}
+            {isMobile && <SidebarContent />}
+
+            {/* GeckoTerminal Chart */}
+            <Card className="p-4">
+              <div className={`bg-black/90 rounded-lg ${isMobile ? 'aspect-square' : 'aspect-[16/9]'}`}>
+                <iframe 
+                  height="100%" 
+                  width="100%" 
+                  id="geckoterminal-embed" 
+                  title="GeckoTerminal Embed" 
+                  src="https://www.geckoterminal.com/solana/pools/22WrmyTj8x2TRVQen3fxxi2r4Rn6JDHWoMTpsSmn8RUd?embed=1&info=0&swaps=0&grayscale=0&light_chart=0" 
+                  frameBorder="0" 
+                  allow="clipboard-write" 
+                  allowFullScreen
+                  className="w-full h-full rounded-lg"
+                />
+              </div>
+            </Card>
+
+            {/* Comments Section */}
+            <Card className="p-4">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">Comments</h3>
+                <Button variant="outline">Post a Reply</Button>
+              </div>
+              <div className="space-y-4">
+                {[
+                  { user: "CryptoWhale", time: "2h ago", comment: "This game looks amazing!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=1" },
+                  { user: "GameMaster", time: "3h ago", comment: "The graphics are next level!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=2" },
+                  { user: "TokenHunter", time: "4h ago", comment: "Can't wait to earn some tokens!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=3" },
+                  { user: "Web3Gamer", time: "5h ago", comment: "The mechanics are so smooth.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=4" },
+                  { user: "NFTCollector", time: "6h ago", comment: "Love the art style!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=5" },
+                  { user: "BlockchainDev", time: "7h ago", comment: "Smart contracts look solid.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=6" },
+                  { user: "MetaGamer", time: "8h ago", comment: "Best P2E game I've seen!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=7" },
+                  { user: "DeFiExplorer", time: "9h ago", comment: "Token economics are well thought out.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=8" },
+                  { user: "GameInvestor", time: "10h ago", comment: "This has huge potential!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=9" },
+                  { user: "CryptoArtist", time: "11h ago", comment: "Visual effects are stunning!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=10" },
+                  { user: "Web3Pioneer", time: "12h ago", comment: "Revolutionary gameplay!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=11" }
+                ].map((comment, index) => (
+                  <div key={index} className="flex gap-4 p-4 bg-card/50 rounded-lg">
+                    <img src={comment.avatar} alt={comment.user} className="w-10 h-10 rounded-full" />
+                    <div className="flex-1">
+                      <div className="flex justify-between">
+                        <p className="font-medium">{comment.user}</p>
+                        <span className="text-sm text-muted-foreground">{comment.time}</span>
+                      </div>
+                      <p className="text-sm mt-1">{comment.comment}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </Card>
           </div>
+
+          {/* Right Panel - Only show on desktop */}
+          {!isMobile && (
+            <div>
+              <SidebarContent />
+            </div>
+          )}
         </div>
       </div>
       <Footer />
