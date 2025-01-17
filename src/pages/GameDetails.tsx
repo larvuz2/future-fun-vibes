@@ -1,10 +1,11 @@
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react"; // Added useState import
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ExternalLink, Twitter } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useToast } from "@/hooks/use-toast";
 import {
   Carousel,
   CarouselContent,
@@ -28,12 +29,21 @@ export default function GameDetails() {
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState(gameImages[0]);
   const isMobile = useIsMobile();
+  const { toast } = useToast();
   
   // Scroll to top on component mount
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
   
+  const handleLaunchGame = () => {
+    toast({
+      title: "🎮 Connect Wallet Required",
+      description: "You need to connect your wallet and have game tokens to launch",
+      duration: 3000,
+    });
+  };
+
   const SidebarContent = () => (
     <div className="space-y-6">
       {/* Buy/Sell Card */}
@@ -158,7 +168,10 @@ export default function GameDetails() {
                 />
                 <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white">
                   <p className="text-xl mb-4">You need tokens to start</p>
-                  <Button className="bg-primary hover:bg-primary/90">
+                  <Button 
+                    className="bg-primary hover:bg-primary/90"
+                    onClick={handleLaunchGame}
+                  >
                     Launch Game
                   </Button>
                 </div>
