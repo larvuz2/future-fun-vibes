@@ -25,7 +25,7 @@ export function GameCard({ title, image, genre, developer, marketCap, dateAdded 
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
           />
           <img
-            src="https://www.nicepng.com/png/detail/321-3211558_unreal-logo-png-for-kids-unreal-engine-icon.png"
+            src="https://e7.pngegg.com/pngimages/453/640/png-clipart-html-computer-icons-white-computer-software-unreal-engine-4-logo-angle-white.png"
             alt="Unreal Engine"
             className="absolute top-2 right-2 w-8 h-8 object-contain z-10"
           />
