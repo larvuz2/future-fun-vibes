@@ -49,7 +49,7 @@ export default {
         },
       },
       keyframes: {
-        "fade-up": {
+        'fade-up': {
           "0%": {
             opacity: "0",
             transform: "translateY(10px)",
@@ -59,7 +59,7 @@ export default {
             transform: "translateY(0)",
           },
         },
-        "fade-down": {
+        'fade-down': {
           "0%": {
             opacity: "0",
             transform: "translateY(-10px)",
@@ -77,11 +77,21 @@ export default {
             transform: "translateY(-10px)",
           },
         },
+        'star-movement-bottom': {
+          '0%': { transform: 'translate(0%, 0%)', opacity: '1' },
+          '100%': { transform: 'translate(-100%, 0%)', opacity: '0' },
+        },
+        'star-movement-top': {
+          '0%': { transform: 'translate(0%, 0%)', opacity: '1' },
+          '100%': { transform: 'translate(100%, 0%)', opacity: '0' },
+        },
       },
       animation: {
         "fade-up": "fade-up 0.5s ease-out",
         "fade-down": "fade-down 0.5s ease-out",
         float: "float 3s ease-in-out infinite",
+        'star-movement-bottom': 'star-movement-bottom linear infinite alternate',
+        'star-movement-top': 'star-movement-top linear infinite alternate',
       },
     },
   },

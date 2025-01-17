@@ -2,8 +2,16 @@ import { Card } from "@/components/ui/card";
 import { Spotlight } from "@/components/ui/spotlight";
 import { SplineScene } from "@/components/ui/splite";
 import { motion } from "framer-motion";
+import { StarBorder } from "@/components/ui/star-border";
 
 export function Hero() {
+  const scrollToFeaturedGames = () => {
+    const featuredSection = document.querySelector('#featured-games');
+    if (featuredSection) {
+      featuredSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
       <Card className="w-full max-w-6xl mx-auto bg-background relative overflow-hidden border-0">
@@ -13,7 +21,6 @@ export function Hero() {
         />
         
         <div className="flex flex-col md:flex-row h-full min-h-[500px]">
-          {/* Left content */}
           <div className="flex-1 p-8 relative z-10 flex flex-col justify-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -32,14 +39,17 @@ export function Hero() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
               >
-                <button className="px-8 py-3 rounded-full bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors">
+                <StarBorder
+                  onClick={scrollToFeaturedGames}
+                  className="cursor-pointer"
+                  color="hsl(var(--primary))"
+                >
                   Explore Games
-                </button>
+                </StarBorder>
               </motion.div>
             </motion.div>
           </div>
 
-          {/* Right content */}
           <div className="flex-1 relative">
             <SplineScene 
               scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
