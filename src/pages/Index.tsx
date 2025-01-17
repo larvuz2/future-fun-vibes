@@ -62,7 +62,7 @@ const Index = () => {
       <Navbar />
       <Hero />
       
-      <section className="py-4 md:py-8">
+      <section id="featured-games" className="py-4 md:py-8">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
