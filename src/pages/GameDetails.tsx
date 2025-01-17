@@ -17,7 +17,8 @@ import { useState } from "react";
 const gameImages = [
   "https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/2880270/ss_aa86f65d79c123abdae20cef883ad0f4fbec0187.600x338.jpg?t=1733771060",
   "https://media.discordapp.net/attachments/808738288411476040/1329628845120294992/IMG_9352.png?ex=678b08db&is=6789b75b&hm=d8b34267b7bc6084a75c02b291f34bc42c8c3b80eb3a53e4d5d5febd92938cbb&=&format=webp&quality=lossless&width=1137&height=676",
-  "https://media.discordapp.net/attachments/808738288411476040/1329628846391296010/IMG_9365.webp?ex=678b08dc&is=6789b75c&hm=de46a23d61acea5e040a3cc0748c22ef55676d41442478ec6c9ba23407057123&=&format=webp&width=1183&height=676"
+  "https://media.discordapp.net/attachments/808738288411476040/1329628846391296010/IMG_9365.webp?ex=678b08dc&is=6789b75c&hm=de46a23d61acea5e040a3cc0748c22ef55676d41442478ec6c9ba23407057123&=&format=webp&width=1183&height=676",
+  "https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/2880270/ss_ce8c0bb2a4fada7763fd92f92755be1539078c49.600x338.jpg?t=1733771060"
 ];
 
 export default function GameDetails() {
@@ -137,12 +138,17 @@ export default function GameDetails() {
                 <div className="relative">
                   <input
                     type="number"
-                    className="w-full p-2 bg-background border rounded-md"
+                    className="w-full p-2 bg-background border rounded-md pr-16"
                     placeholder="0.00"
                   />
-                  <span className="absolute right-2 top-1/2 -translate-y-1/2">
-                    SOL
-                  </span>
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                    <span>SOL</span>
+                    <img 
+                      src="https://seeklogo.com/images/S/solana-sol-logo-12828AD23D-seeklogo.com.png" 
+                      alt="Solana Logo" 
+                      className="w-4 h-4"
+                    />
+                  </div>
                 </div>
                 <Button className="w-full">Place Trade</Button>
               </div>
