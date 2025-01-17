@@ -2,6 +2,7 @@ import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { GameCard } from "@/components/GameCard";
 import { FilterBar } from "@/components/FilterBar";
+import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
 
 const featuredGames = [
@@ -79,6 +80,8 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 };

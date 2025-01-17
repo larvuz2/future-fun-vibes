@@ -14,7 +14,7 @@ export function GameCard({ title, image, genre, developer }: GameCardProps) {
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.2 }}
     >
-      <div className="aspect-[16/9] overflow-hidden">
+      <div className="aspect-[3/4] overflow-hidden">
         <img 
           src={image} 
           alt={title}

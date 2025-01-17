@@ -25,7 +25,6 @@ export function Navbar() {
           <Link to="/games" className="hover:text-primary transition-colors">Games</Link>
           <Link to="/upload" className="hover:text-primary transition-colors">Upload</Link>
           <Link to="/community" className="hover:text-primary transition-colors">Community</Link>
-          <Link to="/profile" className="hover:text-primary transition-colors">Profile</Link>
           <Button className="flex items-center gap-2">
             <Wallet className="w-4 h-4" />
             Connect Wallet
