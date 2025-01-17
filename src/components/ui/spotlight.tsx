@@ -28,14 +28,8 @@ export function Spotlight({
   const mouseX = useSpring(0);
   const mouseY = useSpring(0);
 
-  // Add scroll progress for Safari
-  const { scrollYProgress } = useScroll();
-  const scrollSpotlightY = useTransform(scrollYProgress, [0, 1], [0, 500]);
-
   const spotlightLeft = useTransform(mouseX, (x) => `${x - size / 2}px`);
-  const spotlightTop = isSafari 
-    ? useTransform(scrollSpotlightY, (y) => `${y - size / 2}px`)
-    : useTransform(mouseY, (y) => `${y - size / 2}px`);
+  const spotlightTop = useTransform(mouseY, (y) => `${y - size / 2}px`);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -71,10 +65,11 @@ export function Spotlight({
         parentElement.removeEventListener('mouseenter', () => setIsHovered(true));
         parentElement.removeEventListener('mouseleave', () => setIsHovered(false));
       };
-    } else {
-      setIsHovered(true); // Always show spotlight for Safari
     }
   }, [parentElement, handleMouseMove, isSafari]);
+
+  // Don't render anything for Safari
+  if (isSafari) return null;
 
   return (
     <motion.div
