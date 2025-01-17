@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { Button } from "./ui/button";
+import { Wallet } from "lucide-react";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -24,6 +26,10 @@ export function Navbar() {
           <Link to="/upload" className="hover:text-primary transition-colors">Upload</Link>
           <Link to="/community" className="hover:text-primary transition-colors">Community</Link>
           <Link to="/profile" className="hover:text-primary transition-colors">Profile</Link>
+          <Button className="flex items-center gap-2">
+            <Wallet className="w-4 h-4" />
+            Connect Wallet
+          </Button>
         </div>
       </div>
     </nav>
