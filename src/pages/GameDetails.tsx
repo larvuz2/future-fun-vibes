@@ -15,11 +15,9 @@ import { useState } from "react";
 
 // Mock images for the carousel
 const gameImages = [
-  "/lovable-uploads/f121f658-5bf7-460c-9e1f-f0fb7375181f.png",
-  "https://placehold.co/1920x1080/111827/ffffff?text=Game+Screenshot+2",
-  "https://placehold.co/1920x1080/111827/ffffff?text=Game+Screenshot+3",
-  "https://placehold.co/1920x1080/111827/ffffff?text=Game+Screenshot+4",
-  "https://placehold.co/1920x1080/111827/ffffff?text=Game+Screenshot+5",
+  "https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/2880270/ss_aa86f65d79c123abdae20cef883ad0f4fbec0187.600x338.jpg?t=1733771060",
+  "https://media.discordapp.net/attachments/808738288411476040/1329628845120294992/IMG_9352.png?ex=678b08db&is=6789b75b&hm=d8b34267b7bc6084a75c02b291f34bc42c8c3b80eb3a53e4d5d5febd92938cbb&=&format=webp&quality=lossless&width=1137&height=676",
+  "https://media.discordapp.net/attachments/808738288411476040/1329628846391296010/IMG_9365.webp?ex=678b08dc&is=6789b75c&hm=de46a23d61acea5e040a3cc0748c22ef55676d41442478ec6c9ba23407057123&=&format=webp&width=1183&height=676"
 ];
 
 export default function GameDetails() {
@@ -79,12 +77,15 @@ export default function GameDetails() {
             <Card className="p-4">
               <div className="aspect-[16/9] bg-black/90 rounded-lg">
                 <iframe 
-                  src="https://www.geckoterminal.com/solana/pools/22WrmyTj8x2TRVQen3fxxi2r4Rn6JDHWoMTpsSmn8RUd?embed=1&info=1&swaps=1&grayscale=0&light_chart=0"
-                  className="w-full h-full rounded-lg"
-                  title="GeckoTerminal Chart"
-                  frameBorder="0"
-                  allow="clipboard-write"
+                  height="100%" 
+                  width="100%" 
+                  id="geckoterminal-embed" 
+                  title="GeckoTerminal Embed" 
+                  src="https://www.geckoterminal.com/solana/pools/22WrmyTj8x2TRVQen3fxxi2r4Rn6JDHWoMTpsSmn8RUd?embed=1&info=0&swaps=0&grayscale=0&light_chart=0" 
+                  frameBorder="0" 
+                  allow="clipboard-write" 
                   allowFullScreen
+                  className="w-full h-full rounded-lg"
                 />
               </div>
             </Card>
@@ -149,7 +150,7 @@ export default function GameDetails() {
 
             {/* Project Details */}
             <Card className="p-4">
-              <h2 className="text-2xl font-bold mb-2">Peanut the Squirrel</h2>
+              <h2 className="text-2xl font-bold mb-2">Meme Legends</h2>
               <p className="text-muted-foreground mb-4">
                 Help save peanut the squirrel! Sign the petition!
               </p>
