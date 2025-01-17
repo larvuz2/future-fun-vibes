@@ -1,7 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Spotlight } from "@/components/ui/spotlight";
 import { SplineScene } from "@/components/ui/splite";
-import { SparklesCore } from "@/components/ui/sparkles";
 import { motion } from "framer-motion";
 
 export function Hero() {
@@ -47,20 +46,6 @@ export function Hero() {
               className="w-full h-full"
             />
           </div>
-        </div>
-
-        {/* Sparkles effect at the bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 z-10">
-          <SparklesCore
-            id="hero-sparkles"
-            background="transparent"
-            minSize={0.4}
-            maxSize={1}
-            particleDensity={100}
-            className="w-full h-full"
-            particleColor="hsl(var(--primary))"
-            speed={0.5}
-          />
         </div>
       </Card>
     </div>
