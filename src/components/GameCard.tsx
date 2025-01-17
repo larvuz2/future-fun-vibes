@@ -5,9 +5,11 @@ interface GameCardProps {
   image: string;
   genre: string;
   developer: string;
+  marketCap: string;
+  dateAdded: string;
 }
 
-export function GameCard({ title, image, genre, developer }: GameCardProps) {
+export function GameCard({ title, image, genre, developer, marketCap, dateAdded }: GameCardProps) {
   return (
     <motion.div 
       className="group relative overflow-hidden rounded-xl"
@@ -27,6 +29,10 @@ export function GameCard({ title, image, genre, developer }: GameCardProps) {
           <p className="text-xs text-primary">{genre}</p>
           <h3 className="text-lg font-semibold leading-tight">{title}</h3>
           <p className="text-sm text-muted-foreground">{developer}</p>
+          <div className="flex justify-between items-center text-xs text-muted-foreground mt-2">
+            <span>Market cap: {marketCap}</span>
+            <span>{dateAdded}</span>
+          </div>
         </div>
       </div>
     </motion.div>

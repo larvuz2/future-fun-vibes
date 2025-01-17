@@ -10,37 +10,49 @@ const featuredGames = [
     title: "Neon Horizon",
     image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80",
     genre: "Action RPG",
-    developer: "Future Studios"
+    developer: "Future Studios",
+    marketCap: "$2.3M",
+    dateAdded: "3 days ago"
   },
   {
     title: "Quantum Break",
     image: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?auto=format&fit=crop&q=80",
     genre: "Adventure",
-    developer: "Quantum Games"
+    developer: "Quantum Games",
+    marketCap: "$890K",
+    dateAdded: "1 week ago"
   },
   {
     title: "Star Voyager",
     image: "https://images.unsplash.com/photo-1614728263952-84ea256f9679?auto=format&fit=crop&q=80",
     genre: "Space Sim",
-    developer: "Stellar Interactive"
+    developer: "Stellar Interactive",
+    marketCap: "$1.5M",
+    dateAdded: "2 weeks ago"
   },
   {
     title: "Cyber Protocol",
     image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&q=80",
     genre: "Strategy",
-    developer: "Digital Dreams"
+    developer: "Digital Dreams",
+    marketCap: "$450K",
+    dateAdded: "1 month ago"
   },
   {
     title: "Tech Empire",
     image: "https://images.unsplash.com/photo-1496096265110-f83ad7f96608?auto=format&fit=crop&q=80",
     genre: "Simulation",
-    developer: "Future Tech Games"
+    developer: "Future Tech Games",
+    marketCap: "$3.1M",
+    dateAdded: "2 months ago"
   },
   {
     title: "Digital Frontier",
     image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80",
     genre: "RPG",
-    developer: "Frontier Studios"
+    developer: "Frontier Studios",
+    marketCap: "$720K",
+    dateAdded: "3 months ago"
   }
 ];
 
