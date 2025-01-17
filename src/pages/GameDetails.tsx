@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react"; // Added useState import
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ExternalLink, Twitter } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useEffect } from "react";
 import {
   Carousel,
   CarouselContent,
