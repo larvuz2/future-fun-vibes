@@ -10,20 +10,41 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Navbar } from "@/components/Navbar";
+import { useState } from "react";
+
+// Mock images for the carousel
+const gameImages = [
+  "/lovable-uploads/f121f658-5bf7-460c-9e1f-f0fb7375181f.png",
+  "https://placehold.co/1920x1080/111827/ffffff?text=Game+Screenshot+2",
+  "https://placehold.co/1920x1080/111827/ffffff?text=Game+Screenshot+3",
+  "https://placehold.co/1920x1080/111827/ffffff?text=Game+Screenshot+4",
+  "https://placehold.co/1920x1080/111827/ffffff?text=Game+Screenshot+5",
+];
 
 export default function GameDetails() {
   const { id } = useParams();
+  const [selectedImage, setSelectedImage] = useState(gameImages[0]);
+  
   console.log("Game ID:", id);
+  console.log("Selected Image:", selectedImage);
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container py-6">
+      <Navbar />
+      <div className="container py-6 mt-20">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content - Takes up 2 columns on large screens */}
           <div className="lg:col-span-2 space-y-6">
             {/* Hero Section with Game Display */}
             <div className="relative rounded-lg overflow-hidden">
               <div className="aspect-video bg-card relative">
+                {/* Main Image Display */}
+                <img 
+                  src={selectedImage} 
+                  alt="Game Screenshot" 
+                  className="w-full h-full object-cover"
+                />
                 <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white">
                   <p className="text-xl mb-4">You need tokens to start</p>
                   <Button className="bg-primary hover:bg-primary/90">
@@ -34,16 +55,22 @@ export default function GameDetails() {
               
               {/* Thumbnail Carousel */}
               <div className="mt-4">
-                <Carousel>
+                <Carousel className="w-full">
                   <CarouselContent>
-                    {[1, 2, 3, 4].map((_, index) => (
-                      <CarouselItem key={index} className="basis-1/4">
-                        <div className="aspect-video bg-card rounded-lg" />
+                    {gameImages.map((image, index) => (
+                      <CarouselItem key={index} className="basis-1/4 cursor-pointer" onClick={() => setSelectedImage(image)}>
+                        <div className="relative aspect-video">
+                          <img 
+                            src={image} 
+                            alt={`Screenshot ${index + 1}`}
+                            className={`w-full h-full object-cover rounded-lg transition-opacity ${selectedImage === image ? 'opacity-100 ring-2 ring-primary' : 'opacity-70 hover:opacity-100'}`}
+                          />
+                        </div>
                       </CarouselItem>
                     ))}
                   </CarouselContent>
-                  <CarouselPrevious />
-                  <CarouselNext />
+                  <CarouselPrevious className="left-0" />
+                  <CarouselNext className="right-0" />
                 </Carousel>
               </div>
             </div>
