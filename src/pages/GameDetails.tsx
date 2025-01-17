@@ -79,9 +79,12 @@ export default function GameDetails() {
             <Card className="p-4">
               <div className="aspect-[16/9] bg-black/90 rounded-lg">
                 <iframe 
-                  src="https://www.geckoterminal.com/solana/pools/raydium?embed=1&info=0&swaps=0"
+                  src="https://www.geckoterminal.com/solana/pools/22WrmyTj8x2TRVQen3fxxi2r4Rn6JDHWoMTpsSmn8RUd?embed=1&info=1&swaps=1&grayscale=0&light_chart=0"
                   className="w-full h-full rounded-lg"
                   title="GeckoTerminal Chart"
+                  frameBorder="0"
+                  allow="clipboard-write"
+                  allowFullScreen
                 />
               </div>
             </Card>
@@ -93,17 +96,30 @@ export default function GameDetails() {
                 <Button variant="outline">Post a Reply</Button>
               </div>
               <div className="space-y-4">
-                {/* Sample Comment */}
-                <div className="flex gap-4 p-4 bg-card/50 rounded-lg">
-                  <div className="w-10 h-10 rounded-full bg-primary/20" />
-                  <div className="flex-1">
-                    <div className="flex justify-between">
-                      <p className="font-medium">User123</p>
-                      <span className="text-sm text-muted-foreground">2h ago</span>
+                {[
+                  { user: "CryptoWhale", time: "2h ago", comment: "This game looks amazing!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=1" },
+                  { user: "GameMaster", time: "3h ago", comment: "The graphics are next level!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=2" },
+                  { user: "TokenHunter", time: "4h ago", comment: "Can't wait to earn some tokens!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=3" },
+                  { user: "Web3Gamer", time: "5h ago", comment: "The mechanics are so smooth.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=4" },
+                  { user: "NFTCollector", time: "6h ago", comment: "Love the art style!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=5" },
+                  { user: "BlockchainDev", time: "7h ago", comment: "Smart contracts look solid.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=6" },
+                  { user: "MetaGamer", time: "8h ago", comment: "Best P2E game I've seen!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=7" },
+                  { user: "DeFiExplorer", time: "9h ago", comment: "Token economics are well thought out.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=8" },
+                  { user: "GameInvestor", time: "10h ago", comment: "This has huge potential!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=9" },
+                  { user: "CryptoArtist", time: "11h ago", comment: "Visual effects are stunning!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=10" },
+                  { user: "Web3Pioneer", time: "12h ago", comment: "Revolutionary gameplay!", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=11" }
+                ].map((comment, index) => (
+                  <div key={index} className="flex gap-4 p-4 bg-card/50 rounded-lg">
+                    <img src={comment.avatar} alt={comment.user} className="w-10 h-10 rounded-full" />
+                    <div className="flex-1">
+                      <div className="flex justify-between">
+                        <p className="font-medium">{comment.user}</p>
+                        <span className="text-sm text-muted-foreground">{comment.time}</span>
+                      </div>
+                      <p className="text-sm mt-1">{comment.comment}</p>
                     </div>
-                    <p className="text-sm mt-1">This game looks amazing!</p>
                   </div>
-                </div>
+                ))}
               </div>
             </Card>
           </div>
@@ -174,6 +190,16 @@ export default function GameDetails() {
                       { address: "Ze3DmU", percentage: "42.51%" },
                       { address: "BucChS", percentage: "11.40%" },
                       { address: "SPUDww", percentage: "3.94%" },
+                      { address: "Kj9mNp", percentage: "3.25%" },
+                      { address: "Wx5vRt", percentage: "2.87%" },
+                      { address: "Hn2qLs", percentage: "2.43%" },
+                      { address: "Py7kFd", percentage: "2.11%" },
+                      { address: "Qm4wGx", percentage: "1.95%" },
+                      { address: "Vb9nJc", percentage: "1.82%" },
+                      { address: "Tc6hBv", percentage: "1.76%" },
+                      { address: "Uf3gNm", percentage: "1.68%" },
+                      { address: "Yz8xAw", percentage: "1.54%" },
+                      { address: "Rk5pEs", percentage: "1.47%" }
                     ].map((holder, index) => (
                       <div
                         key={index}
