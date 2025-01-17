@@ -12,8 +12,8 @@ export function Hero() {
   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      <Card className="w-full max-w-6xl mx-auto bg-background relative overflow-hidden border-0">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden px-4">
+      <Card className="w-full max-w-[1400px] mx-auto bg-background relative overflow-hidden border-0">
         {!isSafari ? (
           <Spotlight
             className="-top-40 left-0 md:left-60 md:-top-20"
@@ -62,7 +62,7 @@ export function Hero() {
           <div className="flex-1 relative">
             <SplineScene 
               scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-              className="w-full h-full scale-[2]"
+              className="w-full h-full scale-[1.5]"
             />
           </div>
         </div>
