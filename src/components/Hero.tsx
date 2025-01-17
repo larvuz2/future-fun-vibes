@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 export function Hero() {
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      <Card className="w-full max-w-6xl mx-auto bg-black/[0.96] relative overflow-hidden border-0">
+      <Card className="w-full max-w-6xl mx-auto bg-[#1EAEDB] relative overflow-hidden border-0">
         <Spotlight
           className="-top-40 left-0 md:left-60 md:-top-20"
           fill="white"
