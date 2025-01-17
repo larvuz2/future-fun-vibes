@@ -10,7 +10,9 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { useState } from "react";
 
 // Mock images for the carousel
@@ -25,9 +27,6 @@ export default function GameDetails() {
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState(gameImages[0]);
   
-  console.log("Game ID:", id);
-  console.log("Selected Image:", selectedImage);
-
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -38,7 +37,6 @@ export default function GameDetails() {
             {/* Hero Section with Game Display */}
             <div className="relative rounded-lg overflow-hidden">
               <div className="aspect-video bg-card relative">
-                {/* Main Image Display */}
                 <img 
                   src={selectedImage} 
                   alt="Game Screenshot" 
@@ -142,12 +140,12 @@ export default function GameDetails() {
                     placeholder="0.00"
                   />
                   <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                    <span>SOL</span>
                     <img 
                       src="https://seeklogo.com/images/S/solana-sol-logo-12828AD23D-seeklogo.com.png" 
                       alt="Solana Logo" 
                       className="w-4 h-4"
                     />
+                    <span>SOL</span>
                   </div>
                 </div>
                 <Button className="w-full">Place Trade</Button>
@@ -192,40 +190,40 @@ export default function GameDetails() {
                 {/* Holder Distribution */}
                 <div>
                   <h3 className="font-semibold mb-2">Holder Distribution</h3>
-                  <div className="space-y-2 max-h-[200px] overflow-y-auto">
-                    {[
-                      { address: "Ze3DmU", percentage: "42.51%" },
-                      { address: "BucChS", percentage: "11.40%" },
-                      { address: "SPUDww", percentage: "3.94%" },
-                      { address: "Kj9mNp", percentage: "3.25%" },
-                      { address: "Wx5vRt", percentage: "2.87%" },
-                      { address: "Hn2qLs", percentage: "2.43%" },
-                      { address: "Py7kFd", percentage: "2.11%" },
-                      { address: "Qm4wGx", percentage: "1.95%" },
-                      { address: "Vb9nJc", percentage: "1.82%" },
-                      { address: "Tc6hBv", percentage: "1.76%" },
-                      { address: "Uf3gNm", percentage: "1.68%" },
-                      { address: "Yz8xAw", percentage: "1.54%" },
-                      { address: "Rk5pEs", percentage: "1.47%" }
-                    ].map((holder, index) => (
-                      <div
-                        key={index}
-                        className="flex justify-between items-center text-sm p-2 bg-card/50 rounded-md"
-                      >
-                        <span className="font-mono">{holder.address}</span>
-                        <span>{holder.percentage}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <Button variant="outline" className="w-full mt-4">
-                    Generate Bubble Map
-                  </Button>
+                  <ScrollArea className="h-[200px] rounded-md border p-2">
+                    <div className="space-y-2">
+                      {[
+                        { address: "Ze3DmU", percentage: "42.51%" },
+                        { address: "BucChS", percentage: "11.40%" },
+                        { address: "SPUDww", percentage: "3.94%" },
+                        { address: "Kj9mNp", percentage: "3.25%" },
+                        { address: "Wx5vRt", percentage: "2.87%" },
+                        { address: "Hn2qLs", percentage: "2.43%" },
+                        { address: "Py7kFd", percentage: "2.11%" },
+                        { address: "Qm4wGx", percentage: "1.95%" },
+                        { address: "Vb9nJc", percentage: "1.82%" },
+                        { address: "Tc6hBv", percentage: "1.76%" },
+                        { address: "Uf3gNm", percentage: "1.68%" },
+                        { address: "Yz8xAw", percentage: "1.54%" },
+                        { address: "Rk5pEs", percentage: "1.47%" }
+                      ].map((holder, index) => (
+                        <div
+                          key={index}
+                          className="flex justify-between items-center text-sm p-2 bg-card/50 rounded-md"
+                        >
+                          <span className="font-mono">{holder.address}</span>
+                          <span>{holder.percentage}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
                 </div>
               </div>
             </Card>
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
