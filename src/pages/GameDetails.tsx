@@ -87,13 +87,21 @@ export default function GameDetails() {
 
                 {/* External Links */}
                 <div className="grid grid-cols-2 gap-4">
-                  <Button variant="outline" className="w-full">
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => window.open('https://metazooie.com/', '_blank')}
+                  >
                     <ExternalLink className="w-4 h-4 mr-2" />
                     Website
                   </Button>
-                  <Button variant="outline" className="w-full">
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => window.open('https://x.com/metazooie', '_blank')}
+                  >
                     <Twitter className="w-4 h-4 mr-2" />
-                    Twitter
+                    Twitter/X
                   </Button>
                 </div>
 
