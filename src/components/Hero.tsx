@@ -1,16 +1,35 @@
 import { Card } from "@/components/ui/card";
 import { Spotlight } from "@/components/ui/spotlight";
 import { SplineScene } from "@/components/ui/splite";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 export function Hero() {
+  const { scrollY } = useScroll();
+  const spotlightY = useTransform(scrollY, [0, 500], [-40, 0]);
+  const spotlightX = useTransform(scrollY, [0, 500], [0, 60]);
+
+  // Detect Safari browser
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
       <Card className="w-full max-w-6xl mx-auto bg-background relative overflow-hidden border-0">
-        <Spotlight
-          className="-top-40 left-0 md:left-60 md:-top-20"
-          fill="white"
-        />
+        {!isSafari ? (
+          <Spotlight
+            className="-top-40 left-0 md:left-60 md:-top-20"
+            fill="white"
+          />
+        ) : (
+          <motion.div
+            className="absolute -top-40 left-0 md:left-60 md:-top-20"
+            style={{
+              y: spotlightY,
+              x: spotlightX,
+            }}
+          >
+            <Spotlight fill="white" />
+          </motion.div>
+        )}
         
         <div className="flex flex-col md:flex-row h-full min-h-[500px]">
           {/* Left content */}
@@ -39,11 +58,11 @@ export function Hero() {
             </motion.div>
           </div>
 
-          {/* Right content */}
+          {/* Right content - Scaled up robot */}
           <div className="flex-1 relative">
             <SplineScene 
               scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-              className="w-full h-full"
+              className="w-full h-full scale-[2]"
             />
           </div>
         </div>
