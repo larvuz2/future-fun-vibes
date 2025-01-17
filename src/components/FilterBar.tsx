@@ -12,10 +12,10 @@ const genres = ["Action", "RPG", "Strategy", "Adventure", "Simulation", "Sports"
 
 export function FilterBar() {
   return (
-    <div className="w-full flex items-center justify-between mb-8 gap-4">
-      <div className="flex gap-4">
+    <div className="w-full flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+      <div className="w-full md:w-auto">
         <Select defaultValue="featured">
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-full md:w-[180px]">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
@@ -31,7 +31,7 @@ export function FilterBar() {
         </Select>
       </div>
       
-      <div className="flex gap-2 overflow-x-auto pb-2">
+      <div className="flex flex-wrap gap-2 overflow-x-auto pb-2">
         {genres.map((genre) => (
           <Button
             key={genre}

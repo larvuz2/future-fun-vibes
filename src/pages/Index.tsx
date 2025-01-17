@@ -62,14 +62,14 @@ const Index = () => {
       <Navbar />
       <Hero />
       
-      <section className="py-8 md:py-12">
+      <section className="py-4 md:py-8">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="space-y-4 text-center mb-8"
+            className="space-y-2 text-center mb-6"
           >
             <h2 className="text-3xl font-bold tracking-tighter">Featured Games</h2>
             <p className="text-muted-foreground">Discover handpicked premium gaming experiences</p>
