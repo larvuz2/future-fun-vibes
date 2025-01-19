@@ -22,26 +22,36 @@ const ScrollToTop = () => {
   return null;
 };
 
-const queryClient = new QueryClient();
+// Create a new client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 1,
+    },
+  },
+});
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <ScrollToTop />
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/game/:id" element={<GameDetails />} />
-          <Route path="/how-it-works" element={<HowItWorks />} />
-          <Route path="/upload" element={<Upload />} />
-          <Route path="/community" element={<Community />} />
-          <Route path="/documentation/*" element={<Documentation />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <ScrollToTop />
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/game/:id" element={<GameDetails />} />
+            <Route path="/how-it-works" element={<HowItWorks />} />
+            <Route path="/upload" element={<Upload />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/documentation/*" element={<Documentation />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
