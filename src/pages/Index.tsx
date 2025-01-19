@@ -4,6 +4,8 @@ import { GameCard } from "@/components/GameCard";
 import { FilterBar } from "@/components/FilterBar";
 import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const featuredGames = [
   {
@@ -57,6 +59,17 @@ const featuredGames = [
 ];
 
 const Index = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.scrollToGames) {
+      const gamesSection = document.getElementById('featured-games');
+      gamesSection?.scrollIntoView({ behavior: 'smooth' });
+      // Clean up the state
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
