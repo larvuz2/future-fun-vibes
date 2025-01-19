@@ -74,19 +74,19 @@ const HowItWorks = () => {
                 number: "1",
                 title: "Game and Token Launch",
                 description: "Developers create tokens connected to their games. Players buy these tokens to unlock access to the games and any special features.",
-                icon: <Gamepad2 className="w-8 h-8 mb-4" />
+                icon: <Gamepad2 className="w-8 h-8" />
               },
               {
                 number: "2",
                 title: "Instant Access",
                 description: "Tokens let players instantly try out games, from early prototypes to exclusive content, while supporting the developers directly.",
-                icon: <Zap className="w-8 h-8 mb-4" />
+                icon: <Zap className="w-8 h-8" />
               },
               {
                 number: "3",
                 title: "Fair and Simple",
                 description: "Everyone has an equal chance to buy tokens—there are no pre-sales or special treatment for anyone.",
-                icon: <Scale className="w-8 h-8 mb-4" />
+                icon: <Scale className="w-8 h-8" />
               }
             ].map((step, index) => (
               <motion.div
@@ -102,7 +102,9 @@ const HowItWorks = () => {
                     {step.number}
                   </div>
                   <div className="pt-8 text-center space-y-4">
-                    {step.icon}
+                    <div className="flex justify-center items-center">
+                      {step.icon}
+                    </div>
                     <h3 className="text-xl font-semibold">{step.title}</h3>
                     <p className="text-muted-foreground">{step.description}</p>
                   </div>
