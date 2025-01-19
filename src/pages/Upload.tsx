@@ -2,20 +2,26 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 
 const Upload = () => {
+  // Scroll to top on component mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
       
       <main className="flex-grow container mx-auto px-4 py-24">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid md:grid-cols-2 gap-12 items-start">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="space-y-8"
+              className="space-y-8 text-left"
             >
               <h1 className="text-4xl font-bold tracking-tighter">Share Your Game with Future.fun</h1>
               
@@ -85,7 +91,7 @@ const Upload = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
-              className="relative aspect-square rounded-xl overflow-hidden"
+              className="relative aspect-square rounded-xl overflow-hidden sticky top-24"
             >
               <img
                 src="https://cdn.midjourney.com/91d24bd7-38d9-41c5-a372-de81e80b6cdd/0_3.png"
