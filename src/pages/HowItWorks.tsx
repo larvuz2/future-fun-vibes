@@ -3,6 +3,7 @@ import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { Gamepad2, Zap, Scale, Laptop2, Users, Rocket, Crown, Smartphone, Coins } from "lucide-react";
 
 const HowItWorks = () => {
   return (
@@ -72,17 +73,20 @@ const HowItWorks = () => {
               {
                 number: "1",
                 title: "Game and Token Launch",
-                description: "Developers create tokens connected to their games. Players buy these tokens to unlock access to the games and any special features."
+                description: "Developers create tokens connected to their games. Players buy these tokens to unlock access to the games and any special features.",
+                icon: <Gamepad2 className="w-8 h-8 mb-4" />
               },
               {
                 number: "2",
                 title: "Instant Access",
-                description: "Tokens let players instantly try out games, from early prototypes to exclusive content, while supporting the developers directly."
+                description: "Tokens let players instantly try out games, from early prototypes to exclusive content, while supporting the developers directly.",
+                icon: <Zap className="w-8 h-8 mb-4" />
               },
               {
                 number: "3",
                 title: "Fair and Simple",
-                description: "Everyone has an equal chance to buy tokens—there are no pre-sales or special treatment for anyone."
+                description: "Everyone has an equal chance to buy tokens—there are no pre-sales or special treatment for anyone.",
+                icon: <Scale className="w-8 h-8 mb-4" />
               }
             ].map((step, index) => (
               <motion.div
@@ -98,6 +102,7 @@ const HowItWorks = () => {
                     {step.number}
                   </div>
                   <div className="pt-8 text-center space-y-4">
+                    {step.icon}
                     <h3 className="text-xl font-semibold">{step.title}</h3>
                     <p className="text-muted-foreground">{step.description}</p>
                   </div>
@@ -128,19 +133,23 @@ const HowItWorks = () => {
             {[
               {
                 title: "For Developers of Advanced Games",
-                description: "Future.fun is designed for creators working with tools like Unreal Engine, Unity, or AI-driven workflows to build games that require powerful technology."
+                description: "Future.fun is designed for creators working with tools like Unreal Engine, Unity, or AI-driven workflows to build games that require powerful technology.",
+                icon: <Laptop2 className="w-8 h-8 mb-4" />
               },
               {
                 title: "For Gamers",
-                description: "Explore unique games, try out new mechanics, and enjoy exclusive features while directly supporting the developers behind them."
+                description: "Explore unique games, try out new mechanics, and enjoy exclusive features while directly supporting the developers behind them.",
+                icon: <Users className="w-8 h-8 mb-4" />
               },
               {
                 title: "Premium Experiences Anywhere",
-                description: "Our advanced streaming and AI technology make it possible to enjoy high-quality visuals and gameplay on mid-range smartphones, without the need for expensive hardware."
+                description: "Our advanced streaming and AI technology make it possible to enjoy high-quality visuals and gameplay on mid-range smartphones, without the need for expensive hardware.",
+                icon: <Smartphone className="w-8 h-8 mb-4" />
               },
               {
                 title: "For the Crypto Community",
-                description: "Tokens can be traded, used for rewards, or held as part of a growing ecosystem that values innovation and creativity."
+                description: "Tokens can be traded, used for rewards, or held as part of a growing ecosystem that values innovation and creativity.",
+                icon: <Coins className="w-8 h-8 mb-4" />
               }
             ].map((feature, index) => (
               <motion.div
@@ -151,7 +160,10 @@ const HowItWorks = () => {
                 viewport={{ once: true }}
                 className="glass rounded-lg p-6 space-y-4"
               >
-                <h3 className="text-xl font-semibold">{feature.title}</h3>
+                <div className="flex flex-col items-center">
+                  {feature.icon}
+                  <h3 className="text-xl font-semibold">{feature.title}</h3>
+                </div>
                 <p className="text-muted-foreground">{feature.description}</p>
               </motion.div>
             ))}
