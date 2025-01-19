@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import GameDetails from "./pages/GameDetails";
 import HowItWorks from "./pages/HowItWorks";
 import Upload from "./pages/Upload";
+import Community from "./pages/Community";
 
 // Scroll to top component
 const ScrollToTop = () => {
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/game/:id" element={<GameDetails />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/upload" element={<Upload />} />
+          <Route path="/community" element={<Community />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
