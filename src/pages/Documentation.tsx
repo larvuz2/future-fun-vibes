@@ -256,24 +256,24 @@ const Documentation = () => {
       
       <main className="flex-1 container mx-auto px-4 py-24">
         <div className="max-w-[1400px] mx-auto">
+          {/* Mobile Menu - Now outside the card */}
+          <div className="md:hidden w-full mb-4">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="icon" className="mb-4">
+                  <Menu className="h-4 w-4" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+                <div className="py-4">
+                  <FileTree />
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+
           <div className="w-full glass rounded-lg p-6">
             <div className="flex gap-6">
-              {/* Mobile Menu */}
-              <div className="md:hidden w-full mb-4">
-                <Sheet>
-                  <SheetTrigger asChild>
-                    <Button variant="outline" size="icon">
-                      <Menu className="h-4 w-4" />
-                    </Button>
-                  </SheetTrigger>
-                  <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-                    <div className="py-4">
-                      <FileTree />
-                    </div>
-                  </SheetContent>
-                </Sheet>
-              </div>
-
               {/* Desktop File Tree */}
               <div className="hidden md:block w-1/3">
                 <FileTree />
