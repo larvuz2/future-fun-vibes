@@ -24,7 +24,7 @@ export function Navbar() {
         <div className="flex gap-8 items-center">
           <Link to="/games" className="hidden md:block hover:text-primary transition-colors">Games</Link>
           <Link to="/upload" className="hidden md:block hover:text-primary transition-colors">Upload</Link>
-          <Link to="/community" className="hidden md:block hover:text-primary transition-colors">Community</Link>
+          <Link to="/how-it-works" className="hidden md:block hover:text-primary transition-colors">How It Works</Link>
           <Button className="flex items-center gap-2">
             <Wallet className="w-4 h-4" />
             Connect Wallet
