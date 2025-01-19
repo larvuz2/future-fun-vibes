@@ -9,13 +9,23 @@ const HowItWorks = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      {/* Hero Section */}
-      <section className="container py-24">
+      {/* Hero Section with Background Image */}
+      <section 
+        className="relative min-h-[70vh] flex items-center justify-center"
+        style={{
+          backgroundImage: 'url(https://cdn.midjourney.com/9f9b5720-8697-419a-8a35-c553d1c0107f/0_2.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/60" />
+        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="max-w-3xl mx-auto text-center space-y-4"
+          className="relative z-10 max-w-3xl mx-auto text-center space-y-6 p-8"
         >
           <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
             Welcome to Future.fun
