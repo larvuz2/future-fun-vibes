@@ -28,7 +28,7 @@ export function Hero() {
               transition={{ duration: 0.8 }}
               className="space-y-6"
             >
-              <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 leading-normal">
+              <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 leading-relaxed pb-2">
                 The Future of Gaming is Here
               </h1>
               <p className="text-lg text-neutral-300 max-w-2xl">
