@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 const featuredGames = [
   {
     title: "Meme Legends",
-    image: "https://media.discordapp.net/attachments/808738288411476040/1329634346189197425/IMG_9511.png?ex=678b0dfb&is=6789bc7b&hm=461f77a9830667769b808cd721ace3b39c46ab8f57da7dc826ef2e220979fe91&=&format=webp&quality=lossless&width=507&height=676",
+    image: "https://cdn.discordapp.com/attachments/808738288411476040/1329634346189197425/IMG_9511.png?ex=678e59bb&is=678d083b&hm=ea8cbebbc9fca0395e41df15b8b281135d7426f89ef7f06d8b3808e01a0e2f91&",
     genre: "Roguelite",
     developer: "Metazooie Studios",
     marketCap: "$2.3M",
