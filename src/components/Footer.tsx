@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { ButtonDemo } from "@/components/ui/toggle-group-socials";
 
-export function Footer() {
+export const Footer = () => {
   return (
     <footer className="border-t border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container py-16">
@@ -52,4 +52,6 @@ export function Footer() {
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;
