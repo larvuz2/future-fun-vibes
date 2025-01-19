@@ -8,6 +8,19 @@ import { useState } from "react";
 const Documentation = () => {
   const [selectedContent, setSelectedContent] = useState("overview");
 
+  const contentMap: { [key: string]: string } = {
+    "what-is": `Future.fun is a community-driven crowdfunding platform that connects gamers and developers through blockchain-based, premium browser gaming. By combining Unreal Engine visuals, real-time diffusion pipelines, and token-gated access, Future.fun provides developers with a seamless way to fund their projects while offering players high-quality gaming experiences.`,
+    "how-it-works": `Token Creation and Launch: Developers mint unique tokens tied to their games. These tokens serve as both funding tools and access keys to premium content.
+    Transparent Crowdfunding: Tokens are available through fair launches, with no pre-sales or reserved allocations, ensuring equal access for all participants.
+    Player Access: Players gain immediate access to premium game features by purchasing tokens, which are linked to gameplay utility and advanced features.`,
+    "why-choose": `Simplicity: A straightforward token-gated model that connects developers with their community.
+    Transparency: Fair token launches and clear fee structures foster trust and equity.
+    High-Quality Gaming: Compute-intensive games with cutting-edge visuals are accessible even on mid-range devices.
+    Empowered Development: Indie developers gain funding tools and incentives to innovate and engage their audience.
+    Sustainable Ecosystem: A balanced revenue model ensures developers, players, and the platform thrive.`,
+    // ... Add all other content mappings here
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -81,9 +94,12 @@ const Documentation = () => {
               <div className="flex-1">
                 <ScrollArea className="h-[calc(100vh-theme(spacing.64))]">
                   <div className="max-w-3xl mx-auto prose prose-invert">
-                    <h1 className="text-4xl font-bold mb-8">Documentation</h1>
                     <div className="space-y-6">
-                      <p>Select a topic from the documentation tree to view its content.</p>
+                      {contentMap[selectedContent] ? (
+                        <p className="whitespace-pre-line">{contentMap[selectedContent]}</p>
+                      ) : (
+                        <p>Select a topic from the documentation tree to view its content.</p>
+                      )}
                     </div>
                   </div>
                 </ScrollArea>
