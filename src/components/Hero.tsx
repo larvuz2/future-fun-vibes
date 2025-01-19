@@ -32,7 +32,7 @@ export function Hero() {
                 The Future of Gaming is Here
               </h1>
               <p className="text-lg text-neutral-300 max-w-2xl">
-                Jump into premium games instantly, no downloads needed
+                Experience premium Unreal Engine and Unity games directly in your browser. No downloads required.
               </p>
               <motion.div
                 initial={{ opacity: 0 }}
