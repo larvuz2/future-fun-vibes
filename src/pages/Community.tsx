@@ -1,6 +1,7 @@
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { Testimonials } from "@/components/ui/testimonials";
+import { ButtonDemo } from "@/components/ui/toggle-group-socials";
 import { useEffect } from "react";
 
 const testimonials = [
@@ -62,6 +63,13 @@ const Community = () => {
           title="Join Our Growing Community"
           description="Discover what developers and players love about Future.fun"
         />
+        
+        <div className="mt-24 text-center space-y-8">
+          <h2 className="text-3xl font-bold tracking-tighter">Join Our Socials</h2>
+          <div className="flex justify-center">
+            <ButtonDemo />
+          </div>
+        </div>
       </main>
       <Footer />
     </div>

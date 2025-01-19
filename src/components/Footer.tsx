@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ButtonDemo } from "@/components/ui/toggle-group-socials";
 
 export function Footer() {
   return (
@@ -12,6 +13,7 @@ export function Footer() {
             <p className="text-muted-foreground">
               Premium browser-based gaming platform for next-generation experiences
             </p>
+            <ButtonDemo />
           </div>
           
           <div className="space-y-4">
