@@ -8,10 +8,10 @@ export default function Docs() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <div className="flex-1">
-        <div className="container">
+      <div className="flex-1 flex flex-col">
+        <div className="container flex-1">
           <SidebarProvider defaultOpen={true}>
-            <div className="flex-1 flex w-full pt-24">
+            <div className="flex w-full mt-24 mb-16">
               <DocsSidebar />
               <DocsContent />
             </div>
