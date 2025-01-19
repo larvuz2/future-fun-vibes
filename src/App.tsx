@@ -1,45 +1,30 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { useEffect } from "react";
-import Index from "./pages/Index";
-import GameDetails from "./pages/GameDetails";
-import HowItWorks from "./pages/HowItWorks";
-import Upload from "./pages/Upload";
-import Community from "./pages/Community";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import Index from "@/pages/Index";
+import HowItWorks from "@/pages/HowItWorks";
+import Community from "@/pages/Community";
+import Documentation from "@/pages/Documentation";
+import Upload from "@/pages/Upload";
+import GameDetails from "@/pages/GameDetails";
 
-// Scroll to top component
-const ScrollToTop = () => {
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-
-  return null;
-};
-
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <ScrollToTop />
+function App() {
+  return (
+    <Router>
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/game/:id" element={<GameDetails />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
-          <Route path="/upload" element={<Upload />} />
           <Route path="/community" element={<Community />} />
+          <Route path="/documentation" element={<Documentation />} />
+          <Route path="/upload" element={<Upload />} />
+          <Route path="/game/:id" element={<GameDetails />} />
         </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+        <Footer />
+      </div>
+    </Router>
+  );
+}
 
 export default App;
