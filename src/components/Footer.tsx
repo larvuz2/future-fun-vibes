@@ -18,6 +18,7 @@ export function Footer() {
             <h4 className="font-semibold">Platform</h4>
             <ul className="space-y-2">
               <li><Link to="/games" className="text-muted-foreground hover:text-primary transition-colors">Games</Link></li>
+              <li><Link to="/how-it-works" className="text-muted-foreground hover:text-primary transition-colors">How It Works</Link></li>
               <li><Link to="/upload" className="text-muted-foreground hover:text-primary transition-colors">Upload</Link></li>
               <li><Link to="/community" className="text-muted-foreground hover:text-primary transition-colors">Community</Link></li>
             </ul>
