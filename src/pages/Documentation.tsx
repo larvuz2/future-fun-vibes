@@ -36,44 +36,35 @@ const Documentation = () => {
   const fetchData = async () => {
     setLoading(true);
     
-    try {
-      const { data: foldersData, error: foldersError } = await supabase
-        .from("futurefundocs_folders")
-        .select("*")
-        .order("order_index");
-      
-      if (foldersError) throw foldersError;
+    const { data: foldersData } = await supabase
+      .from("futurefundocs_folders")
+      .select("*")
+      .order("order_index");
+    
+    const { data: pagesData } = await supabase
+      .from("futurefundocs_pages")
+      .select("*")
+      .order("order_index");
 
-      const { data: pagesData, error: pagesError } = await supabase
-        .from("futurefundocs_pages")
-        .select("*")
-        .order("order_index");
-      
-      if (pagesError) throw pagesError;
-
-      if (foldersData) setFolders(foldersData);
-      if (pagesData) {
-        setPages(pagesData);
-        // Set default page to "What is Future.fun?"
-        const defaultPage = pagesData.find(page => page.title === "What is Future.fun?");
-        if (defaultPage) {
-          console.log("Setting default page:", defaultPage);
-          setSelectedPage(defaultPage);
-        }
+    if (foldersData) setFolders(foldersData);
+    if (pagesData) {
+      setPages(pagesData);
+      // Set default page to "What is Future.fun?"
+      const defaultPage = pagesData.find(page => page.title === "What is Future.fun?");
+      if (defaultPage) {
+        console.log("Setting default page:", defaultPage);
+        setSelectedPage(defaultPage);
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
     }
 
     setLoading(false);
   };
 
   const handlePageSelect = (pageId: string) => {
-    console.log("Handling page select for ID:", pageId);
-    const selectedPage = pages.find(page => page.id === pageId);
-    if (selectedPage) {
-      console.log("Found and setting selected page:", selectedPage);
-      setSelectedPage(selectedPage);
+    const page = pages.find(p => p.id === pageId);
+    if (page) {
+      console.log("Selected page:", page);
+      setSelectedPage(page);
     }
   };
 
