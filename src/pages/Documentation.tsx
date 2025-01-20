@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { File, Folder, Tree } from "@/components/ui/file-tree";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,8 @@ import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Accordion } from "@/components/ui/accordion";
 
 type DocFolder = {
   id: string;
@@ -101,40 +102,41 @@ const Documentation = () => {
     }
   };
 
-  const handlePageSelect = (pageId: string) => {
-    console.log("Selecting page with ID:", pageId);
-    const page = pages.find(p => p.id === pageId);
-    if (page) {
-      console.log("Selected page:", page);
-      setSelectedPage(page);
-      toast({
-        title: "Page selected",
-        description: `Viewing: ${page.title}`,
-      });
-    }
+  const handlePageSelect = (page: DocPage) => {
+    console.log("Selecting page:", page);
+    setSelectedPage(page);
+    toast({
+      title: "Page selected",
+      description: `Viewing: ${page.title}`,
+    });
   };
 
-  const FileTree = () => (
-    <Tree
-      className="p-4"
-      initialExpandedItems={folders.map(f => f.id)}
-    >
+  const DocTree = () => (
+    <Accordion type="single" collapsible className="w-full">
       {folders.map((folder) => (
-        <Folder key={folder.id} element={folder.name} value={folder.id}>
-          {pages
-            .filter(page => page.folder_id === folder.id)
-            .map(page => (
-              <File
-                key={page.id}
-                value={page.id}
-                onClick={() => handlePageSelect(page.id)}
-              >
-                {page.title}
-              </File>
-            ))}
-        </Folder>
+        <AccordionItem key={folder.id} value={folder.id}>
+          <AccordionTrigger className="text-sm hover:no-underline">
+            {folder.name}
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="flex flex-col space-y-1">
+              {pages
+                .filter(page => page.folder_id === folder.id)
+                .map(page => (
+                  <Button
+                    key={page.id}
+                    variant="ghost"
+                    className="justify-start text-sm font-normal"
+                    onClick={() => handlePageSelect(page)}
+                  >
+                    {page.title}
+                  </Button>
+                ))}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
       ))}
-    </Tree>
+    </Accordion>
   );
 
   if (loading) {
@@ -162,7 +164,7 @@ const Documentation = () => {
               </SheetTrigger>
               <SheetContent side="left" className="w-[300px] sm:w-[400px]">
                 <div className="py-4">
-                  <FileTree />
+                  <DocTree />
                 </div>
               </SheetContent>
             </Sheet>
@@ -170,9 +172,9 @@ const Documentation = () => {
 
           <div className="w-full glass rounded-lg p-6">
             <div className="flex gap-6">
-              {/* Desktop File Tree */}
+              {/* Desktop Doc Tree */}
               <div className="hidden md:block w-1/3">
-                <FileTree />
+                <DocTree />
               </div>
 
               {/* Vertical Separator - Desktop Only */}
