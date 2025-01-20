@@ -58,7 +58,13 @@ const Documentation = () => {
       
       // Set "What is Future.fun?" page as default
       const defaultPage = pagesData.find(page => page.title === "What is Future.fun?");
-      setSelectedPage(defaultPage || pagesData[0]);
+      if (defaultPage) {
+        console.log("Setting default page:", defaultPage);
+        setSelectedPage(defaultPage);
+      } else {
+        console.log("Default page not found, using first page");
+        setSelectedPage(pagesData[0]);
+      }
 
     } catch (error) {
       console.error("Error fetching documentation data:", error);
@@ -115,21 +121,21 @@ const Documentation = () => {
                   <Accordion type="multiple" defaultValue={folders.map(f => f.id)} className="w-full space-y-0">
                     {folders.map((folder) => (
                       <AccordionItem key={folder.id} value={folder.id} className="border-none">
-                        <AccordionTrigger className="text-sm hover:no-underline py-2">
+                        <AccordionTrigger className="text-sm hover:no-underline py-1">
                           <div className="flex items-center gap-2">
                             <Folder className="h-4 w-4" />
                             {folder.name}
                           </div>
                         </AccordionTrigger>
                         <AccordionContent className="pt-0">
-                          <div className="flex flex-col space-y-0.5 pl-6">
+                          <div className="flex flex-col space-y-0.5 pl-4">
                             {pages
                               .filter(page => page.folder_id === folder.id)
                               .map(page => (
                                 <Button
                                   key={page.id}
                                   variant="ghost"
-                                  className="justify-start text-sm font-normal h-8"
+                                  className="justify-start text-sm font-normal h-7"
                                   onClick={() => handlePageSelect(page)}
                                 >
                                   <File className="h-4 w-4 mr-2" />
@@ -153,21 +159,21 @@ const Documentation = () => {
                 <Accordion type="multiple" defaultValue={folders.map(f => f.id)} className="w-full space-y-0">
                   {folders.map((folder) => (
                     <AccordionItem key={folder.id} value={folder.id} className="border-none">
-                      <AccordionTrigger className="text-sm hover:no-underline py-2">
+                      <AccordionTrigger className="text-sm hover:no-underline py-1">
                         <div className="flex items-center gap-2">
                           <Folder className="h-4 w-4" />
                           {folder.name}
                         </div>
                       </AccordionTrigger>
                       <AccordionContent className="pt-0">
-                        <div className="flex flex-col space-y-0.5 pl-6">
+                        <div className="flex flex-col space-y-0.5 pl-4">
                           {pages
                             .filter(page => page.folder_id === folder.id)
                             .map(page => (
                               <Button
                                 key={page.id}
                                 variant="ghost"
-                                className="justify-start text-sm font-normal h-8"
+                                className="justify-start text-sm font-normal h-7"
                                 onClick={() => handlePageSelect(page)}
                               >
                                 <File className="h-4 w-4 mr-2" />
@@ -198,25 +204,25 @@ const Documentation = () => {
                   </div>
                 </ScrollArea>
 
-                {/* Mobile Navigation */}
-                <div className="md:hidden flex justify-between items-center mt-8 gap-4">
+                {/* Mobile Navigation - Stacked Buttons */}
+                <div className="md:hidden flex flex-col mt-8 gap-4">
                   {findAdjacentPage('prev') && (
                     <Button
                       variant="outline"
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 w-full"
                       onClick={() => handlePageSelect(findAdjacentPage('prev')!)}
                     >
                       <ArrowLeft className="h-4 w-4" />
-                      <span className="line-clamp-1">{findAdjacentPage('prev')?.title}</span>
+                      <span className="line-clamp-1">Previous: {findAdjacentPage('prev')?.title}</span>
                     </Button>
                   )}
                   {findAdjacentPage('next') && (
                     <Button
                       variant="outline"
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 w-full"
                       onClick={() => handlePageSelect(findAdjacentPage('next')!)}
                     >
-                      <span className="line-clamp-1">{findAdjacentPage('next')?.title}</span>
+                      <span className="line-clamp-1">Next: {findAdjacentPage('next')?.title}</span>
                       <ArrowRight className="h-4 w-4" />
                     </Button>
                   )}
