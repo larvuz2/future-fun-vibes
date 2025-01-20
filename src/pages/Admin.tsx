@@ -132,11 +132,14 @@ export default function Admin() {
 
   const deleteFolder = async (id: string) => {
     try {
+      console.log("Deleting folder with ID:", id);
+      
       // First delete all pages in the folder
-      const { error: pagesError } = await supabase
+      const { data: deletedPages, error: pagesError } = await supabase
         .from("futurefundocs_pages")
         .delete()
-        .eq("folder_id", id);
+        .eq("folder_id", id)
+        .select();
 
       if (pagesError) {
         console.error("Error deleting pages:", pagesError);
@@ -148,11 +151,14 @@ export default function Admin() {
         return;
       }
 
+      console.log("Successfully deleted pages:", deletedPages);
+
       // Then delete the folder
-      const { error: folderError } = await supabase
+      const { data: deletedFolder, error: folderError } = await supabase
         .from("futurefundocs_folders")
         .delete()
-        .eq("id", id);
+        .eq("id", id)
+        .select();
 
       if (folderError) {
         console.error("Error deleting folder:", folderError);
@@ -163,6 +169,8 @@ export default function Admin() {
         });
         return;
       }
+
+      console.log("Successfully deleted folder:", deletedFolder);
 
       // Update local state
       setFolders(prevFolders => prevFolders.filter(folder => folder.id !== id));
