@@ -3,8 +3,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { WYSIWYGEditor } from "@/components/WYSIWYGEditor";
 import {
   Dialog,
   DialogContent,
@@ -53,15 +52,39 @@ export default function Admin() {
   }, []);
 
   const fetchData = async () => {
-    const { data: foldersData } = await supabase
+    console.log("Fetching data...");
+    const { data: foldersData, error: foldersError } = await supabase
       .from("futurefundocs_folders")
       .select("*")
       .order("order_index");
     
-    const { data: pagesData } = await supabase
+    if (foldersError) {
+      console.error("Error fetching folders:", foldersError);
+      toast({
+        title: "Error",
+        description: "Failed to fetch folders",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const { data: pagesData, error: pagesError } = await supabase
       .from("futurefundocs_pages")
       .select("*")
       .order("order_index");
+
+    if (pagesError) {
+      console.error("Error fetching pages:", pagesError);
+      toast({
+        title: "Error",
+        description: "Failed to fetch pages",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    console.log("Folders data:", foldersData);
+    console.log("Pages data:", pagesData);
 
     if (foldersData) setFolders(foldersData);
     if (pagesData) setPages(pagesData);
@@ -149,15 +172,21 @@ export default function Admin() {
   };
 
   const updatePage = async (id: string) => {
+    console.log("Updating page:", id);
+    console.log("New title:", newPageTitle);
+    console.log("New content:", newPageContent);
+
     const { error } = await supabase
       .from("futurefundocs_pages")
       .update({
         title: newPageTitle,
         content: newPageContent,
+        updated_at: new Date().toISOString(),
       })
       .eq("id", id);
 
     if (error) {
+      console.error("Error updating page:", error);
       toast({
         title: "Error",
         description: "Failed to update page",
@@ -304,9 +333,8 @@ export default function Admin() {
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="folderName">Folder Name</Label>
                   <Input
-                    id="folderName"
+                    placeholder="Folder Name"
                     value={newFolderName}
                     onChange={(e) => setNewFolderName(e.target.value)}
                   />
@@ -324,20 +352,16 @@ export default function Admin() {
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="pageTitle">Page Title</Label>
                   <Input
-                    id="pageTitle"
+                    placeholder="Page Title"
                     value={newPageTitle}
                     onChange={(e) => setNewPageTitle(e.target.value)}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="pageContent">Content</Label>
-                  <Textarea
-                    id="pageContent"
+                  <WYSIWYGEditor
                     value={newPageContent}
-                    onChange={(e) => setNewPageContent(e.target.value)}
-                    className="h-[200px]"
+                    onChange={setNewPageContent}
                   />
                 </div>
                 <Button onClick={addPage}>Add Page</Button>
@@ -356,20 +380,16 @@ export default function Admin() {
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="editPageTitle">Page Title</Label>
                   <Input
-                    id="editPageTitle"
+                    placeholder="Page Title"
                     value={newPageTitle}
                     onChange={(e) => setNewPageTitle(e.target.value)}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="editPageContent">Content</Label>
-                  <Textarea
-                    id="editPageContent"
+                  <WYSIWYGEditor
                     value={newPageContent}
-                    onChange={(e) => setNewPageContent(e.target.value)}
-                    className="h-[200px]"
+                    onChange={setNewPageContent}
                   />
                 </div>
                 <Button onClick={() => isEditingPage && updatePage(isEditingPage)}>
