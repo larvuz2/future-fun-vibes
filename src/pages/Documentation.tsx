@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 type DocFolder = {
   id: string;
@@ -33,12 +33,14 @@ const Documentation = () => {
 
   useEffect(() => {
     console.log("Documentation component mounted");
-    fetchData();
+    initializeData();
   }, []);
 
-  const fetchData = async () => {
+  const initializeData = async () => {
     try {
       setLoading(true);
+      
+      // Fetch folders
       console.log("Fetching folders...");
       const { data: foldersData, error: foldersError } = await supabase
         .from("futurefundocs_folders")
@@ -55,6 +57,7 @@ const Documentation = () => {
         return;
       }
 
+      // Fetch pages
       console.log("Fetching pages...");
       const { data: pagesData, error: pagesError } = await supabase
         .from("futurefundocs_pages")
@@ -77,15 +80,21 @@ const Documentation = () => {
       if (foldersData) setFolders(foldersData);
       if (pagesData) {
         setPages(pagesData);
+        
         // Set default page to "What is Future.fun?"
-        const defaultPage = pagesData.find(page => page.title === "What is Future.fun?");
-        if (defaultPage) {
-          console.log("Setting default page:", defaultPage);
-          setSelectedPage(defaultPage);
-        }
+        const defaultPage = {
+          id: "default-page",
+          folder_id: "default-folder",
+          title: "What is Future.fun?",
+          content: "Future.fun is a revolutionary community-driven crowdfunding platform that connects gamers and developers through blockchain-powered, token-gated experiences. Our platform enables high-quality gaming experiences through advanced streaming technology.",
+          order_index: 0
+        };
+        
+        setSelectedPage(defaultPage);
+        console.log("Set default page:", defaultPage);
       }
     } catch (error) {
-      console.error("Error in fetchData:", error);
+      console.error("Error in initializeData:", error);
       toast({
         variant: "destructive",
         title: "Error",
