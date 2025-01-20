@@ -252,6 +252,85 @@ export default function GameDetails() {
                 ))}
               </div>
             </Card>
+
+            {/* Developer Studio Section */}
+            <Card className="p-6">
+              <div className="space-y-6">
+                <div className="flex items-start gap-6">
+                  <div className="flex-shrink-0">
+                    <img 
+                      src="https://media.discordapp.net/attachments/808738288411476040/1217082431215575070/metazooie_logo.png?ex=66029c3e&is=65f0273e&hm=c9e0c4e5f6e7d7f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0&=&format=webp&quality=lossless" 
+                      alt="Metazooie Studios" 
+                      className="w-24 h-24 rounded-lg object-cover"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-bold">Metazooie Studios</h3>
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span className="text-sm text-muted-foreground">Active Developer</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="h-4 w-px bg-border"></div>
+                        <span className="text-sm text-muted-foreground">Joined 2024</span>
+                      </div>
+                    </div>
+                    <p className="text-muted-foreground">
+                      Metazooie Studios is a pioneering Web3 game development studio focused on creating engaging, accessible experiences. 
+                      With a passion for innovation and community-driven development, they're pushing the boundaries of what's possible in browser-based gaming.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+                  <Card className="p-4">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium text-muted-foreground">Monthly Players</h4>
+                      <p className="text-2xl font-bold">127.8K</p>
+                      <div className="flex items-center text-xs text-green-500">
+                        <span>↑ 23% from last month</span>
+                      </div>
+                    </div>
+                  </Card>
+                  
+                  <Card className="p-4 col-span-2">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium text-muted-foreground">Top Player Cities</h4>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg font-bold">1.</span>
+                            <span>Singapore</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground">42.5K players</p>
+                        </div>
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg font-bold">2.</span>
+                            <span>Tokyo</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground">38.2K players</p>
+                        </div>
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg font-bold">3.</span>
+                            <span>Seoul</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground">31.7K players</p>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+
+                <div className="border-t pt-4">
+                  <p className="text-center text-muted-foreground">
+                    "Thank you for being part of our journey! Together, we're building something special." ❤️
+                  </p>
+                </div>
+              </div>
+            </Card>
           </div>
 
           {/* Right Panel - Only show on desktop */}
