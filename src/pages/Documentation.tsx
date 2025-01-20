@@ -26,9 +26,8 @@ type DocPage = {
 const Documentation = () => {
   const [folders, setFolders] = useState<DocFolder[]>([]);
   const [pages, setPages] = useState<DocPage[]>([]);
-  const [selectedContent, setSelectedContent] = useState<string | null>(null);
+  const [selectedPage, setSelectedPage] = useState<DocPage | null>(null);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState<DocPage | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -50,9 +49,11 @@ const Documentation = () => {
     if (foldersData) setFolders(foldersData);
     if (pagesData) {
       setPages(pagesData);
-      if (pagesData.length > 0) {
-        setSelectedContent(pagesData[0].id);
-        setCurrentPage(pagesData[0]);
+      // Find and set the "What is Future.fun?" page as default
+      const defaultPage = pagesData.find(page => page.title === "What is Future.fun?");
+      if (defaultPage) {
+        setSelectedPage(defaultPage);
+        console.log("Default page set:", defaultPage);
       }
     }
 
@@ -60,11 +61,10 @@ const Documentation = () => {
   };
 
   const handlePageSelect = (pageId: string) => {
-    const selectedPage = pages.find(page => page.id === pageId);
-    if (selectedPage) {
-      setSelectedContent(pageId);
-      setCurrentPage(selectedPage);
-      console.log("Selected page:", selectedPage); // Debug log
+    const page = pages.find(p => p.id === pageId);
+    if (page) {
+      setSelectedPage(page);
+      console.log("Selected page:", page);
     }
   };
 
@@ -133,13 +133,13 @@ const Documentation = () => {
               <div className="flex-1">
                 <ScrollArea className="h-[calc(100vh-theme(spacing.64))]">
                   <div className="max-w-3xl mx-auto prose prose-invert">
-                    {currentPage ? (
+                    {selectedPage ? (
                       <div className="space-y-6">
                         <h1 className="text-4xl font-bold mb-6">
-                          {currentPage.title}
+                          {selectedPage.title}
                         </h1>
                         <div className="whitespace-pre-line">
-                          {currentPage.content}
+                          {selectedPage.content}
                         </div>
                       </div>
                     ) : (
