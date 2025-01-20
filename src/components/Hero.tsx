@@ -3,6 +3,7 @@ import { Spotlight } from "@/components/ui/spotlight";
 import { SplineScene } from "@/components/ui/splite";
 import { motion } from "framer-motion";
 import { StarBorder } from "@/components/ui/star-border";
+import { LampContainer } from "@/components/ui/lamp";
 
 export function Hero() {
   const scrollToFeaturedGames = () => {
@@ -50,11 +51,14 @@ export function Hero() {
             </motion.div>
           </div>
 
-          <div className="flex-1 relative">
+          <div className="flex-1 relative flex flex-col">
             <SplineScene 
               scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
               className="w-full h-full"
             />
+            <LampContainer className="min-h-[20vh] -mt-20">
+              <div className="h-0 w-0"></div>
+            </LampContainer>
           </div>
         </div>
       </Card>
