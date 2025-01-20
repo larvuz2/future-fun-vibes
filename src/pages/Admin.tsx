@@ -28,7 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 type Folder = {
@@ -131,46 +131,60 @@ export default function Admin() {
   };
 
   const deleteFolder = async (id: string) => {
-    // First delete all pages in the folder
-    const { error: pagesError } = await supabase
-      .from("futurefundocs_pages")
-      .delete()
-      .eq("folder_id", id);
+    try {
+      // First delete all pages in the folder
+      const { error: pagesError } = await supabase
+        .from("futurefundocs_pages")
+        .delete()
+        .eq("folder_id", id);
 
-    if (pagesError) {
+      if (pagesError) {
+        console.error("Error deleting pages:", pagesError);
+        toast({
+          title: "Error",
+          description: "Failed to delete pages in folder",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Then delete the folder
+      const { error: folderError } = await supabase
+        .from("futurefundocs_folders")
+        .delete()
+        .eq("id", id);
+
+      if (folderError) {
+        console.error("Error deleting folder:", folderError);
+        toast({
+          title: "Error",
+          description: "Failed to delete folder",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Update local state
+      setFolders(prevFolders => prevFolders.filter(folder => folder.id !== id));
+      setPages(prevPages => prevPages.filter(page => page.folder_id !== id));
+      
+      if (selectedFolder === id) {
+        setSelectedFolder(null);
+      }
+      
+      setFolderToDelete(null);
+      toast({
+        title: "Success",
+        description: "Folder and its contents deleted successfully",
+      });
+    } catch (error) {
+      console.error("Error in deleteFolder:", error);
       toast({
         title: "Error",
-        description: "Failed to delete pages in folder",
+        description: "An unexpected error occurred while deleting the folder",
         variant: "destructive",
       });
-      return;
     }
-
-    // Then delete the folder
-    const { error: folderError } = await supabase
-      .from("futurefundocs_folders")
-      .delete()
-      .eq("id", id);
-
-    if (folderError) {
-      toast({
-        title: "Error",
-        description: "Failed to delete folder",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (selectedFolder === id) {
-      setSelectedFolder(null);
-    }
-    
-    setFolderToDelete(null);
-    fetchData();
-    toast({
-      title: "Success",
-      description: "Folder and its contents deleted successfully",
-    });
   };
 
   const addPage = async () => {
