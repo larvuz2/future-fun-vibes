@@ -4,13 +4,7 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { WYSIWYGEditor } from "@/components/WYSIWYGEditor";
 import {
   Select,
   SelectContent,
@@ -18,9 +12,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Editor } from '@tinymce/tinymce-react';
+import { Folder, File, Plus, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 type DocFolder = {
   id: string;
@@ -79,6 +91,15 @@ export default function DocsAdmin() {
   };
 
   const addFolder = async () => {
+    if (!newFolderName.trim()) {
+      toast({
+        title: "Error",
+        description: "Folder name cannot be empty",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from('futurefundocs_folders')
@@ -106,7 +127,41 @@ export default function DocsAdmin() {
     }
   };
 
+  const deleteFolder = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('futurefundocs_folders')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Folder deleted successfully",
+      });
+      
+      fetchData();
+    } catch (error) {
+      console.error("Error deleting folder:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete folder",
+        variant: "destructive",
+      });
+    }
+  };
+
   const addPage = async () => {
+    if (!selectedFolder || !newPageTitle.trim()) {
+      toast({
+        title: "Error",
+        description: "Please select a folder and enter a page title",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from('futurefundocs_pages')
@@ -196,31 +251,6 @@ export default function DocsAdmin() {
     }
   };
 
-  const deleteFolder = async (id: string) => {
-    try {
-      const { error } = await supabase
-        .from('futurefundocs_folders')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Folder deleted successfully",
-      });
-      
-      fetchData();
-    } catch (error) {
-      console.error("Error deleting folder:", error);
-      toast({
-        title: "Error",
-        description: "Failed to delete folder",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -229,129 +259,160 @@ export default function DocsAdmin() {
         <div className="max-w-[1400px] mx-auto space-y-8">
           <h1 className="text-4xl font-bold">Documentation Admin</h1>
           
-          {/* Add Folder Section */}
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold">Folders</h2>
-            <div className="flex gap-4">
-              <Input
-                placeholder="New folder name"
-                value={newFolderName}
-                onChange={(e) => setNewFolderName(e.target.value)}
-              />
-              <Button onClick={addFolder}>Add Folder</Button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {folders.map((folder) => (
-                <div key={folder.id} className="p-4 border rounded-lg">
-                  <div className="flex justify-between items-center">
-                    <h3 className="font-medium">{folder.name}</h3>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => deleteFolder(folder.id)}
-                    >
-                      Delete
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Add Page Section */}
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold">Pages</h2>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Folder</Label>
-                  <Select
-                    value={selectedFolder}
-                    onValueChange={setSelectedFolder}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a folder" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {folders.map((folder) => (
-                        <SelectItem key={folder.id} value={folder.id}>
-                          {folder.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Page Title</Label>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Folders Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Folders</CardTitle>
+                <CardDescription>Manage documentation folders</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex gap-2">
                   <Input
-                    placeholder="Page title"
-                    value={newPageTitle}
-                    onChange={(e) => setNewPageTitle(e.target.value)}
+                    placeholder="New folder name"
+                    value={newFolderName}
+                    onChange={(e) => setNewFolderName(e.target.value)}
                   />
+                  <Button onClick={addFolder} size="icon">
+                    <Plus className="h-4 w-4" />
+                  </Button>
                 </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Content</Label>
-                <Editor
-                  value={newPageContent}
-                  onEditorChange={(content) => setNewPageContent(content)}
-                  init={{
-                    height: 500,
-                    menubar: false,
-                    plugins: [
-                      'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                      'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                      'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
-                    ],
-                    toolbar: 'undo redo | blocks | ' +
-                      'bold italic forecolor | alignleft aligncenter ' +
-                      'alignright alignjustify | bullist numlist outdent indent | ' +
-                      'removeformat | help',
-                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                  }}
-                />
-              </div>
-              
-              <Button onClick={editingPage ? updatePage : addPage}>
-                {editingPage ? 'Update Page' : 'Add Page'}
-              </Button>
-            </div>
+                
+                <div className="space-y-2">
+                  {folders.map((folder) => (
+                    <div key={folder.id} className="flex items-center justify-between p-2 rounded-lg border">
+                      <div className="flex items-center gap-2">
+                        <Folder className="h-4 w-4" />
+                        <span>{folder.name}</span>
+                      </div>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete folder?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This will delete the folder and all its pages. This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => deleteFolder(folder.id)}>
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {pages.map((page) => (
-                <div key={page.id} className="p-4 border rounded-lg">
-                  <div className="space-y-2">
-                    <h3 className="font-medium">{page.title}</h3>
-                    <p className="text-sm text-gray-500">
-                      Folder: {folders.find(f => f.id === page.folder_id)?.name}
-                    </p>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setEditingPage(page);
-                          setNewPageTitle(page.title);
-                          setNewPageContent(page.content);
-                          setSelectedFolder(page.folder_id);
-                        }}
+            {/* Pages Section */}
+            <Card className="md:col-span-2">
+              <CardHeader>
+                <CardTitle>Pages</CardTitle>
+                <CardDescription>Create and edit documentation pages</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Folder</Label>
+                      <Select
+                        value={selectedFolder}
+                        onValueChange={setSelectedFolder}
                       >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => deletePage(page.id)}
-                      >
-                        Delete
-                      </Button>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a folder" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {folders.map((folder) => (
+                            <SelectItem key={folder.id} value={folder.id}>
+                              {folder.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Page Title</Label>
+                      <Input
+                        placeholder="Page title"
+                        value={newPageTitle}
+                        onChange={(e) => setNewPageTitle(e.target.value)}
+                      />
                     </div>
                   </div>
+                  
+                  <div className="space-y-2">
+                    <Label>Content</Label>
+                    <WYSIWYGEditor
+                      value={newPageContent}
+                      onChange={(content) => setNewPageContent(content)}
+                    />
+                  </div>
+                  
+                  <Button onClick={editingPage ? updatePage : addPage}>
+                    {editingPage ? 'Update Page' : 'Add Page'}
+                  </Button>
                 </div>
-              ))}
-            </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {pages.map((page) => (
+                    <Card key={page.id}>
+                      <CardHeader className="space-y-0 pb-2">
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="text-base">{page.title}</CardTitle>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => {
+                                setEditingPage(page);
+                                setNewPageTitle(page.title);
+                                setNewPageContent(page.content);
+                                setSelectedFolder(page.folder_id);
+                              }}
+                            >
+                              <File className="h-4 w-4" />
+                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Delete page?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This action cannot be undone.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => deletePage(page.id)}>
+                                    Delete
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
+                        </div>
+                        <CardDescription>
+                          Folder: {folders.find(f => f.id === page.folder_id)?.name}
+                        </CardDescription>
+                      </CardHeader>
+                    </Card>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>
