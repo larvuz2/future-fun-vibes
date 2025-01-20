@@ -259,9 +259,9 @@ export default function GameDetails() {
                 <div className="flex items-start gap-6">
                   <div className="flex-shrink-0">
                     <img 
-                      src="https://media.discordapp.net/attachments/808738288411476040/1217082431215575070/metazooie_logo.png?ex=66029c3e&is=65f0273e&hm=c9e0c4e5f6e7d7f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0&=&format=webp&quality=lossless" 
+                      src="https://metazooie.com/assets/icon_metazooie.png" 
                       alt="Metazooie Studios" 
-                      className="w-24 h-24 rounded-lg object-cover"
+                      className="w-24 h-24 rounded-full object-cover border-2 border-border"
                     />
                   </div>
                   <div className="space-y-2">
@@ -326,7 +326,7 @@ export default function GameDetails() {
 
                 <div className="border-t pt-4">
                   <p className="text-center text-muted-foreground">
-                    "Thank you for being part of our journey! Together, we're building something special." ❤️
+                    "Thank you for being part of our journey! Together, we're building something special." <span className="text-purple-500">❤️</span>
                   </p>
                 </div>
               </div>
