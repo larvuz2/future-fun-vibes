@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { supabase } from "@/integrations/supabase/client"; // Updated import path
+import { supabase } from "@/integrations/supabase/client";
 
 type DocFolder = {
   id: string;
