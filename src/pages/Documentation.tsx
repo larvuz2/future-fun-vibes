@@ -78,10 +78,8 @@ const Documentation = () => {
     setSelectedPage(page);
     setIsOpen(false); // Close mobile menu when page is selected
     
-    // Smooth scroll to top on desktop
-    if (window.innerWidth >= 768) { // md breakpoint
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    // Scroll to top on both mobile and desktop
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const findAdjacentPage = (direction: 'prev' | 'next') => {
@@ -215,7 +213,10 @@ const Documentation = () => {
                     <Button
                       variant="outline"
                       className="flex items-center gap-2 w-full"
-                      onClick={() => handlePageSelect(findAdjacentPage('prev')!)}
+                      onClick={() => {
+                        handlePageSelect(findAdjacentPage('prev')!);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
                     >
                       <ArrowLeft className="h-4 w-4" />
                       <span className="line-clamp-1">Previous: {findAdjacentPage('prev')?.title}</span>
@@ -225,7 +226,10 @@ const Documentation = () => {
                     <Button
                       variant="outline"
                       className="flex items-center gap-2 w-full"
-                      onClick={() => handlePageSelect(findAdjacentPage('next')!)}
+                      onClick={() => {
+                        handlePageSelect(findAdjacentPage('next')!);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
                     >
                       <span className="line-clamp-1">Next: {findAdjacentPage('next')?.title}</span>
                       <ArrowRight className="h-4 w-4" />
