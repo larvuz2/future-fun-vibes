@@ -81,17 +81,26 @@ const Documentation = () => {
       if (pagesData) {
         setPages(pagesData);
         
-        // Set default page to "What is Future.fun?"
-        const defaultPage = {
-          id: "default-page",
-          folder_id: "default-folder",
-          title: "What is Future.fun?",
-          content: "Future.fun is a revolutionary community-driven crowdfunding platform that connects gamers and developers through blockchain-powered, token-gated experiences. Our platform enables high-quality gaming experiences through advanced streaming technology.",
-          order_index: 0
-        };
+        // Set default pages
+        const defaultPages = [
+          {
+            id: "default-page",
+            folder_id: "default-folder",
+            title: "What is Future.fun?",
+            content: "Future.fun is a revolutionary community-driven crowdfunding platform that connects gamers and developers through blockchain-powered, token-gated experiences. Our platform enables high-quality gaming experiences through advanced streaming technology.",
+            order_index: 0
+          },
+          {
+            id: "how-it-works",
+            folder_id: "default-folder",
+            title: "How it Works",
+            content: "Token Creation and Launch: Developers mint unique tokens tied to their games. These tokens serve as both funding tools and access keys to premium content.\n\nTransparent Crowdfunding: Tokens are available through fair launches, with no pre-sales or reserved allocations, ensuring equal access for all participants.\n\nPlayer Access: Players gain immediate access to premium game features by purchasing tokens, which are linked to gameplay utility and advanced features.",
+            order_index: 1
+          }
+        ];
         
-        setSelectedPage(defaultPage);
-        console.log("Set default page:", defaultPage);
+        setSelectedPage(defaultPages[0]);
+        console.log("Set default page:", defaultPages[0]);
       }
     } catch (error) {
       console.error("Error in initializeData:", error);
