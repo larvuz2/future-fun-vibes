@@ -56,8 +56,8 @@ const Documentation = () => {
       setFolders(foldersData);
       setPages(pagesData);
       
-      // Set "What is Future.fun?" page as default
-      const defaultPage = pagesData.find(page => page.title === "What is Future.fun?");
+      // Set specific page as default
+      const defaultPage = pagesData.find(page => page.id === "11579ba6-7916-4adf-90a0-ea9ff13e803e");
       if (defaultPage) {
         console.log("Setting default page:", defaultPage);
         setSelectedPage(defaultPage);
@@ -77,6 +77,11 @@ const Documentation = () => {
     console.log("Selecting page:", page);
     setSelectedPage(page);
     setIsOpen(false); // Close mobile menu when page is selected
+    
+    // Smooth scroll to top on desktop
+    if (window.innerWidth >= 768) { // md breakpoint
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const findAdjacentPage = (direction: 'prev' | 'next') => {
