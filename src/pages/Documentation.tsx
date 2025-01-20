@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 type DocFolder = {
   id: string;
@@ -28,8 +29,10 @@ const Documentation = () => {
   const [pages, setPages] = useState<DocPage[]>([]);
   const [selectedPage, setSelectedPage] = useState<DocPage | null>(null);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
+    console.log("Documentation component mounted");
     fetchData();
   }, []);
 
@@ -44,6 +47,11 @@ const Documentation = () => {
 
       if (foldersError) {
         console.error("Error fetching folders:", foldersError);
+        toast({
+          variant: "destructive",
+          title: "Error fetching folders",
+          description: foldersError.message,
+        });
         return;
       }
 
@@ -55,6 +63,11 @@ const Documentation = () => {
 
       if (pagesError) {
         console.error("Error fetching pages:", pagesError);
+        toast({
+          variant: "destructive",
+          title: "Error fetching pages",
+          description: pagesError.message,
+        });
         return;
       }
 
@@ -73,6 +86,11 @@ const Documentation = () => {
       }
     } catch (error) {
       console.error("Error in fetchData:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to fetch documentation data",
+      });
     } finally {
       setLoading(false);
     }
@@ -84,6 +102,10 @@ const Documentation = () => {
     if (page) {
       console.log("Selected page:", page);
       setSelectedPage(page);
+      toast({
+        title: "Page selected",
+        description: `Viewing: ${page.title}`,
+      });
     }
   };
 
@@ -111,7 +133,12 @@ const Documentation = () => {
   );
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+        <p className="mt-4 text-lg">Loading documentation...</p>
+      </div>
+    );
   }
 
   return (
