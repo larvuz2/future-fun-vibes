@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 
 type DocFolder = {
   id: string;
@@ -49,11 +49,11 @@ const Documentation = () => {
     if (foldersData) setFolders(foldersData);
     if (pagesData) {
       setPages(pagesData);
-      // Find and set the "What is Future.fun?" page as default
+      // Set default page to "What is Future.fun?"
       const defaultPage = pagesData.find(page => page.title === "What is Future.fun?");
       if (defaultPage) {
+        console.log("Setting default page:", defaultPage);
         setSelectedPage(defaultPage);
-        console.log("Default page set:", defaultPage);
       }
     }
 
@@ -63,8 +63,8 @@ const Documentation = () => {
   const handlePageSelect = (pageId: string) => {
     const page = pages.find(p => p.id === pageId);
     if (page) {
-      setSelectedPage(page);
       console.log("Selected page:", page);
+      setSelectedPage(page);
     }
   };
 
