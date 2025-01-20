@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client"; // Updated import path
 
 type DocFolder = {
   id: string;
@@ -34,33 +34,52 @@ const Documentation = () => {
   }, []);
 
   const fetchData = async () => {
-    setLoading(true);
-    
-    const { data: foldersData } = await supabase
-      .from("futurefundocs_folders")
-      .select("*")
-      .order("order_index");
-    
-    const { data: pagesData } = await supabase
-      .from("futurefundocs_pages")
-      .select("*")
-      .order("order_index");
+    try {
+      setLoading(true);
+      console.log("Fetching folders...");
+      const { data: foldersData, error: foldersError } = await supabase
+        .from("futurefundocs_folders")
+        .select("*")
+        .order("order_index");
 
-    if (foldersData) setFolders(foldersData);
-    if (pagesData) {
-      setPages(pagesData);
-      // Set default page to "What is Future.fun?"
-      const defaultPage = pagesData.find(page => page.title === "What is Future.fun?");
-      if (defaultPage) {
-        console.log("Setting default page:", defaultPage);
-        setSelectedPage(defaultPage);
+      if (foldersError) {
+        console.error("Error fetching folders:", foldersError);
+        return;
       }
-    }
 
-    setLoading(false);
+      console.log("Fetching pages...");
+      const { data: pagesData, error: pagesError } = await supabase
+        .from("futurefundocs_pages")
+        .select("*")
+        .order("order_index");
+
+      if (pagesError) {
+        console.error("Error fetching pages:", pagesError);
+        return;
+      }
+
+      console.log("Folders data:", foldersData);
+      console.log("Pages data:", pagesData);
+
+      if (foldersData) setFolders(foldersData);
+      if (pagesData) {
+        setPages(pagesData);
+        // Set default page to "What is Future.fun?"
+        const defaultPage = pagesData.find(page => page.title === "What is Future.fun?");
+        if (defaultPage) {
+          console.log("Setting default page:", defaultPage);
+          setSelectedPage(defaultPage);
+        }
+      }
+    } catch (error) {
+      console.error("Error in fetchData:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlePageSelect = (pageId: string) => {
+    console.log("Selecting page with ID:", pageId);
     const page = pages.find(p => p.id === pageId);
     if (page) {
       console.log("Selected page:", page);
