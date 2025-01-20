@@ -4,6 +4,7 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { WYSIWYGEditor } from "@/components/WYSIWYGEditor";
+import { Switch } from "@/components/ui/switch";
 import {
   Dialog,
   DialogContent,
@@ -57,7 +58,6 @@ export default function Admin() {
   const [newFolderName, setNewFolderName] = useState("");
   const [newPageTitle, setNewPageTitle] = useState("");
   const [newPageContent, setNewPageContent] = useState("");
-  const [folderToDelete, setFolderToDelete] = useState<string | null>(null);
   const [pageToDelete, setPageToDelete] = useState<string | null>(null);
   const { toast } = useToast();
 
@@ -70,7 +70,6 @@ export default function Admin() {
     const { data: foldersData, error: foldersError } = await supabase
       .from("futurefundocs_folders")
       .select("*")
-      .eq('is_deleted', false)
       .order("order_index");
     
     if (foldersError) {
@@ -114,6 +113,7 @@ export default function Admin() {
       .insert({
         name: newFolderName,
         order_index: folders.length,
+        is_deleted: false
       });
 
     if (error) {
@@ -134,67 +134,61 @@ export default function Admin() {
     });
   };
 
-  const deleteFolder = async (id: string) => {
-    try {
-      console.log("Soft deleting folder with ID:", id);
-      
-      // First mark all pages in the folder as deleted
+  const toggleFolderVisibility = async (folder: Folder) => {
+    console.log("Toggling visibility for folder:", folder.id);
+    
+    const newIsDeleted = !folder.is_deleted;
+    
+    const { error: folderError } = await supabase
+      .from("futurefundocs_folders")
+      .update({ is_deleted: newIsDeleted })
+      .eq("id", folder.id);
+
+    if (folderError) {
+      console.error("Error updating folder visibility:", folderError);
+      toast({
+        title: "Error",
+        description: "Failed to update folder visibility",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Update pages visibility if folder is being hidden
+    if (newIsDeleted) {
       const { error: pagesError } = await supabase
         .from("futurefundocs_pages")
         .update({ is_deleted: true })
-        .eq("folder_id", id);
+        .eq("folder_id", folder.id);
 
       if (pagesError) {
-        console.error("Error marking pages as deleted:", pagesError);
+        console.error("Error updating pages visibility:", pagesError);
         toast({
           title: "Error",
-          description: "Failed to delete pages in folder",
+          description: "Failed to update pages visibility",
           variant: "destructive",
         });
         return;
       }
-
-      console.log("Successfully marked pages as deleted for folder:", id);
-
-      // Then mark the folder as deleted
-      const { error: folderError } = await supabase
-        .from("futurefundocs_folders")
-        .update({ is_deleted: true })
-        .eq("id", id);
-
-      if (folderError) {
-        console.error("Error marking folder as deleted:", folderError);
-        toast({
-          title: "Error",
-          description: "Failed to delete folder",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      console.log("Successfully marked folder as deleted:", id);
-
-      // Update local state
-      setFolders(prevFolders => prevFolders.filter(folder => folder.id !== id));
-      setPages(prevPages => prevPages.filter(page => page.folder_id !== id));
-      
-      if (selectedFolder === id) {
-        setSelectedFolder(null);
-      }
-      
-      setFolderToDelete(null);
-      toast({
-        title: "Success",
-        description: "Folder and its contents deleted successfully",
-      });
-    } catch (error) {
-      console.error("Error in deleteFolder:", error);
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred while deleting the folder",
-        variant: "destructive",
-      });
     }
+
+    // Update local state
+    setFolders(prevFolders => 
+      prevFolders.map(f => 
+        f.id === folder.id ? { ...f, is_deleted: newIsDeleted } : f
+      )
+    );
+
+    if (newIsDeleted) {
+      setPages(prevPages => 
+        prevPages.filter(page => page.folder_id !== folder.id)
+      );
+    }
+
+    toast({
+      title: "Success",
+      description: `Folder ${newIsDeleted ? 'hidden' : 'visible'} successfully`,
+    });
   };
 
   const addPage = async () => {
@@ -285,8 +279,6 @@ export default function Admin() {
     });
   };
 
-  // ... keep existing code (JSX for the component UI)
-
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -307,6 +299,7 @@ export default function Admin() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Name</TableHead>
+                    <TableHead>Visibility</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -315,18 +308,18 @@ export default function Admin() {
                     <TableRow key={folder.id}>
                       <TableCell>{folder.name}</TableCell>
                       <TableCell>
+                        <Switch
+                          checked={!folder.is_deleted}
+                          onCheckedChange={() => toggleFolderVisibility(folder)}
+                        />
+                      </TableCell>
+                      <TableCell>
                         <Button
                           variant="outline"
                           className="mr-2"
                           onClick={() => setSelectedFolder(folder.id)}
                         >
                           View Pages
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          onClick={() => setFolderToDelete(folder.id)}
-                        >
-                          Delete
                         </Button>
                       </TableCell>
                     </TableRow>
