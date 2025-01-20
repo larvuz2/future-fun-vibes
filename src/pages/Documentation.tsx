@@ -28,6 +28,7 @@ const Documentation = () => {
   const [pages, setPages] = useState<DocPage[]>([]);
   const [selectedContent, setSelectedContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState<DocPage | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -51,14 +52,20 @@ const Documentation = () => {
       setPages(pagesData);
       if (pagesData.length > 0) {
         setSelectedContent(pagesData[0].id);
+        setCurrentPage(pagesData[0]);
       }
     }
 
     setLoading(false);
   };
 
-  const getSelectedPage = () => {
-    return pages.find(page => page.id === selectedContent);
+  const handlePageSelect = (pageId: string) => {
+    const selectedPage = pages.find(page => page.id === pageId);
+    if (selectedPage) {
+      setSelectedContent(pageId);
+      setCurrentPage(selectedPage);
+      console.log("Selected page:", selectedPage); // Debug log
+    }
   };
 
   const FileTree = () => (
@@ -74,7 +81,7 @@ const Documentation = () => {
               <File
                 key={page.id}
                 value={page.id}
-                onClick={() => setSelectedContent(page.id)}
+                onClick={() => handlePageSelect(page.id)}
               >
                 {page.title}
               </File>
@@ -94,7 +101,7 @@ const Documentation = () => {
       
       <main className="flex-1 container mx-auto px-4 py-24">
         <div className="max-w-[1400px] mx-auto">
-          {/* Mobile Menu - Now outside the card */}
+          {/* Mobile Menu */}
           <div className="md:hidden w-full mb-4">
             <Sheet>
               <SheetTrigger asChild>
@@ -126,13 +133,13 @@ const Documentation = () => {
               <div className="flex-1">
                 <ScrollArea className="h-[calc(100vh-theme(spacing.64))]">
                   <div className="max-w-3xl mx-auto prose prose-invert">
-                    {getSelectedPage() ? (
+                    {currentPage ? (
                       <div className="space-y-6">
                         <h1 className="text-4xl font-bold mb-6">
-                          {getSelectedPage()?.title}
+                          {currentPage.title}
                         </h1>
                         <div className="whitespace-pre-line">
-                          {getSelectedPage()?.content}
+                          {currentPage.content}
                         </div>
                       </div>
                     ) : (
