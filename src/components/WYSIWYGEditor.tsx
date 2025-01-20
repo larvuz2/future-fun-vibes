@@ -1,5 +1,6 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import TextAlign from '@tiptap/extension-text-align';
 import { Button } from "@/components/ui/button";
 import { Bold, Italic, List, ListOrdered, AlignLeft, AlignCenter, AlignRight, Code } from 'lucide-react';
 
@@ -10,7 +11,13 @@ interface WYSIWYGEditorProps {
 
 export const WYSIWYGEditor = ({ value, onChange }: WYSIWYGEditorProps) => {
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit,
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+        alignments: ['left', 'center', 'right'],
+      }),
+    ],
     content: value,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
