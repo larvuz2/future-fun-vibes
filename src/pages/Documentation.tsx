@@ -4,7 +4,7 @@ import { Footer } from "@/components/Footer";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { Menu, Folder, File } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -35,17 +35,24 @@ const Documentation = () => {
   const defaultPages = [
     {
       id: "what-is-future-fun",
-      folder_id: "default-folder",
+      folder_id: "overview",
       title: "What is Future.fun?",
-      content: "Future.fun is a revolutionary community-driven crowdfunding platform that connects gamers and developers through blockchain-powered, token-gated experiences. Our platform enables high-quality gaming experiences through advanced streaming technology.",
+      content: "Future.fun is a community-driven crowdfunding platform that connects gamers and developers through blockchain-based, premium browser gaming. By combining Unreal Engine visuals, real-time diffusion pipelines, and token-gated access, Future.fun provides developers with a seamless way to fund their projects while offering players high-quality gaming experiences.",
       order_index: 0
     },
     {
       id: "how-it-works",
-      folder_id: "default-folder",
-      title: "How it Works",
+      folder_id: "overview",
+      title: "How It Works",
       content: "Token Creation and Launch: Developers mint unique tokens tied to their games. These tokens serve as both funding tools and access keys to premium content.\n\nTransparent Crowdfunding: Tokens are available through fair launches, with no pre-sales or reserved allocations, ensuring equal access for all participants.\n\nPlayer Access: Players gain immediate access to premium game features by purchasing tokens, which are linked to gameplay utility and advanced features.",
       order_index: 1
+    },
+    {
+      id: "why-choose-future-fun",
+      folder_id: "overview",
+      title: "Why Choose Future.fun?",
+      content: "Simplicity: A straightforward token-gated model that connects developers with their community.\n\nTransparency: Fair token launches and clear fee structures foster trust and equity.\n\nHigh-Quality Gaming: Compute-intensive games with cutting-edge visuals are accessible even on mid-range devices.\n\nEmpowered Development: Indie developers gain funding tools and incentives to innovate and engage their audience.\n\nSustainable Ecosystem: A balanced revenue model ensures developers, players, and the platform thrive.",
+      order_index: 2
     }
   ];
 
@@ -58,37 +65,17 @@ const Documentation = () => {
     try {
       setLoading(true);
       
-      // Fetch folders
-      console.log("Fetching folders...");
-      const { data: foldersData, error: foldersError } = await supabase
-        .from("futurefundocs_folders")
-        .select("*")
-        .order("order_index");
-
-      if (foldersError) {
-        console.error("Error fetching folders:", foldersError);
-        toast({
-          variant: "destructive",
-          title: "Error fetching folders",
-          description: foldersError.message,
-        });
-        return;
-      }
-
-      // Set default folder if none exists
+      // Set default folder
       const defaultFolder = {
-        id: "default-folder",
-        name: "Getting Started",
+        id: "overview",
+        name: "Overview",
         order_index: 0
       };
 
-      // Set folders and default pages
-      if (foldersData) {
-        setFolders([defaultFolder, ...foldersData]);
-        setPages(defaultPages);
-        setSelectedPage(defaultPages[0]); // Set default selected page
-        console.log("Set default page:", defaultPages[0]);
-      }
+      setFolders([defaultFolder]);
+      setPages(defaultPages);
+      setSelectedPage(defaultPages[0]); // Set default selected page
+      console.log("Set default page:", defaultPages[0]);
 
     } catch (error) {
       console.error("Error in initializeData:", error);
@@ -112,14 +99,17 @@ const Documentation = () => {
   };
 
   const DocTree = () => (
-    <Accordion type="single" collapsible className="w-full">
+    <Accordion type="single" collapsible defaultValue="overview" className="w-full">
       {folders.map((folder) => (
-        <AccordionItem key={folder.id} value={folder.id}>
+        <AccordionItem key={folder.id} value={folder.id} className="border-none">
           <AccordionTrigger className="text-sm hover:no-underline">
-            {folder.name}
+            <div className="flex items-center gap-2">
+              <Folder className="h-4 w-4" />
+              {folder.name}
+            </div>
           </AccordionTrigger>
           <AccordionContent>
-            <div className="flex flex-col space-y-1">
+            <div className="flex flex-col space-y-1 pl-6">
               {pages
                 .filter(page => page.folder_id === folder.id)
                 .map(page => (
@@ -129,6 +119,7 @@ const Documentation = () => {
                     className="justify-start text-sm font-normal"
                     onClick={() => handlePageSelect(page)}
                   >
+                    <File className="h-4 w-4 mr-2" />
                     {page.title}
                   </Button>
                 ))}
@@ -175,11 +166,6 @@ const Documentation = () => {
               {/* Desktop Doc Tree */}
               <div className="hidden md:block w-1/3">
                 <DocTree />
-              </div>
-
-              {/* Vertical Separator - Desktop Only */}
-              <div className="hidden md:block">
-                <Separator orientation="vertical" className="h-auto" />
               </div>
 
               {/* Content Area */}
