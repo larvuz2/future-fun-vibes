@@ -11,6 +11,16 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   Table,
   TableBody,
   TableCell,
@@ -19,7 +29,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 
 type Folder = {
   id: string;
@@ -45,6 +55,8 @@ export default function Admin() {
   const [newFolderName, setNewFolderName] = useState("");
   const [newPageTitle, setNewPageTitle] = useState("");
   const [newPageContent, setNewPageContent] = useState("");
+  const [folderToDelete, setFolderToDelete] = useState<string | null>(null);
+  const [pageToDelete, setPageToDelete] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -119,12 +131,28 @@ export default function Admin() {
   };
 
   const deleteFolder = async (id: string) => {
-    const { error } = await supabase
+    // First delete all pages in the folder
+    const { error: pagesError } = await supabase
+      .from("futurefundocs_pages")
+      .delete()
+      .eq("folder_id", id);
+
+    if (pagesError) {
+      toast({
+        title: "Error",
+        description: "Failed to delete pages in folder",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Then delete the folder
+    const { error: folderError } = await supabase
       .from("futurefundocs_folders")
       .delete()
       .eq("id", id);
 
-    if (error) {
+    if (folderError) {
       toast({
         title: "Error",
         description: "Failed to delete folder",
@@ -133,10 +161,15 @@ export default function Admin() {
       return;
     }
 
+    if (selectedFolder === id) {
+      setSelectedFolder(null);
+    }
+    
+    setFolderToDelete(null);
     fetchData();
     toast({
       title: "Success",
-      description: "Folder deleted successfully",
+      description: "Folder and its contents deleted successfully",
     });
   };
 
@@ -220,6 +253,7 @@ export default function Admin() {
       return;
     }
 
+    setPageToDelete(null);
     fetchData();
     toast({
       title: "Success",
@@ -264,7 +298,7 @@ export default function Admin() {
                         </Button>
                         <Button
                           variant="destructive"
-                          onClick={() => deleteFolder(folder.id)}
+                          onClick={() => setFolderToDelete(folder.id)}
                         >
                           Delete
                         </Button>
@@ -312,7 +346,7 @@ export default function Admin() {
                             </Button>
                             <Button
                               variant="destructive"
-                              onClick={() => deletePage(page.id)}
+                              onClick={() => setPageToDelete(page.id)}
                             >
                               Delete
                             </Button>
@@ -398,6 +432,46 @@ export default function Admin() {
               </div>
             </DialogContent>
           </Dialog>
+
+          {/* Delete Folder Confirmation Dialog */}
+          <AlertDialog open={folderToDelete !== null} onOpenChange={() => setFolderToDelete(null)}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will permanently delete the folder and all its pages. This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => folderToDelete && deleteFolder(folderToDelete)}
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
+          {/* Delete Page Confirmation Dialog */}
+          <AlertDialog open={pageToDelete !== null} onOpenChange={() => setPageToDelete(null)}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will permanently delete this page. This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => pageToDelete && deletePage(pageToDelete)}
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </main>
 
