@@ -35,6 +35,7 @@ type Folder = {
   id: string;
   name: string;
   order_index: number;
+  is_deleted: boolean;
 };
 
 type Page = {
@@ -43,6 +44,7 @@ type Page = {
   title: string;
   content: string;
   order_index: number;
+  is_deleted: boolean;
 };
 
 export default function Admin() {
@@ -68,6 +70,7 @@ export default function Admin() {
     const { data: foldersData, error: foldersError } = await supabase
       .from("futurefundocs_folders")
       .select("*")
+      .eq('is_deleted', false)
       .order("order_index");
     
     if (foldersError) {
@@ -83,6 +86,7 @@ export default function Admin() {
     const { data: pagesData, error: pagesError } = await supabase
       .from("futurefundocs_pages")
       .select("*")
+      .eq('is_deleted', false)
       .order("order_index");
 
     if (pagesError) {
@@ -132,16 +136,16 @@ export default function Admin() {
 
   const deleteFolder = async (id: string) => {
     try {
-      console.log("Deleting folder with ID:", id);
+      console.log("Soft deleting folder with ID:", id);
       
-      // First delete all pages in the folder
+      // First mark all pages in the folder as deleted
       const { error: pagesError } = await supabase
         .from("futurefundocs_pages")
-        .delete()
+        .update({ is_deleted: true })
         .eq("folder_id", id);
 
       if (pagesError) {
-        console.error("Error deleting pages:", pagesError);
+        console.error("Error marking pages as deleted:", pagesError);
         toast({
           title: "Error",
           description: "Failed to delete pages in folder",
@@ -150,16 +154,16 @@ export default function Admin() {
         return;
       }
 
-      console.log("Successfully deleted pages for folder:", id);
+      console.log("Successfully marked pages as deleted for folder:", id);
 
-      // Then delete the folder
+      // Then mark the folder as deleted
       const { error: folderError } = await supabase
         .from("futurefundocs_folders")
-        .delete()
+        .update({ is_deleted: true })
         .eq("id", id);
 
       if (folderError) {
-        console.error("Error deleting folder:", folderError);
+        console.error("Error marking folder as deleted:", folderError);
         toast({
           title: "Error",
           description: "Failed to delete folder",
@@ -168,7 +172,7 @@ export default function Admin() {
         return;
       }
 
-      console.log("Successfully deleted folder:", id);
+      console.log("Successfully marked folder as deleted:", id);
 
       // Update local state
       setFolders(prevFolders => prevFolders.filter(folder => folder.id !== id));
@@ -261,7 +265,7 @@ export default function Admin() {
   const deletePage = async (id: string) => {
     const { error } = await supabase
       .from("futurefundocs_pages")
-      .delete()
+      .update({ is_deleted: true })
       .eq("id", id);
 
     if (error) {
@@ -273,13 +277,15 @@ export default function Admin() {
       return;
     }
 
+    setPages(prevPages => prevPages.filter(page => page.id !== id));
     setPageToDelete(null);
-    fetchData();
     toast({
       title: "Success",
       description: "Page deleted successfully",
     });
   };
+
+  // ... keep existing code (JSX for the component UI)
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -499,4 +505,3 @@ export default function Admin() {
     </div>
   );
 }
-

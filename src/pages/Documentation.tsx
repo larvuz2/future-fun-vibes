@@ -13,6 +13,7 @@ type DocFolder = {
   id: string;
   name: string;
   order_index: number;
+  is_deleted: boolean;
 };
 
 type DocPage = {
@@ -21,6 +22,7 @@ type DocPage = {
   title: string;
   content: string;
   order_index: number;
+  is_deleted: boolean;
 };
 
 const Documentation = () => {
@@ -42,6 +44,7 @@ const Documentation = () => {
       const { data: foldersData, error: foldersError } = await supabase
         .from('futurefundocs_folders')
         .select('*')
+        .eq('is_deleted', false)
         .order('order_index');
 
       if (foldersError) throw foldersError;
@@ -49,6 +52,7 @@ const Documentation = () => {
       const { data: pagesData, error: pagesError } = await supabase
         .from('futurefundocs_pages')
         .select('*')
+        .eq('is_deleted', false)
         .order('order_index');
 
       if (pagesError) throw pagesError;

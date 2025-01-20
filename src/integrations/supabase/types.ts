@@ -106,6 +106,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_deleted: boolean | null
           name: string
           order_index: number | null
           updated_at: string
@@ -113,6 +114,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          is_deleted?: boolean | null
           name: string
           order_index?: number | null
           updated_at?: string
@@ -120,6 +122,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          is_deleted?: boolean | null
           name?: string
           order_index?: number | null
           updated_at?: string
@@ -132,6 +135,7 @@ export type Database = {
           created_at: string
           folder_id: string
           id: string
+          is_deleted: boolean | null
           order_index: number | null
           title: string
           updated_at: string
@@ -141,6 +145,7 @@ export type Database = {
           created_at?: string
           folder_id: string
           id?: string
+          is_deleted?: boolean | null
           order_index?: number | null
           title: string
           updated_at?: string
@@ -150,6 +155,7 @@ export type Database = {
           created_at?: string
           folder_id?: string
           id?: string
+          is_deleted?: boolean | null
           order_index?: number | null
           title?: string
           updated_at?: string
