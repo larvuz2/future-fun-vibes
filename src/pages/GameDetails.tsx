@@ -256,7 +256,7 @@ export default function GameDetails() {
             {/* Developer Studio Section */}
             <Card className="p-6">
               <div className="space-y-6">
-                <div className="flex items-start gap-6">
+                <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
                   <div className="flex-shrink-0">
                     <img 
                       src="https://metazooie.com/assets/icon_metazooie.png" 
@@ -264,17 +264,15 @@ export default function GameDetails() {
                       className="w-24 h-24 rounded-full object-cover border-2 border-border"
                     />
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2 text-center md:text-left">
                     <h3 className="text-2xl font-bold">Metazooie Studios</h3>
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-col md:flex-row items-center gap-4">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full bg-green-500"></div>
                         <span className="text-sm text-muted-foreground">Active Developer</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <div className="h-4 w-px bg-border"></div>
-                        <span className="text-sm text-muted-foreground">Joined 2024</span>
-                      </div>
+                      <div className="hidden md:block h-4 w-px bg-border"></div>
+                      <span className="text-sm text-muted-foreground">Joined 2024</span>
                     </div>
                     <p className="text-muted-foreground">
                       Metazooie Studios is a pioneering Web3 game development studio focused on creating engaging, accessible experiences. 
@@ -294,10 +292,10 @@ export default function GameDetails() {
                     </div>
                   </Card>
                   
-                  <Card className="p-4 col-span-2">
+                  <Card className="p-4 col-span-1 md:col-span-2">
                     <div className="space-y-2">
                       <h4 className="text-sm font-medium text-muted-foreground">Top Player Cities</h4>
-                      <div className="grid grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
                             <span className="text-lg font-bold">1.</span>
