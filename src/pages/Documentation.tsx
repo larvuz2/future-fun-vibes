@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 
 type DocFolder = {
   id: string;
@@ -37,12 +37,12 @@ const Documentation = () => {
     setLoading(true);
     
     const { data: foldersData } = await supabase
-      .from("documentation_folders")
+      .from("futurefundocs_folders")
       .select("*")
       .order("order_index");
     
     const { data: pagesData } = await supabase
-      .from("documentation_pages")
+      .from("futurefundocs_pages")
       .select("*")
       .order("order_index");
 

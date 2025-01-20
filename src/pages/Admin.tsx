@@ -70,12 +70,12 @@ export default function Admin() {
 
   const fetchData = async () => {
     const { data: foldersData } = await supabase
-      .from("documentation_folders")
+      .from("futurefundocs_folders")
       .select("*")
       .order("order_index");
     
     const { data: pagesData } = await supabase
-      .from("documentation_pages")
+      .from("futurefundocs_pages")
       .select("*")
       .order("order_index");
 
@@ -87,7 +87,7 @@ export default function Admin() {
     if (!newFolderName.trim()) return;
     
     const { error } = await supabase
-      .from("documentation_folders")
+      .from("futurefundocs_folders")
       .insert({
         name: newFolderName,
         order_index: folders.length,
@@ -113,7 +113,7 @@ export default function Admin() {
 
   const deleteFolder = async (id: string) => {
     const { error } = await supabase
-      .from("documentation_folders")
+      .from("futurefundocs_folders")
       .delete()
       .eq("id", id);
 
@@ -137,7 +137,7 @@ export default function Admin() {
     if (!selectedFolder || !newPageTitle.trim() || !newPageContent.trim()) return;
     
     const { error } = await supabase
-      .from("documentation_pages")
+      .from("futurefundocs_pages")
       .insert({
         folder_id: selectedFolder,
         title: newPageTitle,
@@ -166,7 +166,7 @@ export default function Admin() {
 
   const updatePage = async (id: string) => {
     const { error } = await supabase
-      .from("documentation_pages")
+      .from("futurefundocs_pages")
       .update({
         title: newPageTitle,
         content: newPageContent,
@@ -194,7 +194,7 @@ export default function Admin() {
 
   const deletePage = async (id: string) => {
     const { error } = await supabase
-      .from("documentation_pages")
+      .from("futurefundocs_pages")
       .delete()
       .eq("id", id);
 
