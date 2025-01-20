@@ -31,6 +31,23 @@ const Documentation = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
+  const defaultPages = [
+    {
+      id: "what-is-future-fun",
+      folder_id: "default-folder",
+      title: "What is Future.fun?",
+      content: "Future.fun is a revolutionary community-driven crowdfunding platform that connects gamers and developers through blockchain-powered, token-gated experiences. Our platform enables high-quality gaming experiences through advanced streaming technology.",
+      order_index: 0
+    },
+    {
+      id: "how-it-works",
+      folder_id: "default-folder",
+      title: "How it Works",
+      content: "Token Creation and Launch: Developers mint unique tokens tied to their games. These tokens serve as both funding tools and access keys to premium content.\n\nTransparent Crowdfunding: Tokens are available through fair launches, with no pre-sales or reserved allocations, ensuring equal access for all participants.\n\nPlayer Access: Players gain immediate access to premium game features by purchasing tokens, which are linked to gameplay utility and advanced features.",
+      order_index: 1
+    }
+  ];
+
   useEffect(() => {
     console.log("Documentation component mounted");
     initializeData();
@@ -57,51 +74,21 @@ const Documentation = () => {
         return;
       }
 
-      // Fetch pages
-      console.log("Fetching pages...");
-      const { data: pagesData, error: pagesError } = await supabase
-        .from("futurefundocs_pages")
-        .select("*")
-        .order("order_index");
+      // Set default folder if none exists
+      const defaultFolder = {
+        id: "default-folder",
+        name: "Getting Started",
+        order_index: 0
+      };
 
-      if (pagesError) {
-        console.error("Error fetching pages:", pagesError);
-        toast({
-          variant: "destructive",
-          title: "Error fetching pages",
-          description: pagesError.message,
-        });
-        return;
-      }
-
-      console.log("Folders data:", foldersData);
-      console.log("Pages data:", pagesData);
-
-      if (foldersData) setFolders(foldersData);
-      if (pagesData) {
-        setPages(pagesData);
-        
-        // Set default pages
-        const defaultPages = [
-          {
-            id: "default-page",
-            folder_id: "default-folder",
-            title: "What is Future.fun?",
-            content: "Future.fun is a revolutionary community-driven crowdfunding platform that connects gamers and developers through blockchain-powered, token-gated experiences. Our platform enables high-quality gaming experiences through advanced streaming technology.",
-            order_index: 0
-          },
-          {
-            id: "how-it-works",
-            folder_id: "default-folder",
-            title: "How it Works",
-            content: "Token Creation and Launch: Developers mint unique tokens tied to their games. These tokens serve as both funding tools and access keys to premium content.\n\nTransparent Crowdfunding: Tokens are available through fair launches, with no pre-sales or reserved allocations, ensuring equal access for all participants.\n\nPlayer Access: Players gain immediate access to premium game features by purchasing tokens, which are linked to gameplay utility and advanced features.",
-            order_index: 1
-          }
-        ];
-        
-        setSelectedPage(defaultPages[0]);
+      // Set folders and default pages
+      if (foldersData) {
+        setFolders([defaultFolder, ...foldersData]);
+        setPages(defaultPages);
+        setSelectedPage(defaultPages[0]); // Set default selected page
         console.log("Set default page:", defaultPages[0]);
       }
+
     } catch (error) {
       console.error("Error in initializeData:", error);
       toast({
