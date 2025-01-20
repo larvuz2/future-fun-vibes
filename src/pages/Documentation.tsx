@@ -55,7 +55,6 @@ const Documentation = () => {
       setFolders(foldersData);
       setPages(pagesData);
       
-      // Set first page as default
       if (pagesData.length > 0) {
         setSelectedPage(pagesData[0]);
       }
@@ -97,7 +96,35 @@ const Documentation = () => {
               </SheetTrigger>
               <SheetContent side="left" className="w-[300px] sm:w-[400px]">
                 <div className="py-4">
-                  <DocTree />
+                  <Accordion type="multiple" defaultValue={folders.map(f => f.id)} className="w-full">
+                    {folders.map((folder) => (
+                      <AccordionItem key={folder.id} value={folder.id} className="border-none">
+                        <AccordionTrigger className="text-sm hover:no-underline">
+                          <div className="flex items-center gap-2">
+                            <Folder className="h-4 w-4" />
+                            {folder.name}
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="flex flex-col space-y-1 pl-6">
+                            {pages
+                              .filter(page => page.folder_id === folder.id)
+                              .map(page => (
+                                <Button
+                                  key={page.id}
+                                  variant="ghost"
+                                  className="justify-start text-sm font-normal"
+                                  onClick={() => handlePageSelect(page)}
+                                >
+                                  <File className="h-4 w-4 mr-2" />
+                                  {page.title}
+                                </Button>
+                              ))}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
                 </div>
               </SheetContent>
             </Sheet>

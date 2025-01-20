@@ -20,13 +20,7 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import dynamic from 'next/dynamic';
-
-// Import TinyMCE with dynamic import to avoid SSR issues
-const Editor = dynamic(() => import('@tinymce/tinymce-react').then(mod => mod.Editor), {
-  ssr: false,
-  loading: () => <p>Loading editor...</p>
-});
+import { Editor } from '@tinymce/tinymce-react';
 
 type DocFolder = {
   id: string;
