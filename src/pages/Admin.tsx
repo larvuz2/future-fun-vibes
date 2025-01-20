@@ -452,26 +452,6 @@ export default function Admin() {
             </DialogContent>
           </Dialog>
 
-          {/* Delete Folder Confirmation Dialog */}
-          <AlertDialog open={folderToDelete !== null} onOpenChange={() => setFolderToDelete(null)}>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This will permanently delete the folder and all its pages. This action cannot be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={() => folderToDelete && deleteFolder(folderToDelete)}
-                >
-                  Delete
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-
           {/* Delete Page Confirmation Dialog */}
           <AlertDialog open={pageToDelete !== null} onOpenChange={() => setPageToDelete(null)}>
             <AlertDialogContent>
