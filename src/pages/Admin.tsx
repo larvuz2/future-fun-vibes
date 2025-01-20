@@ -67,128 +67,139 @@ export default function Admin() {
 
   const fetchData = async () => {
     console.log("Fetching data...");
-    const { data: foldersData, error: foldersError } = await supabase
-      .from("futurefundocs_folders")
-      .select("*")
-      .order("order_index");
-    
-    if (foldersError) {
-      console.error("Error fetching folders:", foldersError);
+    try {
+      const { data: foldersData, error: foldersError } = await supabase
+        .from("futurefundocs_folders")
+        .select("*")
+        .order("order_index");
+      
+      if (foldersError) {
+        console.error("Error fetching folders:", foldersError);
+        toast({
+          title: "Error",
+          description: "Failed to fetch folders",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data: pagesData, error: pagesError } = await supabase
+        .from("futurefundocs_pages")
+        .select("*")
+        .eq('is_deleted', false)
+        .order("order_index");
+
+      if (pagesError) {
+        console.error("Error fetching pages:", pagesError);
+        toast({
+          title: "Error",
+          description: "Failed to fetch pages",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      console.log("Folders data:", foldersData);
+      console.log("Pages data:", pagesData);
+
+      if (foldersData) setFolders(foldersData);
+      if (pagesData) setPages(pagesData);
+    } catch (error) {
+      console.error("Error in fetchData:", error);
       toast({
         title: "Error",
-        description: "Failed to fetch folders",
+        description: "Failed to fetch data",
         variant: "destructive",
       });
-      return;
     }
-
-    const { data: pagesData, error: pagesError } = await supabase
-      .from("futurefundocs_pages")
-      .select("*")
-      .eq('is_deleted', false)
-      .order("order_index");
-
-    if (pagesError) {
-      console.error("Error fetching pages:", pagesError);
-      toast({
-        title: "Error",
-        description: "Failed to fetch pages",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    console.log("Folders data:", foldersData);
-    console.log("Pages data:", pagesData);
-
-    if (foldersData) setFolders(foldersData);
-    if (pagesData) setPages(pagesData);
   };
 
   const addFolder = async () => {
     if (!newFolderName.trim()) return;
     
-    const { error } = await supabase
-      .from("futurefundocs_folders")
-      .insert({
-        name: newFolderName,
-        order_index: folders.length,
-        is_deleted: false
-      });
+    try {
+      const { error } = await supabase
+        .from("futurefundocs_folders")
+        .insert({
+          name: newFolderName,
+          order_index: folders.length,
+          is_deleted: false
+        });
 
-    if (error) {
+      if (error) throw error;
+
+      setNewFolderName("");
+      setIsAddingFolder(false);
+      await fetchData();
+      toast({
+        title: "Success",
+        description: "Folder added successfully",
+      });
+    } catch (error) {
+      console.error("Error adding folder:", error);
       toast({
         title: "Error",
         description: "Failed to add folder",
         variant: "destructive",
       });
-      return;
     }
-
-    setNewFolderName("");
-    setIsAddingFolder(false);
-    fetchData();
-    toast({
-      title: "Success",
-      description: "Folder added successfully",
-    });
   };
 
   const toggleFolderVisibility = async (folder: Folder) => {
     console.log("Toggling visibility for folder:", folder.id);
     
-    const newIsDeleted = !folder.is_deleted;
-    
-    const { error: folderError } = await supabase
-      .from("futurefundocs_folders")
-      .update({ is_deleted: newIsDeleted })
-      .eq("id", folder.id);
+    try {
+      const newIsDeleted = !folder.is_deleted;
+      
+      const { error: folderError } = await supabase
+        .from("futurefundocs_folders")
+        .update({ is_deleted: newIsDeleted })
+        .eq("id", folder.id);
 
-    if (folderError) {
-      console.error("Error updating folder visibility:", folderError);
+      if (folderError) throw folderError;
+
+      // Update pages visibility if folder is being hidden
+      if (newIsDeleted) {
+        const { error: pagesError } = await supabase
+          .from("futurefundocs_pages")
+          .update({ is_deleted: true })
+          .eq("folder_id", folder.id);
+
+        if (pagesError) throw pagesError;
+      }
+
+      // Update local state
+      setFolders(prevFolders => 
+        prevFolders.map(f => 
+          f.id === folder.id ? { ...f, is_deleted: newIsDeleted } : f
+        )
+      );
+
+      if (newIsDeleted) {
+        setPages(prevPages => 
+          prevPages.map(page => 
+            page.folder_id === folder.id 
+              ? { ...page, is_deleted: true }
+              : page
+          )
+        );
+      }
+
+      toast({
+        title: "Success",
+        description: `Folder ${newIsDeleted ? 'hidden' : 'visible'} successfully`,
+      });
+
+      // Refresh data to ensure consistency
+      await fetchData();
+    } catch (error) {
+      console.error("Error toggling folder visibility:", error);
       toast({
         title: "Error",
         description: "Failed to update folder visibility",
         variant: "destructive",
       });
-      return;
     }
-
-    // Update pages visibility if folder is being hidden
-    if (newIsDeleted) {
-      const { error: pagesError } = await supabase
-        .from("futurefundocs_pages")
-        .update({ is_deleted: true })
-        .eq("folder_id", folder.id);
-
-      if (pagesError) {
-        console.error("Error updating pages visibility:", pagesError);
-        toast({
-          title: "Error",
-          description: "Failed to update pages visibility",
-          variant: "destructive",
-        });
-        return;
-      }
-    }
-
-    // Update local state
-    setFolders(prevFolders => 
-      prevFolders.map(f => 
-        f.id === folder.id ? { ...f, is_deleted: newIsDeleted } : f
-      )
-    );
-
-    if (newIsDeleted) {
-      setPages(prevPages => 
-        prevPages.filter(page => page.folder_id !== folder.id)
-      );
-    }
-
-    toast({
-      title: "Success",
-      description: `Folder ${newIsDeleted ? 'hidden' : 'visible'} successfully`,
-    });
   };
 
   const addPage = async () => {

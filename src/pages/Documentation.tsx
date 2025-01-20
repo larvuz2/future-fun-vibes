@@ -44,7 +44,7 @@ const Documentation = () => {
       const { data: foldersData, error: foldersError } = await supabase
         .from('futurefundocs_folders')
         .select('*')
-        .eq('is_deleted', false)
+        .eq('is_deleted', false)  // Only fetch visible folders
         .order('order_index');
 
       if (foldersError) throw foldersError;
@@ -52,22 +52,21 @@ const Documentation = () => {
       const { data: pagesData, error: pagesError } = await supabase
         .from('futurefundocs_pages')
         .select('*')
-        .eq('is_deleted', false)
+        .eq('is_deleted', false)  // Only fetch visible pages
         .order('order_index');
 
       if (pagesError) throw pagesError;
 
-      setFolders(foldersData);
-      setPages(pagesData);
+      console.log("Fetched folders:", foldersData);
+      console.log("Fetched pages:", pagesData);
+
+      setFolders(foldersData || []);
+      setPages(pagesData || []);
       
-      // Set specific page as default
-      const defaultPage = pagesData.find(page => page.id === "11579ba6-7916-4adf-90a0-ea9ff13e803e");
-      if (defaultPage) {
-        console.log("Setting default page:", defaultPage);
-        setSelectedPage(defaultPage);
-      } else {
-        console.log("Default page not found, using first page");
-        setSelectedPage(pagesData[0]);
+      // Set default page if available
+      if (pagesData && pagesData.length > 0) {
+        const defaultPage = pagesData.find(page => page.id === "11579ba6-7916-4adf-90a0-ea9ff13e803e");
+        setSelectedPage(defaultPage || pagesData[0]);
       }
 
     } catch (error) {
@@ -115,7 +114,6 @@ const Documentation = () => {
       
       <main className="flex-1 container mx-auto px-4 py-24">
         <div className="max-w-[1400px] mx-auto">
-          {/* Mobile Menu */}
           <div className="md:hidden w-full mb-4">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
@@ -249,6 +247,6 @@ const Documentation = () => {
       <Footer />
     </div>
   );
-};
+}
 
 export default Documentation;
