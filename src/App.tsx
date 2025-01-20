@@ -10,6 +10,7 @@ import HowItWorks from "./pages/HowItWorks";
 import Upload from "./pages/Upload";
 import Community from "./pages/Community";
 import Documentation from "./pages/Documentation";
+import Admin from "./pages/Admin";
 
 // Scroll to top component
 const ScrollToTop = () => {
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/upload" element={<Upload />} />
           <Route path="/community" element={<Community />} />
           <Route path="/documentation" element={<Documentation />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
