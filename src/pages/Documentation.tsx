@@ -84,7 +84,21 @@ const Documentation = () => {
 
   const findAdjacentPage = (direction: 'prev' | 'next') => {
     if (!selectedPage) return null;
-    const sortedPages = [...pages].sort((a, b) => a.order_index - b.order_index);
+    
+    // Get all pages and sort them first by folder order_index, then by page order_index
+    const sortedPages = [...pages].sort((a, b) => {
+      const folderA = folders.find(f => f.id === a.folder_id);
+      const folderB = folders.find(f => f.id === b.folder_id);
+      
+      // First sort by folder order_index
+      if (folderA && folderB && folderA.order_index !== folderB.order_index) {
+        return folderA.order_index - folderB.order_index;
+      }
+      
+      // Then sort by page order_index within the same folder
+      return a.order_index - b.order_index;
+    });
+
     const currentIndex = sortedPages.findIndex(p => p.id === selectedPage.id);
     
     if (direction === 'prev' && currentIndex > 0) {
@@ -214,9 +228,7 @@ const Documentation = () => {
                     <Button
                       variant="outline"
                       className="flex items-center gap-2 w-full"
-                      onClick={() => {
-                        handlePageSelect(findAdjacentPage('prev')!);
-                      }}
+                      onClick={() => handlePageSelect(findAdjacentPage('prev')!)}
                     >
                       <ArrowLeft className="h-4 w-4" />
                       <span className="line-clamp-1">Previous: {findAdjacentPage('prev')?.title}</span>
@@ -226,9 +238,7 @@ const Documentation = () => {
                     <Button
                       variant="outline"
                       className="flex items-center gap-2 w-full"
-                      onClick={() => {
-                        handlePageSelect(findAdjacentPage('next')!);
-                      }}
+                      onClick={() => handlePageSelect(findAdjacentPage('next')!)}
                     >
                       <span className="line-clamp-1">Next: {findAdjacentPage('next')?.title}</span>
                       <ArrowRight className="h-4 w-4" />
