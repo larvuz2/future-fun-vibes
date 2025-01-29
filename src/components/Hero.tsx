@@ -26,18 +26,19 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="space-y-6"
+              className="space-y-6 text-center md:text-left"
             >
-              <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 leading-relaxed pb-2">
+              <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 leading-tight md:leading-relaxed pb-2">
                 Premium Games, Instant Access
               </h1>
-              <p className="text-lg text-neutral-300 max-w-2xl">
+              <p className="text-lg text-neutral-300 max-w-2xl mx-auto md:mx-0">
                 Supporting creators while revolutionizing how players discover and own games.
               </p>
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
+                className="flex justify-center md:justify-start"
               >
                 <StarBorder
                   onClick={scrollToFeaturedGames}
