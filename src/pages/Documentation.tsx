@@ -44,7 +44,7 @@ const Documentation = () => {
       const { data: foldersData, error: foldersError } = await supabase
         .from('futurefundocs_folders')
         .select('*')
-        .eq('is_deleted', false)  // Only fetch visible folders
+        .eq('is_deleted', false)
         .order('order_index');
 
       if (foldersError) throw foldersError;
@@ -52,7 +52,7 @@ const Documentation = () => {
       const { data: pagesData, error: pagesError } = await supabase
         .from('futurefundocs_pages')
         .select('*')
-        .eq('is_deleted', false)  // Only fetch visible pages
+        .eq('is_deleted', false)
         .order('order_index');
 
       if (pagesError) throw pagesError;
@@ -63,7 +63,6 @@ const Documentation = () => {
       setFolders(foldersData || []);
       setPages(pagesData || []);
       
-      // Set default page if available
       if (pagesData && pagesData.length > 0) {
         const defaultPage = pagesData.find(page => page.id === "11579ba6-7916-4adf-90a0-ea9ff13e803e");
         setSelectedPage(defaultPage || pagesData[0]);
@@ -79,9 +78,7 @@ const Documentation = () => {
   const handlePageSelect = (page: DocPage) => {
     console.log("Selecting page:", page);
     setSelectedPage(page);
-    setIsOpen(false); // Close mobile menu when page is selected
-    
-    // Scroll to top on both mobile and desktop
+    setIsOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -122,7 +119,7 @@ const Documentation = () => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-                <div className="py-4">
+                <ScrollArea className="h-full py-4">
                   <Accordion type="multiple" defaultValue={folders.map(f => f.id)} className="w-full space-y-0">
                     {folders.map((folder) => (
                       <AccordionItem key={folder.id} value={folder.id} className="border-none">
@@ -136,6 +133,7 @@ const Documentation = () => {
                           <div className="flex flex-col space-y-0.5 pl-4">
                             {pages
                               .filter(page => page.folder_id === folder.id)
+                              .sort((a, b) => a.order_index - b.order_index)
                               .map(page => (
                                 <Button
                                   key={page.id}
@@ -152,7 +150,7 @@ const Documentation = () => {
                       </AccordionItem>
                     ))}
                   </Accordion>
-                </div>
+                </ScrollArea>
               </SheetContent>
             </Sheet>
           </div>
@@ -174,6 +172,7 @@ const Documentation = () => {
                         <div className="flex flex-col space-y-0.5 pl-4">
                           {pages
                             .filter(page => page.folder_id === folder.id)
+                            .sort((a, b) => a.order_index - b.order_index)
                             .map(page => (
                               <Button
                                 key={page.id}
@@ -209,15 +208,14 @@ const Documentation = () => {
                   </div>
                 </ScrollArea>
 
-                {/* Mobile Navigation - Stacked Buttons */}
-                <div className="md:hidden flex flex-col mt-8 gap-4">
+                {/* Navigation Buttons */}
+                <div className="flex flex-col gap-4 mt-8">
                   {findAdjacentPage('prev') && (
                     <Button
                       variant="outline"
                       className="flex items-center gap-2 w-full"
                       onClick={() => {
                         handlePageSelect(findAdjacentPage('prev')!);
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
                     >
                       <ArrowLeft className="h-4 w-4" />
@@ -230,7 +228,6 @@ const Documentation = () => {
                       className="flex items-center gap-2 w-full"
                       onClick={() => {
                         handlePageSelect(findAdjacentPage('next')!);
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
                     >
                       <span className="line-clamp-1">Next: {findAdjacentPage('next')?.title}</span>
