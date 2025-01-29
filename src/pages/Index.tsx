@@ -10,7 +10,7 @@ import { useLocation } from "react-router-dom";
 const featuredGames = [
   {
     title: "Meme Legends",
-    image: "https://cdn.discordapp.com/attachments/808738288411476040/1329634346189197425/IMG_9511.png?ex=678e59bb&is=678d083b&hm=ea8cbebbc9fca0395e41df15b8b281135d7426f89ef7f06d8b3808e01a0e2f91&",
+    image: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/Future%20Fun//IMG_9511.png",
     genre: "Roguelite",
     developer: "Metazooie Studios",
     marketCap: "$2.3M",

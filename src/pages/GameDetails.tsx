@@ -20,8 +20,8 @@ import { Footer } from "@/components/Footer";
 // Mock images for the carousel
 const gameImages = [
   "https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/2880270/ss_aa86f65d79c123abdae20cef883ad0f4fbec0187.600x338.jpg?t=1733771060",
-  "https://media.discordapp.net/attachments/808738288411476040/1329628845120294992/IMG_9352.png?ex=678e549b&is=678d031b&hm=09647be942062686f10d56ae974294964efce56943cec2809e4cfd1601c5a7a4&=&format=webp&quality=lossless&width=1137&height=676",
-  "https://media.discordapp.net/attachments/808738288411476040/1329628846391296010/IMG_9365.webp?ex=678e549c&is=678d031c&hm=b09705361b057b0e406e4a44a2bcd5465ddf57aa8a586092e441a172f38dc874&=&format=webp&width=1183&height=676",
+  "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/Future%20Fun//IMG_9352.png",
+  "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/Future%20Fun//IMG_9365.webp",
   "https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/2880270/ss_ce8c0bb2a4fada7763fd92f92755be1539078c49.600x338.jpg?t=1733771060"
 ];
 
@@ -76,7 +76,7 @@ export default function GameDetails() {
       <Card className="p-4">
               <h2 className="text-2xl font-bold mb-2">Meme Legends</h2>
               <p className="text-muted-foreground mb-4">
-                Help save peanut the squirrel! Sign the petition!
+                A fast-paced, third-person action roguelike where Capy, a heroic capybara, teams up with viral internet icons like MoodDeng and Doge to battle across chaotic multiverses and restore balance.
               </p>
               <div className="space-y-6">
                 {/* Progress Bars */}
