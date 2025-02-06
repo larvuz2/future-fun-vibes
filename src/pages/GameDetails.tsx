@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,7 @@ const gameImages = [
 
 export default function GameDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(gameImages[0]);
   const isMobile = useIsMobile();
   const { toast } = useToast();
@@ -37,11 +38,9 @@ export default function GameDetails() {
   }, []);
   
   const handleLaunchGame = () => {
-    toast({
-      title: "🎮 Connect Wallet Required",
-      description: "You need to connect your wallet and have game tokens to launch",
-      duration: 3000,
-    });
+    // For now, we'll directly navigate to the game
+    // In a real implementation, you might want to check for tokens first
+    navigate(`/game/${id}/play`);
   };
 
   const SidebarContent = () => (
