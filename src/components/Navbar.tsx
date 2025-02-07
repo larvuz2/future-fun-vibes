@@ -37,6 +37,7 @@ export function Navbar() {
           <a href="#games" onClick={handleGamesClick} className="hidden md:block hover:text-primary transition-colors">Games</a>
           <Link to="/upload" className="hidden md:block hover:text-primary transition-colors">Upload</Link>
           <Link to="/how-it-works" className="hidden md:block hover:text-primary transition-colors">How It Works</Link>
+          <Link to="/documentation" className="hidden md:block hover:text-primary transition-colors">Documentation</Link>
           <Button className="flex items-center gap-2">
             <Wallet className="w-4 h-4" />
             Connect Wallet
