@@ -82,15 +82,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         {...props}>
         {isLoading ? (
-          <IconLoader2 size={TABLER_ICON_STYLE} className="animate-spin" />
+          <IconLoader2 className="h-4 w-4 animate-spin" />
         ) : (
           <></>
         )}
         {!isLoading && supportIcon && (
-          <SupportIconRender size={TABLER_ICON_STYLE} />
+          <SupportIconRender className="h-4 w-4" />
         )}
         {children}
-        {leadingIcon && <LeadingIconRender size={TABLER_ICON_STYLE} />}
+        {leadingIcon && <LeadingIconRender className="h-4 w-4" />}
       </motion.button>
     );
   },
