@@ -1,3 +1,4 @@
+
 import { Navbar } from "@/components/Navbar";
 import { FeaturedCarousel } from "@/components/FeaturedCarousel";
 import { GameCard } from "@/components/GameCard";
@@ -90,13 +91,15 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <FeaturedCarousel />
+      <div className="pt-24">
+        <FeaturedCarousel />
+      </div>
       
       <section id="games-grid" className="py-8 md:py-12">
         <div className="container max-w-7xl">
           <FilterBar />
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+          <div className="flex flex-col gap-6 mt-8">
             {games.map((game, index) => (
               <motion.div
                 key={game.title}
@@ -115,6 +118,6 @@ const Index = () => {
       <Footer />
     </div>
   );
-};
+}
 
 export default Index;

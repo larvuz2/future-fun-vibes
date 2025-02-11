@@ -30,12 +30,12 @@ export function GameCard({
 }: GameCardProps) {
   return (
     <motion.div 
-      className="group relative overflow-hidden rounded-xl bg-card"
-      whileHover={{ scale: 1.02 }}
+      className="group relative overflow-hidden rounded-xl bg-card flex"
+      whileHover={{ scale: 1.01 }}
       transition={{ duration: 0.2 }}
     >
-      <div className="relative">
-        <div className="aspect-[16/9] overflow-hidden">
+      <div className="relative w-[40%]">
+        <div className="aspect-video overflow-hidden">
           <img 
             src={image} 
             alt={title}
@@ -47,49 +47,50 @@ export function GameCard({
             className="absolute top-2 right-2 w-8 h-8 object-contain z-10"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
-        <Button 
-          className="absolute top-2 left-2 h-8 w-8 rounded-full p-0"
-          variant="ghost"
-          size="icon"
-        >
-          <Heart className="h-4 w-4" />
-        </Button>
       </div>
       
-      <div className="p-4 space-y-3">
-        <div className="space-y-1">
-          <Badge variant="secondary" className="mb-2">
-            {genre}
-          </Badge>
-          <h3 className="text-lg font-semibold leading-tight">{title}</h3>
-          <p className="text-sm text-muted-foreground">{developer}</p>
+      <div className="flex-1 p-6 flex flex-col justify-between">
+        <div className="space-y-4">
+          <div>
+            <Badge variant="secondary" className="mb-2">
+              {genre}
+            </Badge>
+            <h3 className="text-2xl font-semibold leading-tight mt-2">{title}</h3>
+            <p className="text-sm text-muted-foreground mt-1">{developer}</p>
+          </div>
+
+          <div className="flex gap-6 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <Gamepad2 className="w-4 h-4" />
+              {plays.toLocaleString()} plays
+            </div>
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              {hours.toLocaleString()}h played
+            </div>
+            <div className="flex items-center gap-2">
+              <Coins className="w-4 h-4" />
+              {mints.toLocaleString()} mints
+            </div>
+          </div>
         </div>
 
-        <div className="flex justify-between text-xs text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <Gamepad2 className="w-3 h-3" />
-            {plays.toLocaleString()}
-          </div>
-          <div className="flex items-center gap-2">
-            <Clock className="w-3 h-3" />
-            {hours.toLocaleString()}h
-          </div>
-          <div className="flex items-center gap-2">
-            <Coins className="w-3 h-3" />
-            {mints.toLocaleString()}
-          </div>
-        </div>
-
-        <div className="pt-3 flex items-center justify-between">
+        <div className="flex items-center gap-4 mt-6">
           <Link 
             to={`/game/${encodeURIComponent(title)}`}
-            className="w-full"
+            className="flex-1"
           >
             <Button className="w-full gap-2">
               <Play className="w-4 h-4" /> Play Game
             </Button>
           </Link>
+          <Button 
+            variant="ghost"
+            size="icon"
+            className="h-10 w-10 rounded-full"
+          >
+            <Heart className="h-4 w-4" />
+          </Button>
         </div>
       </div>
     </motion.div>
