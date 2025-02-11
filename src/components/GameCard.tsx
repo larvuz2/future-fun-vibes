@@ -1,9 +1,8 @@
-
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ButtonCta } from "@/components/ui/button-shiny";
+import { RetroButton } from "@/components/ui/retro-button";
 import { Heart, Play, Gamepad2, Clock, Coins } from "lucide-react";
 
 interface GameCardProps {
@@ -78,12 +77,11 @@ export function GameCard({
 
         <div className="flex items-center gap-4 mt-6">
           <div className="flex-1 flex flex-col items-center">
-            <ButtonCta 
-              label="Play Game"
-              className="w-full flex items-center justify-center gap-2 h-10"
-            >
-              <Gamepad2 className="w-4 h-4" />
-            </ButtonCta>
+            <RetroButton className="w-full">
+              <div className="flex items-center justify-center gap-2">
+                <Gamepad2 className="w-4 h-4" /> Play Game
+              </div>
+            </RetroButton>
             <span className="text-xs text-muted-foreground mt-1">Instant Play</span>
           </div>
           <Button 

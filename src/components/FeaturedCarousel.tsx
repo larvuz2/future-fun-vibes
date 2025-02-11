@@ -7,7 +7,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { RetroButton } from "@/components/ui/retro-button";
 import { motion } from "framer-motion";
 import { Play, Gamepad2, Clock, Coins } from "lucide-react";
 
@@ -106,9 +106,11 @@ export function FeaturedCarousel() {
                       </div>
                     </div>
                     <div className="flex items-center gap-4 pt-4">
-                      <Button size="lg" className="gap-2">
-                        <Play className="w-4 h-4" /> Play Game
-                      </Button>
+                      <RetroButton className="w-36">
+                        <div className="flex items-center justify-center gap-2">
+                          <Play className="w-4 h-4" /> Play Game
+                        </div>
+                      </RetroButton>
                       <Badge variant="outline">{game.blockchain}</Badge>
                     </div>
                   </motion.div>
