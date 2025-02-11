@@ -1,5 +1,5 @@
 import { Navbar } from "@/components/Navbar";
-import { Hero } from "@/components/Hero";
+import { FeaturedCarousel } from "@/components/FeaturedCarousel";
 import { GameCard } from "@/components/GameCard";
 import { FilterBar } from "@/components/FilterBar";
 import { Footer } from "@/components/Footer";
@@ -7,14 +7,17 @@ import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-const featuredGames = [
+const games = [
   {
     title: "Meme Legends",
     image: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/Future%20Fun//IMG_9511.png",
     genre: "Roguelite",
     developer: "Metazooie Studios",
     marketCap: "$2.3M",
-    dateAdded: "3 days ago"
+    dateAdded: "3 days ago",
+    plays: 15000,
+    hours: 45000,
+    mints: 2500
   },
   {
     title: "Eclipse of Shadows",
@@ -22,7 +25,10 @@ const featuredGames = [
     genre: "Adventure",
     developer: "Nebula Forge Games",
     marketCap: "$890K",
-    dateAdded: "1 week ago"
+    dateAdded: "1 week ago",
+    plays: 12000,
+    hours: 36000,
+    mints: 1800
   },
   {
     title: "Frostspire Ascendancy",
@@ -30,7 +36,10 @@ const featuredGames = [
     genre: "Space Sim",
     developer: "Glacier Veil Interactive",
     marketCap: "$1.5M",
-    dateAdded: "2 weeks ago"
+    dateAdded: "2 weeks ago",
+    plays: 18000,
+    hours: 54000,
+    mints: 3200
   },
   {
     title: "The Golden Ambush",
@@ -38,7 +47,10 @@ const featuredGames = [
     genre: "Strategy",
     developer: "Verdant Echo Studio",
     marketCap: "$450K",
-    dateAdded: "1 month ago"
+    dateAdded: "1 month ago",
+    plays: 10000,
+    hours: 24000,
+    mints: 1200
   },
   {
     title: "Runes of Mythra Canyon",
@@ -46,7 +58,10 @@ const featuredGames = [
     genre: "Simulation",
     developer: "Celestial Quill Games",
     marketCap: "$3.1M",
-    dateAdded: "2 months ago"
+    dateAdded: "2 months ago",
+    plays: 13000,
+    hours: 42000,
+    mints: 2100
   },
   {
     title: "Edge of Eternity",
@@ -54,7 +69,10 @@ const featuredGames = [
     genre: "RPG",
     developer: "Obsidian Rift Studios",
     marketCap: "$720K",
-    dateAdded: "3 months ago"
+    dateAdded: "3 months ago",
+    plays: 11000,
+    hours: 33000,
+    mints: 1650
   }
 ];
 
@@ -63,9 +81,8 @@ const Index = () => {
 
   useEffect(() => {
     if (location.state?.scrollToGames) {
-      const gamesSection = document.getElementById('featured-games');
+      const gamesSection = document.getElementById('games-grid');
       gamesSection?.scrollIntoView({ behavior: 'smooth' });
-      // Clean up the state
       window.history.replaceState({}, document.title);
     }
   }, [location]);
@@ -73,25 +90,14 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <Hero />
+      <FeaturedCarousel />
       
-      <section id="featured-games" className="py-4 md:py-8">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
-            className="space-y-2 text-center mb-6"
-          >
-            <h2 className="text-3xl font-bold tracking-tighter">Featured Games</h2>
-            <p className="text-muted-foreground">Discover handpicked premium gaming experiences</p>
-          </motion.div>
-          
+      <section id="games-grid" className="py-8 md:py-12">
+        <div className="container max-w-7xl">
           <FilterBar />
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredGames.map((game, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+            {games.map((game, index) => (
               <motion.div
                 key={game.title}
                 initial={{ opacity: 0, y: 20 }}
