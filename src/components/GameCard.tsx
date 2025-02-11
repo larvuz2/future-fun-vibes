@@ -34,7 +34,7 @@ export function GameCard({
       whileHover={{ scale: 1.01 }}
       transition={{ duration: 0.2 }}
     >
-      <div className="relative w-[40%]">
+      <div className="relative w-[60%]">
         <div className="aspect-video overflow-hidden">
           <img 
             src={image} 
@@ -76,14 +76,12 @@ export function GameCard({
         </div>
 
         <div className="flex items-center gap-4 mt-6">
-          <Link 
-            to={`/game/${encodeURIComponent(title)}`}
-            className="flex-1"
-          >
-            <Button className="w-full gap-2">
-              <Play className="w-4 h-4" /> Play Game
+          <div className="flex-1 flex flex-col items-center">
+            <Button className="w-full h-9 gap-2 mb-1">
+              <Gamepad2 className="w-4 h-4" /> Play Game
             </Button>
-          </Link>
+            <span className="text-xs text-muted-foreground">Instant Play</span>
+          </div>
           <Button 
             variant="ghost"
             size="icon"
