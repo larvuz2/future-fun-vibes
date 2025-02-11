@@ -1,9 +1,10 @@
+
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { RetroButton } from "@/components/ui/retro-button";
-import { Heart, Play, Gamepad2, Clock, Coins } from "lucide-react";
+import { Heart, Gamepad2, Clock, Coins } from "lucide-react";
 
 interface GameCardProps {
   title: string;
@@ -51,12 +52,31 @@ export function GameCard({
       
       <div className="flex-1 p-6 flex flex-col justify-between">
         <div className="space-y-4">
+          <Button 
+            variant="ghost"
+            size="icon"
+            className="absolute top-4 right-4 h-10 w-10 rounded-full"
+          >
+            <Heart className="h-4 w-4" />
+          </Button>
+
           <div>
             <Badge variant="secondary" className="mb-2">
               {genre}
             </Badge>
-            <h3 className="text-2xl font-semibold leading-tight mt-2">{title}</h3>
-            <p className="text-sm text-muted-foreground mt-1">{developer}</p>
+            <div className="flex items-center gap-3 mt-2">
+              <div className="w-12 h-12 rounded-full bg-card overflow-hidden border border-border/50">
+                <img 
+                  src="https://api.dicebear.com/7.x/pixel-art/svg?seed=studio1"
+                  alt={developer}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <h3 className="text-2xl font-semibold leading-tight">{title}</h3>
+                <p className="text-sm text-muted-foreground">{developer}</p>
+              </div>
+            </div>
           </div>
 
           <div className="flex gap-6 text-sm text-muted-foreground">
@@ -77,20 +97,15 @@ export function GameCard({
 
         <div className="flex items-center gap-4 mt-6">
           <div className="flex-1 flex flex-col items-center">
-            <RetroButton className="w-full">
-              <div className="flex items-center justify-center gap-2">
-                <Gamepad2 className="w-4 h-4" /> Play Game
-              </div>
-            </RetroButton>
+            <Link to={`/game/${title.toLowerCase().replace(/\s+/g, '-')}`} className="w-full">
+              <RetroButton className="w-full">
+                <div className="flex items-center justify-center gap-2">
+                  <Gamepad2 className="w-4 h-4" /> Go to Game
+                </div>
+              </RetroButton>
+            </Link>
             <span className="text-xs text-muted-foreground mt-1">Instant Play</span>
           </div>
-          <Button 
-            variant="ghost"
-            size="icon"
-            className="h-10 w-10 rounded-full"
-          >
-            <Heart className="h-4 w-4" />
-          </Button>
         </div>
       </div>
     </motion.div>

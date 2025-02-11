@@ -1,4 +1,3 @@
-
 import {
   Carousel,
   CarouselContent,
@@ -10,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { RetroButton } from "@/components/ui/retro-button";
 import { motion } from "framer-motion";
 import { Play, Gamepad2, Clock, Coins } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface FeaturedGame {
   id: string;
@@ -106,11 +106,16 @@ export function FeaturedCarousel() {
                       </div>
                     </div>
                     <div className="flex items-center gap-4 pt-4">
-                      <RetroButton className="w-36">
-                        <div className="flex items-center justify-center gap-2">
-                          <Play className="w-4 h-4" /> Play Game
-                        </div>
-                      </RetroButton>
+                      <div className="flex flex-col items-center">
+                        <Link to={`/game/${game.title.toLowerCase().replace(/\s+/g, '-')}`}>
+                          <RetroButton className="w-36">
+                            <div className="flex items-center justify-center gap-2">
+                              <Gamepad2 className="w-4 h-4" /> Go to Game
+                            </div>
+                          </RetroButton>
+                        </Link>
+                        <span className="text-xs text-muted-foreground mt-1">Instant Play</span>
+                      </div>
                       <Badge variant="outline">{game.blockchain}</Badge>
                     </div>
                   </motion.div>
