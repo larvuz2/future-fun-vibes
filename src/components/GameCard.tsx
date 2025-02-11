@@ -2,8 +2,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { RetroButton } from "@/components/ui/retro-button";
+import { Button as ThreeDButton } from "@/components/ui/3d-button";
 import { Heart, Gamepad2, Clock, Coins } from "lucide-react";
 
 interface GameCardProps {
@@ -98,11 +97,11 @@ export function GameCard({
         <div className="flex items-center gap-4 mt-6">
           <div className="flex-1 flex flex-col items-center">
             <Link to={`/game/${title.toLowerCase().replace(/\s+/g, '-')}`} className="w-full">
-              <RetroButton className="w-full">
+              <ThreeDButton variant="purple" className="w-full">
                 <div className="flex items-center justify-center gap-2">
                   <Gamepad2 className="w-4 h-4" /> Go to Game
                 </div>
-              </RetroButton>
+              </ThreeDButton>
             </Link>
             <span className="text-xs text-muted-foreground mt-1">Instant Play</span>
           </div>
