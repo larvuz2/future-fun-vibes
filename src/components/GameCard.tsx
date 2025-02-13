@@ -101,18 +101,25 @@ export function GameCard({
           <div className="flex-1 flex flex-col items-center">
             <Link to={gameUrl} className="w-full">
               <Button className="w-full bg-[#9b87f5] hover:bg-[#7E69AB] border-[#6E59A5] border-b-4 text-white shadow-md">
-                <div className="flex items-center justify-center gap-2">
-                  <Gamepad2 className="w-4 h-4" /> Play Now
-                </div>
+                Go to Game
               </Button>
             </Link>
-            <GradientText 
-              colors={["#FF6B6B", "#4ECDC4", "#45B7D1"]} 
-              className="text-xs mt-1"
-              animationSpeed={4}
-            >
-              Instant Play
-            </GradientText>
+            <div className="flex items-center gap-1 mt-1">
+              <GradientText 
+                colors={["#FF6B6B", "#4ECDC4", "#45B7D1"]} 
+                className="text-xs"
+                animationSpeed={4}
+              >
+                <Gamepad2 className="w-3 h-3 inline-block mr-1" />
+              </GradientText>
+              <GradientText 
+                colors={["#FF6B6B", "#4ECDC4", "#45B7D1"]} 
+                className="text-xs"
+                animationSpeed={4}
+              >
+                Instant Play
+              </GradientText>
+            </div>
           </div>
         </div>
       </div>
