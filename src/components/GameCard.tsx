@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/3d-button";
 import { Heart, Gamepad2, Clock, Coins } from "lucide-react";
+import { GradientText } from "@/components/ui/gradient-text";
 
 interface GameCardProps {
   title: string;
@@ -105,7 +106,13 @@ export function GameCard({
                 </div>
               </Button>
             </Link>
-            <span className="text-xs text-muted-foreground mt-1">Instant Play</span>
+            <GradientText 
+              colors={["#FF6B6B", "#4ECDC4", "#45B7D1"]} 
+              className="text-xs mt-1"
+              animationSpeed={4}
+            >
+              Instant Play
+            </GradientText>
           </div>
         </div>
       </div>
