@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -27,13 +28,15 @@ export function GameCard({
   hours = 0,
   mints = 0
 }: GameCardProps) {
+  const gameUrl = `/game/${title.toLowerCase().replace(/\s+/g, '-')}`;
+  
   return (
     <motion.div 
       className="group relative overflow-hidden rounded-xl bg-card flex"
       whileHover={{ scale: 1.01 }}
       transition={{ duration: 0.2 }}
     >
-      <div className="relative w-[60%]">
+      <Link to={gameUrl} className="relative w-[60%]">
         <div className="aspect-video overflow-hidden">
           <img 
             src={image} 
@@ -46,7 +49,7 @@ export function GameCard({
             className="absolute top-2 right-2 w-8 h-8 object-contain z-10"
           />
         </div>
-      </div>
+      </Link>
       
       <div className="flex-1 p-6 flex flex-col justify-between">
         <div className="space-y-4">
@@ -95,10 +98,10 @@ export function GameCard({
 
         <div className="flex items-center gap-4 mt-6">
           <div className="flex-1 flex flex-col items-center">
-            <Link to={`/game/${title.toLowerCase().replace(/\s+/g, '-')}`} className="w-full">
+            <Link to={gameUrl} className="w-full">
               <Button variant="purple" className="w-full">
                 <div className="flex items-center justify-center gap-2">
-                  <Gamepad2 className="w-4 h-4" /> Go to Game
+                  <Gamepad2 className="w-4 h-4" /> Play Now
                 </div>
               </Button>
             </Link>

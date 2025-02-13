@@ -1,3 +1,4 @@
+
 import {
   Carousel,
   CarouselContent,
@@ -8,7 +9,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/3d-button";
 import { motion } from "framer-motion";
-import { Play, Gamepad2, Clock, Coins } from "lucide-react";
+import { Gamepad2, Clock, Coins } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface FeaturedGame {
@@ -68,61 +69,67 @@ export function FeaturedCarousel() {
     <div className="w-full bg-gradient-to-b from-background/80 to-background">
       <Carousel className="w-full max-w-7xl mx-auto">
         <CarouselContent>
-          {featuredGames.map((game) => (
-            <CarouselItem key={game.id}>
-              <div className="relative h-[70vh] w-full overflow-hidden rounded-lg">
-                <img
-                  src={game.image}
-                  alt={game.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-8 space-y-4">
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="space-y-4"
-                  >
-                    <Badge variant="secondary" className="mb-2">
-                      {game.genre}
-                    </Badge>
-                    <h2 className="text-4xl font-bold">{game.title}</h2>
-                    <p className="text-lg text-muted-foreground max-w-2xl">
-                      {game.description}
-                    </p>
-                    <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-2">
-                        <Gamepad2 className="w-4 h-4" />
-                        {game.plays.toLocaleString()} plays
+          {featuredGames.map((game) => {
+            const gameUrl = `/game/${game.title.toLowerCase().replace(/\s+/g, '-')}`;
+            
+            return (
+              <CarouselItem key={game.id}>
+                <div className="relative h-[70vh] w-full overflow-hidden rounded-lg">
+                  <Link to={gameUrl}>
+                    <img
+                      src={game.image}
+                      alt={game.title}
+                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                    />
+                  </Link>
+                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-8 space-y-4">
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5 }}
+                      className="space-y-4"
+                    >
+                      <Badge variant="secondary" className="mb-2">
+                        {game.genre}
+                      </Badge>
+                      <h2 className="text-4xl font-bold">{game.title}</h2>
+                      <p className="text-lg text-muted-foreground max-w-2xl">
+                        {game.description}
+                      </p>
+                      <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-2">
+                          <Gamepad2 className="w-4 h-4" />
+                          {game.plays.toLocaleString()} plays
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-4 h-4" />
+                          {game.hours.toLocaleString()} hours
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Coins className="w-4 h-4" />
+                          {game.mints.toLocaleString()} mints
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4" />
-                        {game.hours.toLocaleString()} hours
+                      <div className="flex items-center gap-4 pt-4">
+                        <div className="flex flex-col items-center">
+                          <Link to={gameUrl}>
+                            <Button variant="purple" className="w-36">
+                              <div className="flex items-center justify-center gap-2">
+                                <Gamepad2 className="w-4 h-4" /> Play Now
+                              </div>
+                            </Button>
+                          </Link>
+                          <span className="text-xs text-muted-foreground mt-1">Instant Play</span>
+                        </div>
+                        <Badge variant="outline">{game.blockchain}</Badge>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Coins className="w-4 h-4" />
-                        {game.mints.toLocaleString()} mints
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4 pt-4">
-                      <div className="flex flex-col items-center">
-                        <Link to={`/game/${game.title.toLowerCase().replace(/\s+/g, '-')}`}>
-                          <Button variant="purple" className="w-36">
-                            <div className="flex items-center justify-center gap-2">
-                              <Gamepad2 className="w-4 h-4" /> Go to Game
-                            </div>
-                          </Button>
-                        </Link>
-                        <span className="text-xs text-muted-foreground mt-1">Instant Play</span>
-                      </div>
-                      <Badge variant="outline">{game.blockchain}</Badge>
-                    </div>
-                  </motion.div>
+                    </motion.div>
+                  </div>
                 </div>
-              </div>
-            </CarouselItem>
-          ))}
+              </CarouselItem>
+            );
+          })}
         </CarouselContent>
         <CarouselPrevious className="left-4" />
         <CarouselNext className="right-4" />

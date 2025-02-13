@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
@@ -71,8 +70,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref,
   ) => {
-    const SupportIconRender = supportIcon ?? React.Fragment;
-    const LeadingIconRender = leadingIcon ?? React.Fragment;
+    const IconComponent = supportIcon;
+    const LeadingIconComponent = leadingIcon;
     return (
       <motion.button
         className={cn(
@@ -83,14 +82,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}>
         {isLoading ? (
           <IconLoader2 className="h-4 w-4 animate-spin" />
-        ) : (
-          <></>
-        )}
-        {!isLoading && supportIcon && (
-          <SupportIconRender className="h-4 w-4" />
+        ) : null}
+        {!isLoading && IconComponent && (
+          <IconComponent className="h-4 w-4" />
         )}
         {children}
-        {leadingIcon && <LeadingIconRender className="h-4 w-4" />}
+        {LeadingIconComponent && <LeadingIconComponent className="h-4 w-4" />}
       </motion.button>
     );
   },
