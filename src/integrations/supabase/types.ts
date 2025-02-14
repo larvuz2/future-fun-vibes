@@ -9,6 +9,36 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      ad_videos: {
+        Row: {
+          active: boolean | null
+          created_at: string | null
+          duration: number
+          filename: string
+          id: string
+          updated_at: string | null
+          url: string
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string | null
+          duration: number
+          filename: string
+          id?: string
+          updated_at?: string | null
+          url: string
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string | null
+          duration?: number
+          filename?: string
+          id?: string
+          updated_at?: string | null
+          url?: string
+        }
+        Relationships: []
+      }
       bookmarks: {
         Row: {
           author: string

@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -105,13 +104,6 @@ export function GameCard({
               </Button>
             </Link>
             <div className="flex items-center gap-1 mt-1">
-              <GradientText 
-                colors={["#FF6B6B", "#4ECDC4", "#45B7D1"]} 
-                className="text-xs"
-                animationSpeed={4}
-              >
-                <Gamepad2 className="w-3 h-3 inline-block mr-1" />
-              </GradientText>
               <GradientText 
                 colors={["#FF6B6B", "#4ECDC4", "#45B7D1"]} 
                 className="text-xs"

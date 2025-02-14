@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { RetroButton } from "./ui/retro-button";
+import { Button } from "@/components/ui/3d-button";
 import { Wallet } from "lucide-react";
 
 export function Navbar() {
@@ -29,7 +29,7 @@ export function Navbar() {
   };
 
   return (
-    <div className="fixed top-0 w-full z-50 pt-8">
+    <div className="fixed top-0 w-full z-50">
       <nav className={`relative mx-4 transition-all duration-300 ${scrolled ? "glass py-4" : "bg-background/80 backdrop-blur-md py-6"}`}>
         {/* Corner decorations with glow effect */}
         <div className="absolute top-0 left-0 w-8 h-8">
@@ -66,12 +66,12 @@ export function Navbar() {
             <Link to="/upload" className="hidden md:block hover:text-primary transition-colors">Upload</Link>
             <Link to="/how-it-works" className="hidden md:block hover:text-primary transition-colors">How It Works</Link>
             <Link to="/documentation" className="hidden md:block hover:text-primary transition-colors">Documentation</Link>
-            <RetroButton className="w-auto">
+            <Button className="bg-[#9b87f5] hover:bg-[#7E69AB] border-[#6E59A5] border-b-4 text-white shadow-md">
               <div className="flex items-center gap-2">
                 <Wallet className="w-4 h-4" />
                 Connect Wallet
               </div>
-            </RetroButton>
+            </Button>
           </div>
         </div>
       </nav>

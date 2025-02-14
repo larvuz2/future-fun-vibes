@@ -1,4 +1,3 @@
-
 import {
   Carousel,
   CarouselContent,
@@ -11,6 +10,7 @@ import { Button } from "@/components/ui/3d-button";
 import { motion } from "framer-motion";
 import { Gamepad2, Clock, Coins } from "lucide-react";
 import { Link } from "react-router-dom";
+import { GradientText } from "@/components/ui/gradient-text";
 
 interface FeaturedGame {
   id: string;
@@ -22,7 +22,6 @@ interface FeaturedGame {
   plays: number;
   hours: number;
   mints: number;
-  blockchain: string;
 }
 
 const featuredGames: FeaturedGame[] = [
@@ -36,7 +35,6 @@ const featuredGames: FeaturedGame[] = [
     plays: 15000,
     hours: 45000,
     mints: 2500,
-    blockchain: "B3 Sepolia"
   },
   {
     id: "2",
@@ -48,7 +46,6 @@ const featuredGames: FeaturedGame[] = [
     plays: 12000,
     hours: 36000,
     mints: 1800,
-    blockchain: "B3 Sepolia"
   },
   {
     id: "3",
@@ -60,13 +57,12 @@ const featuredGames: FeaturedGame[] = [
     plays: 18000,
     hours: 54000,
     mints: 3200,
-    blockchain: "B3 Sepolia"
   }
 ];
 
 export function FeaturedCarousel() {
   return (
-    <div className="w-full bg-gradient-to-b from-background/80 to-background">
+    <div className="w-full bg-gradient-to-b from-background/80 to-background pt-16">
       <Carousel className="w-full max-w-7xl mx-auto">
         <CarouselContent>
           {featuredGames.map((game) => {
@@ -114,15 +110,20 @@ export function FeaturedCarousel() {
                       <div className="flex items-center gap-4 pt-4">
                         <div className="flex flex-col items-center">
                           <Link to={gameUrl}>
-                            <Button variant="purple" className="w-36">
-                              <div className="flex items-center justify-center gap-2">
-                                <Gamepad2 className="w-4 h-4" /> Play Now
-                              </div>
+                            <Button className="w-36 bg-[#9b87f5] hover:bg-[#7E69AB] border-[#6E59A5] border-b-4 text-white shadow-md">
+                              Go to Game
                             </Button>
                           </Link>
-                          <span className="text-xs text-muted-foreground mt-1">Instant Play</span>
+                          <div className="flex items-center gap-1 mt-1">
+                            <GradientText 
+                              colors={["#FF6B6B", "#4ECDC4", "#45B7D1"]} 
+                              className="text-xs"
+                              animationSpeed={4}
+                            >
+                              Instant Play
+                            </GradientText>
+                          </div>
                         </div>
-                        <Badge variant="outline">{game.blockchain}</Badge>
                       </div>
                     </motion.div>
                   </div>
