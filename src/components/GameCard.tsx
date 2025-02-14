@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -52,7 +53,7 @@ export function GameCard({
       </Link>
       
       <div className="flex-1 p-6 flex flex-col justify-between">
-        <div className="space-y-4">
+        <div className="space-y-6">
           <Button 
             variant="ghost"
             size="icon"
@@ -61,18 +62,23 @@ export function GameCard({
             <Heart className="h-4 w-4" />
           </Button>
 
-          <div className="flex items-start gap-3">
-            <div className="w-20 h-20 rounded-2xl bg-card overflow-hidden border border-border/50 flex-shrink-0">
-              <img 
-                src="https://api.dicebear.com/7.x/pixel-art/svg?seed=studio1"
-                alt={developer}
-                className="w-full h-full object-cover"
-              />
+          <div className="space-y-4">
+            <div className="flex items-start gap-3">
+              <div className="w-24 h-24 rounded-2xl bg-card overflow-hidden border border-border/50 flex-shrink-0">
+                <img 
+                  src="https://api.dicebear.com/7.x/pixel-art/svg?seed=studio1"
+                  alt={developer}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <h3 className="text-2xl font-semibold leading-tight">{title}</h3>
+                <p className="text-sm text-muted-foreground">{developer}</p>
+              </div>
             </div>
+            
             <div>
-              <h3 className="text-2xl font-semibold leading-tight">{title}</h3>
-              <p className="text-sm text-muted-foreground">{developer}</p>
-              <Badge variant="secondary" className="mt-2">
+              <Badge variant="secondary">
                 {genre}
               </Badge>
             </div>
