@@ -45,15 +45,23 @@ export default function GameDetails() {
     const fetchGameMedia = async () => {
       if (!id) return;
       
-      const formattedGameName = id.split('-').map(word => 
-        word.charAt(0).toUpperCase() + word.slice(1)
-      ).join(' ');
+      const formattedGameName = id.split('-').map((word, index) => {
+        const lowercaseWords = ['of', 'the', 'in', 'on', 'at', 'to', 'for', 'with'];
+        
+        if (index === 0) {
+          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        } else if (lowercaseWords.includes(word.toLowerCase())) {
+          return word.toLowerCase();
+        } else {
+          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        }
+      }).join(' ');
 
       const { data, error } = await supabase
         .from('game_media')
         .select('*')
         .eq('game_name', formattedGameName)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Error fetching game media:', error);
@@ -65,12 +73,22 @@ export default function GameDetails() {
         return;
       }
 
+      if (!data) {
+        toast({
+          title: "Game Not Found",
+          description: "The requested game could not be found",
+          variant: "destructive"
+        });
+        navigate('/');
+        return;
+      }
+
       setGameMedia(data);
       setSelectedImage(data.image_1_url || data.video_url);
     };
 
     fetchGameMedia();
-  }, [id, toast]);
+  }, [id, toast, navigate]);
   
   const handleLaunchGame = () => {
     navigate(`/game/${id}/play`);
@@ -85,7 +103,6 @@ export default function GameDetails() {
 
   const SidebarContent = () => (
     <div className="space-y-6">
-      {/* Buy/Sell Card */}
       <Card className="p-4">
         <div className="flex gap-2 mb-4">
           <Button className="flex-1" variant="default">Buy</Button>
@@ -111,14 +128,12 @@ export default function GameDetails() {
         </div>
       </Card>
 
-      {/* Project Details */}
       <Card className="p-4">
         <h2 className="text-2xl font-bold mb-2">{gameMedia?.game_name}</h2>
         <p className="text-muted-foreground mb-4">
           A fast-paced, third-person action roguelike where Capy, a heroic capybara, teams up with viral internet icons like MoodDeng and Doge to battle across chaotic multiverses and restore balance.
         </p>
         <div className="space-y-6">
-          {/* Progress Bars */}
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span>Bonding Curve Progress</span>
@@ -134,7 +149,6 @@ export default function GameDetails() {
             <Progress value={100} className="h-2" />
           </div>
 
-          {/* External Links */}
           <div className="grid grid-cols-2 gap-4">
             <Button 
               variant="outline" 
@@ -154,7 +168,6 @@ export default function GameDetails() {
             </Button>
           </div>
 
-          {/* Holder Distribution */}
           <div>
             <h3 className="font-semibold mb-2">Holder Distribution</h3>
             <ScrollArea className="h-[200px] rounded-md border p-2">
@@ -207,9 +220,7 @@ export default function GameDetails() {
       <Navbar />
       <div className="container py-6 mt-20">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Hero Section with Game Display */}
             <div className="relative rounded-lg overflow-hidden">
               <div className="aspect-video bg-card relative">
                 {selectedImage?.endsWith('.mp4') ? (
@@ -239,7 +250,6 @@ export default function GameDetails() {
                 </div>
               </div>
               
-              {/* Thumbnail Carousel */}
               <div className="mt-4">
                 <Carousel className="w-full">
                   <CarouselContent>
@@ -268,10 +278,8 @@ export default function GameDetails() {
               </div>
             </div>
 
-            {/* Show sidebar content here on mobile */}
             {isMobile && <SidebarContent />}
 
-            {/* GeckoTerminal Chart */}
             <Card className="p-4">
               <div className={`bg-black/90 rounded-lg ${isMobile ? 'aspect-square' : 'aspect-[16/9]'}`}>
                 <iframe 
@@ -288,7 +296,6 @@ export default function GameDetails() {
               </div>
             </Card>
 
-            {/* Developer Studio Section */}
             <Card className="p-6">
               <div className="space-y-6">
                 <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
@@ -366,7 +373,6 @@ export default function GameDetails() {
             </Card>
           </div>
 
-          {/* Right Panel - Only show on desktop */}
           {!isMobile && (
             <div>
               <SidebarContent />
