@@ -95,6 +95,7 @@ const Index = () => {
 
   useEffect(() => {
     const fetchGameMedia = async () => {
+      // Get all game media at once
       const { data, error } = await supabase
         .from('game_media')
         .select('*');
@@ -104,8 +105,10 @@ const Index = () => {
         return;
       }
 
+      // Create a case-insensitive map of game media
       const mediaMap = data.reduce((acc, item) => {
-        acc[item.game_name] = item;
+        // Store with lowercase key for case-insensitive lookup
+        acc[item.game_name.toLowerCase()] = item;
         return acc;
       }, {} as Record<string, GameMedia>);
 
@@ -145,8 +148,8 @@ const Index = () => {
               >
                 <GameCard 
                   {...game}
-                  videoUrl={gameMedia[game.title]?.video_url}
-                  profilePictureUrl={gameMedia[game.title]?.profile_picture_url}
+                  videoUrl={gameMedia[game.title.toLowerCase()]?.video_url}
+                  profilePictureUrl={gameMedia[game.title.toLowerCase()]?.profile_picture_url}
                 />
               </motion.div>
             ))}
