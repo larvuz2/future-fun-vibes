@@ -34,7 +34,7 @@ export function GameCard({
   videoUrl,
   profilePictureUrl
 }: GameCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
+  const [videoError, setVideoError] = useState(false);
   const gameUrl = `/game/${title.toLowerCase().replace(/\s+/g, '-')}`;
   
   return (
@@ -42,27 +42,20 @@ export function GameCard({
       className="group relative overflow-hidden rounded-xl bg-card flex border border-border/10"
       whileHover={{ scale: 1.01 }}
       transition={{ duration: 0.2 }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       <Link to={gameUrl} className="relative w-[60%]">
         <div className="aspect-video overflow-hidden rounded-xl">
-          {videoUrl ? (
+          {videoUrl && !videoError ? (
             <video
               src={videoUrl}
               className="w-full h-full object-cover"
-              autoPlay={isHovered}
+              autoPlay
               loop
               muted
               playsInline
+              onError={() => setVideoError(true)}
               poster={image}
-            >
-              <img 
-                src={image} 
-                alt={title}
-                className="w-full h-full object-cover"
-              />
-            </video>
+            />
           ) : (
             <img 
               src={image} 
