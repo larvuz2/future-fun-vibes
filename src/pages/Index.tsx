@@ -89,7 +89,7 @@ const Index = () => {
   }, [location]);
 
   return (
-    <div className="min-h-screen metallic-bg">
+    <div className="min-h-screen bg-background">
       <Navbar />
       <div className="pt-24">
         <FeaturedCarousel />
