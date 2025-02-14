@@ -200,6 +200,48 @@ export type Database = {
           },
         ]
       }
+      game_media: {
+        Row: {
+          created_at: string | null
+          game_name: string
+          id: string
+          image_1_url: string | null
+          image_2_url: string | null
+          image_3_url: string | null
+          image_4_url: string | null
+          profile_picture_url: string
+          studio_name: string
+          updated_at: string | null
+          video_url: string
+        }
+        Insert: {
+          created_at?: string | null
+          game_name: string
+          id?: string
+          image_1_url?: string | null
+          image_2_url?: string | null
+          image_3_url?: string | null
+          image_4_url?: string | null
+          profile_picture_url: string
+          studio_name: string
+          updated_at?: string | null
+          video_url: string
+        }
+        Update: {
+          created_at?: string | null
+          game_name?: string
+          id?: string
+          image_1_url?: string | null
+          image_2_url?: string | null
+          image_3_url?: string | null
+          image_4_url?: string | null
+          profile_picture_url?: string
+          studio_name?: string
+          updated_at?: string | null
+          video_url?: string
+        }
+        Relationships: []
+      }
       generated_images: {
         Row: {
           created_at: string | null

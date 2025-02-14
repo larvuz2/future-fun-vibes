@@ -5,8 +5,20 @@ import { GameCard } from "@/components/GameCard";
 import { FilterBar } from "@/components/FilterBar";
 import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+
+interface GameMedia {
+  game_name: string;
+  studio_name: string;
+  video_url: string;
+  profile_picture_url: string;
+  image_1_url: string;
+  image_2_url: string;
+  image_3_url: string;
+  image_4_url: string;
+}
 
 const games = [
   {
@@ -79,6 +91,29 @@ const games = [
 
 const Index = () => {
   const location = useLocation();
+  const [gameMedia, setGameMedia] = useState<Record<string, GameMedia>>({});
+
+  useEffect(() => {
+    const fetchGameMedia = async () => {
+      const { data, error } = await supabase
+        .from('game_media')
+        .select('*');
+      
+      if (error) {
+        console.error('Error fetching game media:', error);
+        return;
+      }
+
+      const mediaMap = data.reduce((acc, item) => {
+        acc[item.game_name] = item;
+        return acc;
+      }, {} as Record<string, GameMedia>);
+
+      setGameMedia(mediaMap);
+    };
+
+    fetchGameMedia();
+  }, []);
 
   useEffect(() => {
     if (location.state?.scrollToGames) {
@@ -108,7 +143,11 @@ const Index = () => {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <GameCard {...game} />
+                <GameCard 
+                  {...game}
+                  videoUrl={gameMedia[game.title]?.video_url}
+                  profilePictureUrl={gameMedia[game.title]?.profile_picture_url}
+                />
               </motion.div>
             ))}
           </div>

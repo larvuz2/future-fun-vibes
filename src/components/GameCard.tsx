@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +17,8 @@ interface GameCardProps {
   plays?: number;
   hours?: number;
   mints?: number;
+  videoUrl?: string;
+  profilePictureUrl?: string;
 }
 
 export function GameCard({ 
@@ -27,8 +30,11 @@ export function GameCard({
   dateAdded,
   plays = 0,
   hours = 0,
-  mints = 0
+  mints = 0,
+  videoUrl,
+  profilePictureUrl
 }: GameCardProps) {
+  const [isHovered, setIsHovered] = useState(false);
   const gameUrl = `/game/${title.toLowerCase().replace(/\s+/g, '-')}`;
   
   return (
@@ -36,14 +42,34 @@ export function GameCard({
       className="group relative overflow-hidden rounded-xl bg-card flex border border-border/10"
       whileHover={{ scale: 1.01 }}
       transition={{ duration: 0.2 }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <Link to={gameUrl} className="relative w-[60%]">
         <div className="aspect-video overflow-hidden rounded-xl">
-          <img 
-            src={image} 
-            alt={title}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-          />
+          {videoUrl ? (
+            <video
+              src={videoUrl}
+              className="w-full h-full object-cover"
+              autoPlay={isHovered}
+              loop
+              muted
+              playsInline
+              poster={image}
+            >
+              <img 
+                src={image} 
+                alt={title}
+                className="w-full h-full object-cover"
+              />
+            </video>
+          ) : (
+            <img 
+              src={image} 
+              alt={title}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+            />
+          )}
           <img
             src="https://cdn2.unrealengine.com/ue-logotype-2023-vertical-white-1686x2048-bbfded26daa7.png"
             alt="Unreal Engine"
@@ -66,7 +92,7 @@ export function GameCard({
             <div className="flex items-start gap-3">
               <div className="w-24 h-24 rounded-2xl bg-card overflow-hidden border border-border/50 flex-shrink-0">
                 <img 
-                  src="https://api.dicebear.com/7.x/pixel-art/svg?seed=studio1"
+                  src={profilePictureUrl || "https://api.dicebear.com/7.x/pixel-art/svg?seed=studio1"}
                   alt={developer}
                   className="w-full h-full object-cover"
                 />
