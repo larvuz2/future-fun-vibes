@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -38,7 +37,7 @@ export function GameCard({
       transition={{ duration: 0.2 }}
     >
       <Link to={gameUrl} className="relative w-[60%]">
-        <div className="aspect-video overflow-hidden">
+        <div className="aspect-video overflow-hidden rounded-xl">
           <img 
             src={image} 
             alt={title}
@@ -62,22 +61,20 @@ export function GameCard({
             <Heart className="h-4 w-4" />
           </Button>
 
-          <div>
-            <Badge variant="secondary" className="mb-2">
-              {genre}
-            </Badge>
-            <div className="flex items-center gap-3 mt-2">
-              <div className="w-20 h-20 rounded-2xl bg-card overflow-hidden border border-border/50">
-                <img 
-                  src="https://api.dicebear.com/7.x/pixel-art/svg?seed=studio1"
-                  alt={developer}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div>
-                <h3 className="text-2xl font-semibold leading-tight">{title}</h3>
-                <p className="text-sm text-muted-foreground">{developer}</p>
-              </div>
+          <div className="flex items-start gap-3">
+            <div className="w-20 h-20 rounded-2xl bg-card overflow-hidden border border-border/50 flex-shrink-0">
+              <img 
+                src="https://api.dicebear.com/7.x/pixel-art/svg?seed=studio1"
+                alt={developer}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <h3 className="text-2xl font-semibold leading-tight">{title}</h3>
+              <p className="text-sm text-muted-foreground">{developer}</p>
+              <Badge variant="secondary" className="mt-2">
+                {genre}
+              </Badge>
             </div>
           </div>
 
