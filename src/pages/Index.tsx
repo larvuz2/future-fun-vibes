@@ -99,7 +99,7 @@ const Index = () => {
         <div className="container max-w-7xl">
           <FilterBar />
           
-          <div className="flex flex-col gap-6 mt-8">
+          <div className="flex flex-col gap-8 mt-8">
             {games.map((game, index) => (
               <motion.div
                 key={game.title}

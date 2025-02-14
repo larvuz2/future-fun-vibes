@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/3d-button";
@@ -67,10 +66,7 @@ export function Navbar() {
             <Link to="/how-it-works" className="hidden md:block hover:text-primary transition-colors">How It Works</Link>
             <Link to="/documentation" className="hidden md:block hover:text-primary transition-colors">Documentation</Link>
             <Button className="bg-[#9b87f5] hover:bg-[#7E69AB] border-[#6E59A5] border-b-4 text-white shadow-md">
-              <div className="flex items-center gap-2">
-                <Wallet className="w-4 h-4" />
-                Connect Wallet
-              </div>
+              Join the fun
             </Button>
           </div>
         </div>
