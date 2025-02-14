@@ -101,7 +101,7 @@ export function GameCard({
           <div className="flex-1 flex flex-col items-center">
             <Link to={gameUrl} className="w-full">
               <Button className="w-full bg-[#9b87f5] hover:bg-[#7E69AB] border-[#6E59A5] border-b-4 text-white shadow-md">
-                <Gamepad2 className="w-4 h-4 mr-2" /> Go to Game
+                <Gamepad2 className="w-4 h-4 mr-1" /> Go to Game
               </Button>
             </Link>
             <div className="flex items-center gap-1 mt-1">
