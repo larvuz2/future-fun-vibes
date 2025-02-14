@@ -67,7 +67,7 @@ export function GameCard({
               {genre}
             </Badge>
             <div className="flex items-center gap-3 mt-2">
-              <div className="w-16 h-16 rounded-2xl bg-card overflow-hidden border border-border/50">
+              <div className="w-20 h-20 rounded-2xl bg-card overflow-hidden border border-border/50">
                 <img 
                   src="https://api.dicebear.com/7.x/pixel-art/svg?seed=studio1"
                   alt={developer}
@@ -100,8 +100,8 @@ export function GameCard({
         <div className="flex items-center gap-4 mt-6">
           <div className="flex-1 flex flex-col items-center">
             <Link to={gameUrl} className="w-full">
-              <Button className="w-full bg-[#9b87f5] hover:bg-[#7E69AB] border-[#6E59A5] border-b-4 text-white shadow-md">
-                <Gamepad2 className="w-4 h-4 mr-1" /> Go to Game
+              <Button className="w-full bg-[#9b87f5] hover:bg-[#7E69AB] border-[#6E59A5] border-b-4 text-white shadow-md flex items-center justify-center">
+                <Gamepad2 className="w-4 h-4 mr-1 text-white" /> Go to Game
               </Button>
             </Link>
             <div className="flex items-center gap-1 mt-1">

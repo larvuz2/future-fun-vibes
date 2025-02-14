@@ -100,8 +100,8 @@ export function FeaturedCarousel() {
                       <div className="flex items-center gap-4 pt-4">
                         <div className="flex flex-col items-center">
                           <Link to={gameUrl}>
-                            <Button className="w-36 bg-[#9b87f5] hover:bg-[#7E69AB] border-[#6E59A5] border-b-4 text-white shadow-md px-[166px]">
-                              <Gamepad2 className="w-4 h-4 mr-1" /> Go to Game
+                            <Button className="w-36 bg-[#9b87f5] hover:bg-[#7E69AB] border-[#6E59A5] border-b-4 text-white shadow-md flex items-center justify-center">
+                              <Gamepad2 className="w-4 h-4 mr-1 text-white" /> Go to Game
                             </Button>
                           </Link>
                           <div className="flex items-center gap-1 mt-1">
