@@ -1,4 +1,3 @@
-
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
@@ -8,13 +7,6 @@ import { ExternalLink, Twitter } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -97,7 +89,6 @@ export default function GameDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [gameMedia, setGameMedia] = useState<GameMedia | null>(null);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [extractedFrames, setExtractedFrames] = useState<string[]>([]);
   const isMobile = useIsMobile();
   const { toast } = useToast();
@@ -122,7 +113,6 @@ export default function GameDetails() {
     }
 
     setGameMedia(gameData);
-    setSelectedImage(gameData.video_url);
 
     // Extract frames from video
     const extractFrames = async () => {
@@ -154,15 +144,6 @@ export default function GameDetails() {
   const handleLaunchGame = () => {
     navigate(`/game/${id}/play`);
   };
-
-  const allMedia = [
-    gameMedia?.video_url,
-    ...extractedFrames,
-    gameMedia?.image_1_url,
-    gameMedia?.image_2_url,
-    gameMedia?.image_3_url,
-    gameMedia?.image_4_url
-  ].filter(Boolean) as string[];
 
   const SidebarContent = () => (
     <div className="space-y-6">
@@ -286,22 +267,14 @@ export default function GameDetails() {
           <div className="lg:col-span-2 space-y-6">
             <div className="relative rounded-lg overflow-hidden">
               <div className="aspect-video bg-card relative">
-                {selectedImage?.endsWith('.mp4') ? (
-                  <video 
-                    src={selectedImage} 
-                    className="w-full h-full object-cover rounded-lg"
-                    controls
-                    autoPlay
-                    muted
-                    loop
-                  />
-                ) : (
-                  <img 
-                    src={selectedImage || gameMedia.image_1_url || ''} 
-                    alt="Game Screenshot" 
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                )}
+                <video 
+                  src={gameMedia.video_url} 
+                  className="w-full h-full object-cover rounded-lg"
+                  controls
+                  autoPlay
+                  muted
+                  loop
+                />
                 <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white">
                   <p className="text-xl mb-4">You need tokens to start</p>
                   <Button 
@@ -311,33 +284,6 @@ export default function GameDetails() {
                     Launch Game
                   </Button>
                 </div>
-              </div>
-              
-              <div className="mt-4">
-                <Carousel className="w-full">
-                  <CarouselContent>
-                    {allMedia.map((media, index) => (
-                      <CarouselItem key={index} className="basis-1/4 cursor-pointer" onClick={() => setSelectedImage(media)}>
-                        <div className="relative aspect-video">
-                          {media?.endsWith('.mp4') ? (
-                            <video 
-                              src={media}
-                              className={`w-full h-full object-cover rounded-lg transition-opacity ${selectedImage === media ? 'opacity-100 ring-2 ring-primary' : 'opacity-70 hover:opacity-100'}`}
-                            />
-                          ) : (
-                            <img 
-                              src={media} 
-                              alt={`Screenshot ${index + 1}`}
-                              className={`w-full h-full object-cover rounded-lg transition-opacity ${selectedImage === media ? 'opacity-100 ring-2 ring-primary' : 'opacity-70 hover:opacity-100'}`}
-                            />
-                          )}
-                        </div>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious className="left-0" />
-                  <CarouselNext className="right-0" />
-                </Carousel>
               </div>
             </div>
 
