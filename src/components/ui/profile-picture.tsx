@@ -19,39 +19,28 @@ const sizes = {
 export function ProfilePicture({ src, alt, size = "md", className = "" }: ProfilePictureProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [cachedUrl, setCachedUrl] = useState<string | null>(null);
+  const [error, setError] = useState<boolean>(false);
   const sizeClass = sizes[size];
 
   useEffect(() => {
     const cacheProfilePicture = async () => {
       try {
-        // Check if image is already from our Supabase storage
-        const { data: { publicUrl } } = supabase.storage
-          .from('profile-pictures')
-          .getPublicUrl('test.svg');
-        
-        if (src.startsWith(publicUrl.split('/test.svg')[0])) {
-          setCachedUrl(src);
-          return;
-        }
-
         // Generate a unique filename for the SVG
-        const filename = `${alt.toLowerCase().replace(/\s+/g, '-')}-${size}.svg`;
+        const filename = `${alt.toLowerCase().replace(/\s+/g, '-')}-${size}-${Date.now()}.svg`;
         
-        // Try to fetch from cache first
-        const { data: existingFile } = await supabase.storage
-          .from('profile-pictures')
-          .getPublicUrl(`${filename}`);
-
-        if (existingFile.publicUrl) {
-          setCachedUrl(existingFile.publicUrl);
-          return;
+        // Try to fetch the image first to verify it exists
+        const response = await fetch(src);
+        if (!response.ok) {
+          throw new Error('Failed to fetch image');
+        }
+        
+        const svgBlob = await response.blob();
+        if (!svgBlob.type.includes('svg')) {
+          throw new Error('Invalid image type');
         }
 
-        // If not in cache, fetch from DiceBear and store
-        const response = await fetch(src);
-        const svgBlob = await response.blob();
-        
-        const { data: uploadedFile, error } = await supabase.storage
+        // Upload to Supabase storage
+        const { data: uploadedFile, error: uploadError } = await supabase.storage
           .from('profile-pictures')
           .upload(filename, svgBlob, {
             contentType: 'image/svg+xml',
@@ -59,21 +48,49 @@ export function ProfilePicture({ src, alt, size = "md", className = "" }: Profil
             upsert: true
           });
 
-        if (error) throw error;
+        if (uploadError) {
+          console.error('Upload error:', uploadError);
+          throw uploadError;
+        }
 
-        const { data: { publicUrl: newPublicUrl } } = supabase.storage
+        // Get the public URL for the uploaded file
+        const { data: { publicUrl } } = supabase.storage
           .from('profile-pictures')
           .getPublicUrl(filename);
 
-        setCachedUrl(newPublicUrl);
+        if (!publicUrl) {
+          throw new Error('Failed to get public URL');
+        }
+
+        setCachedUrl(publicUrl);
+        setError(false);
       } catch (error) {
-        console.error('Error caching profile picture:', error);
+        console.error('Error in profile picture handling:', error);
         setCachedUrl(src); // Fallback to original URL
+        setError(true);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    cacheProfilePicture();
+    if (src) {
+      // Reset states when src changes
+      setIsLoading(true);
+      setError(false);
+      setCachedUrl(null);
+      
+      // Start caching process
+      cacheProfilePicture();
+    }
   }, [src, alt, size]);
+
+  if (error) {
+    return (
+      <div className={`relative ${sizeClass} ${className} bg-muted rounded-full flex items-center justify-center`}>
+        <span className="text-muted-foreground text-xs">!</span>
+      </div>
+    );
+  }
 
   return (
     <div className={`relative ${sizeClass} ${className}`}>
@@ -87,6 +104,10 @@ export function ProfilePicture({ src, alt, size = "md", className = "" }: Profil
           isLoading ? 'opacity-0' : 'opacity-100'
         }`}
         onLoad={() => setIsLoading(false)}
+        onError={() => {
+          setError(true);
+          setIsLoading(false);
+        }}
         loading="lazy"
       />
     </div>
