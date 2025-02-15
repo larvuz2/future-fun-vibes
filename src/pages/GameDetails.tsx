@@ -18,16 +18,68 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 
-interface GameMedia {
-  game_name: string;
-  studio_name: string;
-  video_url: string;
-  profile_picture_url: string;
-  image_1_url: string | null;
-  image_2_url: string | null;
-  image_3_url: string | null;
-  image_4_url: string | null;
-}
+const HARDCODED_GAME_MEDIA = {
+  'drillhorn': {
+    game_name: "Drillhorn",
+    studio_name: "Future Studios",
+    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//Bulldozer.mp4",
+    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=drillhorn",
+    image_1_url: "/placeholder.svg",
+    image_2_url: "/placeholder.svg",
+    image_3_url: "/placeholder.svg",
+    image_4_url: "/placeholder.svg"
+  },
+  'skyfang': {
+    game_name: "Skyfang",
+    studio_name: "Dragon Games",
+    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//DRAGON.mp4",
+    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=skyfang",
+    image_1_url: "/placeholder.svg",
+    image_2_url: "/placeholder.svg",
+    image_3_url: "/placeholder.svg",
+    image_4_url: "/placeholder.svg"
+  },
+  'big-hairy-snowman': {
+    game_name: "Big Hairy Snowman",
+    studio_name: "Snow Studios",
+    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//HAIRY.mp4",
+    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=snowman",
+    image_1_url: "/placeholder.svg",
+    image_2_url: "/placeholder.svg",
+    image_3_url: "/placeholder.svg",
+    image_4_url: "/placeholder.svg"
+  },
+  'meme-legends': {
+    game_name: "Meme Legends",
+    studio_name: "Meme Factory",
+    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//MEME.mp4",
+    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=meme",
+    image_1_url: "/placeholder.svg",
+    image_2_url: "/placeholder.svg",
+    image_3_url: "/placeholder.svg",
+    image_4_url: "/placeholder.svg"
+  },
+  'fluid-simulation-puzzles': {
+    game_name: "Fluid Simulation Puzzles",
+    studio_name: "Physics Games",
+    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//FLUID.mp4",
+    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=fluid",
+    image_1_url: "/placeholder.svg",
+    image_2_url: "/placeholder.svg",
+    image_3_url: "/placeholder.svg",
+    image_4_url: "/placeholder.svg"
+  },
+  'forest-drone': {
+    game_name: "Forest Drone",
+    studio_name: "Drone Games",
+    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//Drone%20and%20Basic%20Controller%20-%20Unreal%20Engine%20(1).mp4",
+    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=drone",
+    image_1_url: "/placeholder.svg",
+    image_2_url: "/placeholder.svg",
+    image_3_url: "/placeholder.svg",
+    image_4_url: "/placeholder.svg"
+  }
+};
 
 export default function GameDetails() {
   const { id } = useParams();
@@ -42,52 +94,23 @@ export default function GameDetails() {
   }, []);
 
   useEffect(() => {
-    const fetchGameMedia = async () => {
-      if (!id) return;
-      
-      const formattedGameName = id.split('-').map((word, index) => {
-        const lowercaseWords = ['of', 'the', 'in', 'on', 'at', 'to', 'for', 'with'];
-        
-        if (index === 0) {
-          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-        } else if (lowercaseWords.includes(word.toLowerCase())) {
-          return word.toLowerCase();
-        } else {
-          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-        }
-      }).join(' ');
+    if (!id) return;
+    
+    const gameData = HARDCODED_GAME_MEDIA[id as keyof typeof HARDCODED_GAME_MEDIA];
+    
+    if (!gameData) {
+      toast({
+        title: "Game Not Found",
+        description: "The requested game could not be found",
+        variant: "destructive"
+      });
+      navigate('/');
+      return;
+    }
 
-      const { data, error } = await supabase
-        .from('game_media')
-        .select('*')
-        .eq('game_name', formattedGameName)
-        .maybeSingle();
-
-      if (error) {
-        console.error('Error fetching game media:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load game media",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      if (!data) {
-        toast({
-          title: "Game Not Found",
-          description: "The requested game could not be found",
-          variant: "destructive"
-        });
-        navigate('/');
-        return;
-      }
-
-      setGameMedia(data);
-      setSelectedImage(data.image_1_url || data.video_url);
-    };
-
-    fetchGameMedia();
+    setGameMedia(gameData);
+    // Set the video as the first media item
+    setSelectedImage(gameData.video_url);
   }, [id, toast, navigate]);
   
   const handleLaunchGame = () => {
@@ -226,7 +249,7 @@ export default function GameDetails() {
                 {selectedImage?.endsWith('.mp4') ? (
                   <video 
                     src={selectedImage} 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-lg"
                     controls
                     autoPlay
                     muted
@@ -236,7 +259,7 @@ export default function GameDetails() {
                   <img 
                     src={selectedImage || gameMedia.image_1_url || ''} 
                     alt="Game Screenshot" 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-lg"
                   />
                 )}
                 <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white">
