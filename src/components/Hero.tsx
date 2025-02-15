@@ -8,9 +8,9 @@ import { GradientText } from "@/components/ui/gradient-text";
 
 export function Hero() {
   const scrollToFeaturedGames = () => {
-    const featuredSection = document.querySelector('#featured-games');
-    if (featuredSection) {
-      featuredSection.scrollIntoView({ behavior: 'smooth' });
+    const gamesSection = document.querySelector('#games-grid');
+    if (gamesSection) {
+      gamesSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -28,15 +28,17 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="space-y-6 text-center md:text-left"
+              className="space-y-6"
             >
-              <GradientText 
-                colors={["#ffaa40", "#9c40ff", "#45B7D1"]} 
-                className="text-4xl md:text-6xl font-bold leading-tight md:leading-tight pb-2"
-              >
-                The Future is Fun
-              </GradientText>
-              <p className="text-lg md:text-xl text-neutral-300 max-w-2xl mx-auto md:mx-0">
+              <div className="text-center md:text-left">
+                <GradientText 
+                  colors={["#ffaa40", "#9c40ff", "#45B7D1"]} 
+                  className="text-4xl md:text-6xl font-bold leading-tight md:leading-tight inline-block"
+                >
+                  The Future is Fun
+                </GradientText>
+              </div>
+              <p className="text-lg md:text-xl text-neutral-300 max-w-2xl text-center md:text-left">
                 AAA Games in Your Pocket, No Downloads Required
               </p>
               <motion.div

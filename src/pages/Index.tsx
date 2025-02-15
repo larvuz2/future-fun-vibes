@@ -89,7 +89,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <Hero />
-      <div className="pt-8 md:pt-16">
+      <div className="pt-4 md:pt-8">
         <FeaturedCarousel />
       </div>
       

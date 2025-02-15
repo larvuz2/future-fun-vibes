@@ -63,7 +63,7 @@ export function GameCard({
               className="w-16 h-16 rounded-full border-2 border-background"
             />
             <div className="text-white md:text-foreground">
-              <h3 className="font-bold text-lg leading-tight">{title}</h3>
+              <h3 className="font-bold text-xl md:text-2xl leading-tight">{title}</h3>
               <p className="text-sm opacity-90">{developer}</p>
             </div>
           </div>
