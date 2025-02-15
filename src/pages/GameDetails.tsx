@@ -98,6 +98,7 @@ export default function GameDetails() {
   const navigate = useNavigate();
   const [gameMedia, setGameMedia] = useState<GameMedia | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [extractedFrames, setExtractedFrames] = useState<string[]>([]);
   const isMobile = useIsMobile();
   const { toast } = useToast();
   
@@ -121,20 +122,47 @@ export default function GameDetails() {
     }
 
     setGameMedia(gameData);
-    // Set the video as the first media item
     setSelectedImage(gameData.video_url);
+
+    // Extract frames from video
+    const extractFrames = async () => {
+      try {
+        const response = await supabase.functions.invoke('extract-video-frames', {
+          body: {
+            videoUrl: gameData.video_url,
+            gameName: gameData.game_name.toLowerCase().replace(/\s+/g, '-')
+          }
+        });
+
+        if (response.error) {
+          console.error('Error extracting frames:', response.error);
+          return;
+        }
+
+        const { frameUrls } = response.data;
+        if (frameUrls && frameUrls.length > 0) {
+          setExtractedFrames(frameUrls);
+        }
+      } catch (error) {
+        console.error('Error calling extract-video-frames:', error);
+      }
+    };
+
+    extractFrames();
   }, [id, toast, navigate]);
   
   const handleLaunchGame = () => {
     navigate(`/game/${id}/play`);
   };
 
-  const gameImages = gameMedia ? [
-    gameMedia.image_1_url,
-    gameMedia.image_2_url,
-    gameMedia.image_3_url,
-    gameMedia.image_4_url
-  ].filter(Boolean) as string[] : [];
+  const allMedia = [
+    gameMedia?.video_url,
+    ...extractedFrames,
+    gameMedia?.image_1_url,
+    gameMedia?.image_2_url,
+    gameMedia?.image_3_url,
+    gameMedia?.image_4_url
+  ].filter(Boolean) as string[];
 
   const SidebarContent = () => (
     <div className="space-y-6">
@@ -288,19 +316,19 @@ export default function GameDetails() {
               <div className="mt-4">
                 <Carousel className="w-full">
                   <CarouselContent>
-                    {[gameMedia.video_url, ...gameImages].map((image, index) => (
-                      <CarouselItem key={index} className="basis-1/4 cursor-pointer" onClick={() => setSelectedImage(image)}>
+                    {allMedia.map((media, index) => (
+                      <CarouselItem key={index} className="basis-1/4 cursor-pointer" onClick={() => setSelectedImage(media)}>
                         <div className="relative aspect-video">
-                          {image?.endsWith('.mp4') ? (
+                          {media?.endsWith('.mp4') ? (
                             <video 
-                              src={image}
-                              className={`w-full h-full object-cover rounded-lg transition-opacity ${selectedImage === image ? 'opacity-100 ring-2 ring-primary' : 'opacity-70 hover:opacity-100'}`}
+                              src={media}
+                              className={`w-full h-full object-cover rounded-lg transition-opacity ${selectedImage === media ? 'opacity-100 ring-2 ring-primary' : 'opacity-70 hover:opacity-100'}`}
                             />
                           ) : (
                             <img 
-                              src={image} 
+                              src={media} 
                               alt={`Screenshot ${index + 1}`}
-                              className={`w-full h-full object-cover rounded-lg transition-opacity ${selectedImage === image ? 'opacity-100 ring-2 ring-primary' : 'opacity-70 hover:opacity-100'}`}
+                              className={`w-full h-full object-cover rounded-lg transition-opacity ${selectedImage === media ? 'opacity-100 ring-2 ring-primary' : 'opacity-70 hover:opacity-100'}`}
                             />
                           )}
                         </div>
