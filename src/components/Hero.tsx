@@ -37,7 +37,7 @@ export function Hero() {
                 </GradientText>
               </div>
               <p className="text-lg md:text-xl text-neutral-300 max-w-2xl text-center md:text-left">Cloud-Powered Indie Games: From Metahumans to AI Worlds</p>
-              <div className="flex justify-center md:justify-start">
+              <div className="text-center md:text-left">
                 <GradientText colors={["#FF6B6B", "#4ECDC4", "#45B7D1"]} className="text-sm" animationSpeed={4}>
                   Instant Play
                 </GradientText>
