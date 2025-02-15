@@ -1,9 +1,11 @@
+
 import { Card } from "@/components/ui/card";
 import { Spotlight } from "@/components/ui/spotlight";
 import { SplineScene } from "@/components/ui/splite";
 import { motion } from "framer-motion";
 import { StarBorder } from "@/components/ui/star-border";
 import { GradientText } from "@/components/ui/gradient-text";
+
 export function Hero() {
   const scrollToFeaturedGames = () => {
     const gamesSection = document.querySelector('#games-grid');
@@ -13,6 +15,7 @@ export function Hero() {
       });
     }
   };
+
   return <div className="min-h-[80vh] md:min-h-screen flex items-center justify-center relative overflow-hidden">
       <Card className="w-full max-w-6xl mx-auto bg-background relative overflow-hidden border-0">
         <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
@@ -34,6 +37,11 @@ export function Hero() {
                 </GradientText>
               </div>
               <p className="text-lg md:text-xl text-neutral-300 max-w-2xl text-center md:text-left">Cloud-Powered Indie Games: From Metahumans to AI Worlds</p>
+              <div className="flex justify-center md:justify-start">
+                <GradientText colors={["#FF6B6B", "#4ECDC4", "#45B7D1"]} className="text-sm" animationSpeed={4}>
+                  Instant Play
+                </GradientText>
+              </div>
               <motion.div initial={{
               opacity: 0
             }} animate={{
