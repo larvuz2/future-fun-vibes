@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { ProfilePicture } from "@/components/ui/profile-picture";
 
 interface GameMedia {
   game_name: string;
@@ -266,13 +267,12 @@ export default function GameDetails() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             <div className="flex flex-col md:flex-row gap-4 items-start">
-              <div className="flex-shrink-0">
-                <img 
-                  src={gameMedia?.profile_picture_url}
-                  alt={gameMedia?.studio_name} 
-                  className="w-16 h-16 rounded-full object-cover border-2 border-border"
-                />
-              </div>
+              <ProfilePicture 
+                src={gameMedia?.profile_picture_url}
+                alt={gameMedia?.studio_name || ''}
+                size="md"
+                className="border-2 border-border"
+              />
               <div>
                 <h3 className="text-xl font-bold">{gameMedia?.game_name}</h3>
                 <p className="text-sm text-muted-foreground">{gameMedia?.studio_name}</p>

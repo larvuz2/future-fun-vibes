@@ -202,6 +202,7 @@ export type Database = {
       }
       game_media: {
         Row: {
+          cached_profile_picture_url: string | null
           created_at: string | null
           game_name: string
           id: string
@@ -209,12 +210,14 @@ export type Database = {
           image_2_url: string | null
           image_3_url: string | null
           image_4_url: string | null
+          profile_picture_metadata: Json | null
           profile_picture_url: string
           studio_name: string
           updated_at: string | null
           video_url: string
         }
         Insert: {
+          cached_profile_picture_url?: string | null
           created_at?: string | null
           game_name: string
           id?: string
@@ -222,12 +225,14 @@ export type Database = {
           image_2_url?: string | null
           image_3_url?: string | null
           image_4_url?: string | null
+          profile_picture_metadata?: Json | null
           profile_picture_url: string
           studio_name: string
           updated_at?: string | null
           video_url: string
         }
         Update: {
+          cached_profile_picture_url?: string | null
           created_at?: string | null
           game_name?: string
           id?: string
@@ -235,6 +240,7 @@ export type Database = {
           image_2_url?: string | null
           image_3_url?: string | null
           image_4_url?: string | null
+          profile_picture_metadata?: Json | null
           profile_picture_url?: string
           studio_name?: string
           updated_at?: string | null

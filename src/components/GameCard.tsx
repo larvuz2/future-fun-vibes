@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { BarChart3, Users, Timer, Gamepad2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { GradientText } from "@/components/ui/gradient-text";
+import { ProfilePicture } from "@/components/ui/profile-picture";
 
 interface GameCardProps {
   title: string;
@@ -57,10 +58,11 @@ export function GameCard({
 
         <div className="w-full md:w-1/3 p-4 md:p-6 relative">
           <div className="flex items-start gap-3 absolute -top-12 md:top-6 left-4 md:left-6 z-10">
-            <img
+            <ProfilePicture
               src={profilePictureUrl}
               alt={developer}
-              className="w-16 h-16 rounded-full border-2 border-background"
+              size="md"
+              className="border-2 border-background"
             />
             <div className="text-white md:text-foreground">
               <h3 className="font-bold text-xl md:text-2xl leading-tight">{title}</h3>
