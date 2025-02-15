@@ -1,1 +1,4 @@
+
 project_id = "vbcltontvlbnaawiqegc"
+[functions.extract-video-frames]
+verify_jwt = false
