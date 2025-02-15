@@ -280,10 +280,10 @@ export default function GameDetails() {
             </div>
 
             <div className="relative rounded-lg overflow-hidden">
-              <div className="aspect-video bg-card relative">
+              <div className="aspect-video bg-card relative max-w-full">
                 <video 
                   src={gameMedia.video_url} 
-                  className="w-full h-full object-cover rounded-lg"
+                  className="w-full h-full object-contain rounded-lg"
                   controls
                   autoPlay
                   muted

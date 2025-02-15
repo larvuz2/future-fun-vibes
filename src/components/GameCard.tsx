@@ -1,8 +1,9 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { BarChart3, Users, Timer } from "lucide-react";
+import { BarChart3, Users, Timer, Gamepad2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { GradientText } from "@/components/ui/gradient-text";
 
 interface GameCardProps {
   title: string;
@@ -101,12 +102,19 @@ export function GameCard({
               </div>
             </div>
 
-            <Button 
-              className="w-full" 
-              onClick={handleGameClick}
-            >
-              View Game
-            </Button>
+            <div className="flex flex-col items-center">
+              <Button 
+                className="w-full bg-[#9b87f5] hover:bg-[#7E69AB] border-[#6E59A5] border-b-4 text-white shadow-md flex items-center justify-center" 
+                onClick={handleGameClick}
+              >
+                <Gamepad2 className="w-4 h-4 mr-1 text-white" /> Go to Game
+              </Button>
+              <div className="flex items-center gap-1 mt-1">
+                <GradientText colors={["#FF6B6B", "#4ECDC4", "#45B7D1"]} className="text-xs" animationSpeed={4}>
+                  Instant Play
+                </GradientText>
+              </div>
+            </div>
           </div>
         </div>
       </div>
