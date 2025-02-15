@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface GameMedia {
   id: string;
@@ -35,10 +36,16 @@ const Index = () => {
       
       if (error) {
         console.error('Error fetching games:', error);
+        toast.error('Failed to fetch games');
         return;
       }
 
-      setGames(data);
+      console.log('Fetched games:', data);
+      data?.forEach(game => {
+        console.log(`Game: ${game.game_name}, Video URL:`, game.video_url);
+      });
+
+      setGames(data || []);
     };
 
     fetchGames();
@@ -104,13 +111,13 @@ const Index = () => {
                 <GameCard 
                   title={game.game_name}
                   image={game.image_1_url}
-                  genre="Action" // Default genre since it's not in the database
+                  genre="Action"
                   developer={game.studio_name}
-                  marketCap="$1.5M" // Default value
-                  dateAdded="Recently added" // Default value
-                  plays={10000} // Default value
-                  hours={30000} // Default value
-                  mints={1500} // Default value
+                  marketCap="$1.5M"
+                  dateAdded="Recently added"
+                  plays={10000}
+                  hours={30000}
+                  mints={1500}
                   videoUrl={game.video_url}
                   profilePictureUrl={game.profile_picture_url}
                 />

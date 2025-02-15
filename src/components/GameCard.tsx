@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/3d-button";
 import { Heart, Gamepad2, Clock, Coins } from "lucide-react";
 import { GradientText } from "@/components/ui/gradient-text";
+import { toast } from "sonner";
 
 interface GameCardProps {
   title: string;
@@ -38,6 +39,7 @@ export function GameCard({
   const videoRef = useRef<HTMLVideoElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [videoError, setVideoError] = useState(false);
   
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -63,16 +65,29 @@ export function GameCard({
   }, []);
 
   useEffect(() => {
-    if (videoRef.current) {
+    if (videoRef.current && videoUrl) {
       if (isVisible) {
-        videoRef.current.play().catch(() => {
-          console.log('Video autoplay failed');
+        console.log(`Attempting to play video for ${title}:`, videoUrl);
+        videoRef.current.play().catch((error) => {
+          console.error('Video playback failed:', error);
+          setVideoError(true);
+          toast.error(`Failed to play video for ${title}`);
         });
       } else {
         videoRef.current.pause();
       }
     }
-  }, [isVisible]);
+  }, [isVisible, videoUrl, title]);
+
+  const handleVideoError = () => {
+    console.error(`Video error for ${title}:`, videoUrl);
+    setVideoError(true);
+  };
+
+  const handleVideoLoad = () => {
+    console.log(`Video loaded successfully for ${title}`);
+    setVideoError(false);
+  };
   
   return (
     <motion.div 
@@ -83,16 +98,19 @@ export function GameCard({
     >
       <Link to={gameUrl} className="relative w-[60%]">
         <div className="aspect-video overflow-hidden rounded-xl">
-          {videoUrl ? (
+          {videoUrl && !videoError ? (
             <video
               ref={videoRef}
               key={videoUrl}
+              src={videoUrl}
               className="w-full h-full object-cover"
               preload="auto"
               autoPlay={isVisible}
               loop
               muted
               playsInline
+              onError={handleVideoError}
+              onLoadedData={handleVideoLoad}
             />
           ) : (
             <img 
