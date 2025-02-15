@@ -283,7 +283,7 @@ export default function GameDetails() {
               <div className="aspect-video bg-card relative">
                 <video 
                   src={gameMedia.video_url} 
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover rounded-lg"
                   controls
                   autoPlay
                   muted

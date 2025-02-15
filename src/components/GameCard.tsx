@@ -40,7 +40,7 @@ export function GameCard({
   return (
     <Card className="overflow-hidden">
       <div className="flex flex-col md:flex-row w-full">
-        <div className="relative w-full md:w-2/3">
+        <div className="relative w-full md:w-2/3 cursor-pointer" onClick={handleGameClick}>
           <div className="aspect-video relative">
             <video
               src={videoUrl}
