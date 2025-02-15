@@ -1,3 +1,4 @@
+
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/3d-button";
@@ -74,16 +75,16 @@ export function FeaturedCarousel() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5 }}
-                      className="space-y-4"
+                      className="space-y-4 md:text-left text-center"
                     >
-                      <Badge variant="secondary" className="mb-2">
+                      <Badge variant="secondary" className="mb-2 md:inline-block mx-auto md:mx-0 block">
                         {game.genre}
                       </Badge>
                       <h2 className="text-4xl font-bold">{game.title}</h2>
-                      <p className="text-lg text-muted-foreground max-w-2xl">
+                      <p className="text-lg text-muted-foreground max-w-2xl md:mx-0 mx-auto">
                         {game.description}
                       </p>
-                      <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-6 text-sm text-muted-foreground md:justify-start justify-center flex-wrap">
                         <div className="flex items-center gap-2">
                           <Gamepad2 className="w-4 h-4" />
                           {game.plays.toLocaleString()} plays
@@ -97,7 +98,7 @@ export function FeaturedCarousel() {
                           {game.mints.toLocaleString()} mints
                         </div>
                       </div>
-                      <div className="flex items-center gap-4 pt-4">
+                      <div className="flex items-center gap-4 pt-4 md:justify-start justify-center">
                         <div className="flex flex-col items-center">
                           <Link to={gameUrl}>
                             <Button className="w-72 bg-[#9b87f5] hover:bg-[#7E69AB] border-[#6E59A5] border-b-4 text-white shadow-md flex items-center justify-center">
