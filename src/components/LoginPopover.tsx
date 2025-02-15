@@ -2,7 +2,7 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/3d-button";
 import { FaGoogle, FaApple } from "react-icons/fa";
-import { SiMetamask } from "react-icons/si";
+import { SiMetamask as MetaMaskIcon } from "react-icons/si";
 
 export function LoginPopover({ children }: { children: React.ReactNode }) {
   return (
@@ -33,7 +33,7 @@ export function LoginPopover({ children }: { children: React.ReactNode }) {
             <Button 
               className="w-full bg-[#9b87f5] hover:bg-[#7E69AB] border-[#6E59A5] border-b-4 text-white shadow-md flex items-center justify-center gap-2"
             >
-              <SiMetamask className="w-5 h-5" /> Continue with MetaMask
+              <MetaMaskIcon className="w-5 h-5" /> Continue with MetaMask
             </Button>
           </div>
 
