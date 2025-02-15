@@ -1,11 +1,11 @@
-
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/3d-button";
 import { motion } from "framer-motion";
-import { Gamepad2, Clock, Coins } from "lucide-react";
+import { Gamepad2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GradientText } from "@/components/ui/gradient-text";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface FeaturedGame {
   id: string;
@@ -52,6 +52,8 @@ const featuredGames: FeaturedGame[] = [{
 }];
 
 export function FeaturedCarousel() {
+  const isMobile = useIsMobile();
+
   return (
     <div className="w-full bg-gradient-to-b from-background/80 to-background pt-24">
       <Carousel className="w-full max-w-7xl mx-auto">
@@ -77,27 +79,26 @@ export function FeaturedCarousel() {
                       transition={{ duration: 0.5 }}
                       className="space-y-4 md:text-left text-center"
                     >
-                      <Badge variant="secondary" className="mb-2 md:inline-block mx-auto md:mx-0 block">
+                      <Badge variant="secondary" className="mb-2 inline-block text-xs md:text-sm">
                         {game.genre}
                       </Badge>
                       <h2 className="text-4xl font-bold">{game.title}</h2>
                       <p className="text-lg text-muted-foreground max-w-2xl md:mx-0 mx-auto">
                         {game.description}
                       </p>
-                      <div className="flex items-center gap-6 text-sm text-muted-foreground md:justify-start justify-center flex-wrap">
-                        <div className="flex items-center gap-2">
-                          <Gamepad2 className="w-4 h-4" />
-                          {game.plays.toLocaleString()} plays
+                      {!isMobile && (
+                        <div className="flex items-center gap-6 text-sm text-muted-foreground md:justify-start justify-center flex-wrap">
+                          <div className="flex items-center gap-2">
+                            {game.plays.toLocaleString()} plays
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {game.hours.toLocaleString()} hours
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {game.mints.toLocaleString()} mints
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Clock className="w-4 h-4" />
-                          {game.hours.toLocaleString()} hours
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Coins className="w-4 h-4" />
-                          {game.mints.toLocaleString()} mints
-                        </div>
-                      </div>
+                      )}
                       <div className="flex items-center gap-4 pt-4 md:justify-start justify-center">
                         <div className="flex flex-col items-center">
                           <Link to={gameUrl}>

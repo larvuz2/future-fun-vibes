@@ -268,22 +268,22 @@ export default function GameDetails() {
             <div className="flex flex-col md:flex-row gap-4 items-start">
               <div className="flex-shrink-0">
                 <img 
-                  src={gameMedia.profile_picture_url}
-                  alt={gameMedia.studio_name} 
+                  src={gameMedia?.profile_picture_url}
+                  alt={gameMedia?.studio_name} 
                   className="w-16 h-16 rounded-full object-cover border-2 border-border"
                 />
               </div>
               <div>
-                <h3 className="text-xl font-bold">{gameMedia.game_name}</h3>
-                <p className="text-sm text-muted-foreground">{gameMedia.studio_name}</p>
+                <h3 className="text-xl font-bold">{gameMedia?.game_name}</h3>
+                <p className="text-sm text-muted-foreground">{gameMedia?.studio_name}</p>
               </div>
             </div>
 
-            <div className="relative rounded-lg overflow-hidden">
-              <div className="aspect-video bg-card relative max-w-full">
+            <div className="relative rounded-lg overflow-hidden bg-card">
+              <div className="aspect-video w-full max-w-full relative">
                 <video 
-                  src={gameMedia.video_url} 
-                  className="w-full h-full object-contain rounded-lg"
+                  src={gameMedia?.video_url} 
+                  className="w-full h-full object-contain"
                   controls
                   autoPlay
                   muted
@@ -325,13 +325,13 @@ export default function GameDetails() {
                 <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
                   <div className="flex-shrink-0">
                     <img 
-                      src={gameMedia.profile_picture_url}
-                      alt={gameMedia.studio_name} 
+                      src={gameMedia?.profile_picture_url}
+                      alt={gameMedia?.studio_name} 
                       className="w-24 h-24 rounded-full object-cover border-2 border-border"
                     />
                   </div>
                   <div className="space-y-2 text-center md:text-left">
-                    <h3 className="text-2xl font-bold">{gameMedia.studio_name}</h3>
+                    <h3 className="text-2xl font-bold">{gameMedia?.studio_name}</h3>
                     <div className="flex flex-col md:flex-row items-center gap-4">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full bg-green-500"></div>
@@ -341,7 +341,7 @@ export default function GameDetails() {
                       <span className="text-sm text-muted-foreground">Joined 2024</span>
                     </div>
                     <p className="text-muted-foreground">
-                      {gameMedia.studio_name} is a pioneering Web3 game development studio focused on creating engaging, accessible experiences. 
+                      {gameMedia?.studio_name} is a pioneering Web3 game development studio focused on creating engaging, accessible experiences. 
                       With a passion for innovation and community-driven development, they're pushing the boundaries of what's possible in browser-based gaming.
                     </p>
                   </div>

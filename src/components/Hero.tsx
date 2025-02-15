@@ -1,7 +1,6 @@
 
 import { Card } from "@/components/ui/card";
 import { Spotlight } from "@/components/ui/spotlight";
-import { SplineScene } from "@/components/ui/splite";
 import { motion } from "framer-motion";
 import { StarBorder } from "@/components/ui/star-border";
 import { GradientText } from "@/components/ui/gradient-text";
@@ -20,7 +19,7 @@ export function Hero() {
       <Card className="w-full max-w-6xl mx-auto bg-background relative overflow-hidden border-0">
         <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
         
-        <div className="flex flex-col md:flex-row h-full min-h-[500px]">
+        <div className="flex flex-col h-full min-h-[500px] pt-20 md:pt-0">
           <div className="flex-1 p-8 relative z-10 flex flex-col justify-center">
             <motion.div initial={{
             opacity: 0,
@@ -54,10 +53,6 @@ export function Hero() {
                 </StarBorder>
               </motion.div>
             </motion.div>
-          </div>
-
-          <div className="flex-1 relative min-h-[300px] md:min-h-[500px]">
-            <SplineScene scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode" className="w-full h-full absolute inset-0" />
           </div>
         </div>
       </Card>
