@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -34,9 +35,48 @@ export function GameCard({
   profilePictureUrl
 }: GameCardProps) {
   const gameUrl = `/game/${title.toLowerCase().replace(/\s+/g, '-')}`;
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      {
+        root: null,
+        rootMargin: '50px',
+        threshold: 0.1
+      }
+    );
+
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
+
+    return () => {
+      if (cardRef.current) {
+        observer.unobserve(cardRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      if (isVisible) {
+        videoRef.current.play().catch(() => {
+          console.log('Video autoplay failed');
+        });
+      } else {
+        videoRef.current.pause();
+      }
+    }
+  }, [isVisible]);
   
   return (
     <motion.div 
+      ref={cardRef}
       className="group relative overflow-hidden rounded-xl bg-card flex border border-border/10"
       whileHover={{ scale: 1.01 }}
       transition={{ duration: 0.2 }}
@@ -45,10 +85,11 @@ export function GameCard({
         <div className="aspect-video overflow-hidden rounded-xl">
           {videoUrl ? (
             <video
+              ref={videoRef}
               key={videoUrl}
-              src={videoUrl}
               className="w-full h-full object-cover"
-              autoPlay
+              preload="auto"
+              autoPlay={isVisible}
               loop
               muted
               playsInline
