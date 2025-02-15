@@ -24,8 +24,12 @@ export function ProfilePicture({ src, alt, size = "md", className = "" }: Profil
   useEffect(() => {
     const cacheProfilePicture = async () => {
       try {
-        // Check if image is already a Supabase URL
-        if (src.includes(supabase.supabaseUrl)) {
+        // Check if image is already from our Supabase storage
+        const { data: { publicUrl } } = supabase.storage
+          .from('profile-pictures')
+          .getPublicUrl('test.svg');
+        
+        if (src.startsWith(publicUrl.split('/test.svg')[0])) {
           setCachedUrl(src);
           return;
         }
@@ -57,11 +61,11 @@ export function ProfilePicture({ src, alt, size = "md", className = "" }: Profil
 
         if (error) throw error;
 
-        const { data: { publicUrl } } = supabase.storage
+        const { data: { publicUrl: newPublicUrl } } = supabase.storage
           .from('profile-pictures')
           .getPublicUrl(filename);
 
-        setCachedUrl(publicUrl);
+        setCachedUrl(newPublicUrl);
       } catch (error) {
         console.error('Error caching profile picture:', error);
         setCachedUrl(src); // Fallback to original URL
