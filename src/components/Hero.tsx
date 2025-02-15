@@ -1,8 +1,10 @@
+
 import { Card } from "@/components/ui/card";
 import { Spotlight } from "@/components/ui/spotlight";
 import { SplineScene } from "@/components/ui/splite";
 import { motion } from "framer-motion";
 import { StarBorder } from "@/components/ui/star-border";
+import { GradientText } from "@/components/ui/gradient-text";
 
 export function Hero() {
   const scrollToFeaturedGames = () => {
@@ -13,7 +15,7 @@ export function Hero() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+    <div className="min-h-[80vh] md:min-h-screen flex items-center justify-center relative overflow-hidden">
       <Card className="w-full max-w-6xl mx-auto bg-background relative overflow-hidden border-0">
         <Spotlight
           className="-top-40 left-0 md:left-60 md:-top-20"
@@ -28,17 +30,20 @@ export function Hero() {
               transition={{ duration: 0.8 }}
               className="space-y-6 text-center md:text-left"
             >
-              <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 leading-tight md:leading-tight pb-2">
-                Premium Games, Instant Access
-              </h1>
-              <p className="text-lg text-neutral-300 max-w-2xl mx-auto md:mx-0">
-                Supporting creators while revolutionizing how players discover and own games.
+              <GradientText 
+                colors={["#ffaa40", "#9c40ff", "#45B7D1"]} 
+                className="text-4xl md:text-6xl font-bold leading-tight md:leading-tight pb-2"
+              >
+                The Future is Fun
+              </GradientText>
+              <p className="text-lg md:text-xl text-neutral-300 max-w-2xl mx-auto md:mx-0">
+                AAA Games in Your Pocket, No Downloads Required
               </p>
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="flex justify-center md:justify-start"
+                className="flex justify-center md:justify-start pt-4"
               >
                 <StarBorder
                   onClick={scrollToFeaturedGames}
@@ -51,10 +56,10 @@ export function Hero() {
             </motion.div>
           </div>
 
-          <div className="flex-1 relative flex flex-col">
+          <div className="flex-1 relative min-h-[300px] md:min-h-[500px]">
             <SplineScene 
               scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-              className="w-full h-full"
+              className="w-full h-full absolute inset-0"
             />
           </div>
         </div>

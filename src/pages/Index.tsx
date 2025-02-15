@@ -1,4 +1,6 @@
+
 import { Navbar } from "@/components/Navbar";
+import { Hero } from "@/components/Hero";
 import { FeaturedCarousel } from "@/components/FeaturedCarousel";
 import { GameCard } from "@/components/GameCard";
 import { FilterBar } from "@/components/FilterBar";
@@ -86,7 +88,8 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="pt-16 md:pt-24">
+      <Hero />
+      <div className="pt-8 md:pt-16">
         <FeaturedCarousel />
       </div>
       
