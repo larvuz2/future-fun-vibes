@@ -95,7 +95,6 @@ const Index = () => {
 
   useEffect(() => {
     const fetchGameMedia = async () => {
-      // Get all game media at once
       const { data, error } = await supabase
         .from('game_media')
         .select('*');
@@ -116,6 +115,39 @@ const Index = () => {
     };
 
     fetchGameMedia();
+
+    // Set up real-time subscription
+    const channel = supabase
+      .channel('game_media_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'game_media'
+        },
+        (payload) => {
+          console.log('Received real-time update:', payload);
+          setGameMedia(prevState => {
+            const newState = { ...prevState };
+            
+            if (payload.eventType === 'DELETE') {
+              delete newState[payload.old.game_name.toLowerCase()];
+            } else {
+              // Handle INSERT and UPDATE
+              const record = payload.new as GameMedia;
+              newState[record.game_name.toLowerCase()] = record;
+            }
+            
+            return newState;
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   useEffect(() => {
@@ -125,6 +157,11 @@ const Index = () => {
       window.history.replaceState({}, document.title);
     }
   }, [location]);
+
+  // Filter games to only show ones that have matching media entries
+  const filteredGames = games.filter(game => 
+    gameMedia[game.title.toLowerCase()]
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -138,21 +175,24 @@ const Index = () => {
           <FilterBar />
           
           <div className="flex flex-col gap-8 mt-8">
-            {games.map((game, index) => (
-              <motion.div
-                key={game.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <GameCard 
-                  {...game}
-                  videoUrl={gameMedia[game.title.toLowerCase()]?.video_url}
-                  profilePictureUrl={gameMedia[game.title.toLowerCase()]?.profile_picture_url}
-                />
-              </motion.div>
-            ))}
+            {filteredGames.map((game, index) => {
+              const media = gameMedia[game.title.toLowerCase()];
+              return (
+                <motion.div
+                  key={game.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <GameCard 
+                    {...game}
+                    videoUrl={media?.video_url}
+                    profilePictureUrl={media?.profile_picture_url}
+                  />
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
