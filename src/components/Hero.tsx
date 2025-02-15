@@ -33,7 +33,7 @@ export function Hero() {
                   The Future is Fun
                 </GradientText>
               </div>
-              <p className="text-lg md:text-xl text-neutral-300 max-w-2xl text-center md:text-left">AAA Indie Games in Your Pocket, No Downloads Required</p>
+              <p className="text-lg md:text-xl text-neutral-300 max-w-2xl text-center md:text-left">Cloud-Powered Indie Games: From Metahumans to AI Worlds</p>
               <motion.div initial={{
               opacity: 0
             }} animate={{
