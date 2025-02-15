@@ -29,9 +29,9 @@ const HARDCODED_GAME_MEDIA: Record<string, GameMedia> = {
     video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//Bulldozer.mp4",
     profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=drillhorn",
     image_1_url: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937",
-    image_2_url: "https://images.unsplash.com/photo-1501286353178-1ec881214838",
+    image_2_url: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937",
     image_3_url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625",
-    image_4_url: "https://images.unsplash.com/photo-1473177104440-ffee2f376098"
+    image_4_url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625"
   },
   'skyfang': {
     game_name: "Skyfang",
@@ -265,21 +265,36 @@ export default function GameDetails() {
       <div className="container py-6 mt-20">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
+            <div className="flex flex-col md:flex-row gap-4 items-start">
+              <div className="flex-shrink-0">
+                <img 
+                  src={gameMedia.profile_picture_url}
+                  alt={gameMedia.studio_name} 
+                  className="w-16 h-16 rounded-full object-cover border-2 border-border"
+                />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold">{gameMedia.game_name}</h3>
+                <p className="text-sm text-muted-foreground">{gameMedia.studio_name}</p>
+              </div>
+            </div>
+
             <div className="relative rounded-lg overflow-hidden">
               <div className="aspect-video bg-card relative">
                 <video 
                   src={gameMedia.video_url} 
-                  className="w-full h-full object-cover rounded-lg"
+                  className="w-full h-full object-cover"
                   controls
                   autoPlay
                   muted
                   loop
                 />
-                <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white">
-                  <p className="text-xl mb-4">You need tokens to start</p>
+                <div className="absolute bottom-4 right-4 left-4 flex flex-row items-center justify-between bg-black/70 p-3 rounded-lg">
+                  <p className="text-sm text-white">You need tokens to start</p>
                   <Button 
                     className="bg-primary hover:bg-primary/90"
                     onClick={handleLaunchGame}
+                    size="sm"
                   >
                     Launch Game
                   </Button>
