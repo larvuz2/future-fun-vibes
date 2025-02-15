@@ -6,7 +6,7 @@ import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useIsMobile } from "@/utils/useIsMobile";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const HARDCODED_GAMES = [
   {
