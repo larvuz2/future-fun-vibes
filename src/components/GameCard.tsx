@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/3d-button";
 import { Heart, Gamepad2, Clock, Coins } from "lucide-react";
 import { GradientText } from "@/components/ui/gradient-text";
 import { toast } from "sonner";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface GameCardProps {
   title: string;
@@ -40,6 +41,7 @@ export function GameCard({
   const cardRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [videoError, setVideoError] = useState(false);
+  const isMobile = useIsMobile();
   
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -92,12 +94,12 @@ export function GameCard({
   return (
     <motion.div 
       ref={cardRef}
-      className="group relative overflow-hidden rounded-xl bg-card flex border border-border/10"
+      className="group relative overflow-hidden rounded-xl bg-card flex flex-col md:flex-row border border-border/10"
       whileHover={{ scale: 1.01 }}
       transition={{ duration: 0.2 }}
     >
-      <Link to={gameUrl} className="relative w-[60%]">
-        <div className="aspect-video overflow-hidden rounded-xl">
+      <Link to={gameUrl} className={`relative ${isMobile ? 'w-full aspect-video' : 'w-[60%]'}`}>
+        <div className="w-full h-full overflow-hidden rounded-xl">
           {videoUrl && !videoError ? (
             <video
               ref={videoRef}
@@ -127,8 +129,8 @@ export function GameCard({
         </div>
       </Link>
       
-      <div className="flex-1 p-6 flex flex-col justify-between">
-        <div className="space-y-6">
+      <div className="flex-1 p-4 md:p-6 flex flex-col justify-between">
+        <div className="space-y-4 md:space-y-6">
           <Button 
             variant="ghost"
             size="icon"
@@ -139,7 +141,7 @@ export function GameCard({
 
           <div className="space-y-4">
             <div className="flex items-start gap-3">
-              <div className="w-24 h-24 rounded-2xl bg-card overflow-hidden border border-border/50 flex-shrink-0">
+              <div className="w-16 h-16 md:w-24 md:h-24 rounded-2xl bg-card overflow-hidden border border-border/50 flex-shrink-0">
                 <img 
                   src={profilePictureUrl || "https://api.dicebear.com/7.x/pixel-art/svg?seed=studio1"}
                   alt={developer}
@@ -147,7 +149,7 @@ export function GameCard({
                 />
               </div>
               <div>
-                <h3 className="text-2xl font-semibold leading-tight">{title}</h3>
+                <h3 className="text-xl md:text-2xl font-semibold leading-tight">{title}</h3>
                 <p className="text-sm text-muted-foreground">{developer}</p>
               </div>
             </div>
@@ -159,7 +161,7 @@ export function GameCard({
             </div>
           </div>
 
-          <div className="flex gap-6 text-sm text-muted-foreground">
+          <div className="grid grid-cols-2 md:flex md:gap-6 gap-2 text-xs md:text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <Gamepad2 className="w-4 h-4" />
               {plays.toLocaleString()} plays
@@ -175,7 +177,7 @@ export function GameCard({
           </div>
         </div>
 
-        <div className="flex items-center gap-4 mt-6">
+        <div className="flex items-center gap-4 mt-4 md:mt-6">
           <div className="flex-1 flex flex-col items-center">
             <Link to={gameUrl} className="w-full">
               <Button className="w-full bg-[#9b87f5] hover:bg-[#7E69AB] border-[#6E59A5] border-b-4 text-white shadow-md flex items-center justify-center">

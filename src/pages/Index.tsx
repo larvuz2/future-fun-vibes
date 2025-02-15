@@ -1,4 +1,3 @@
-
 import { Navbar } from "@/components/Navbar";
 import { FeaturedCarousel } from "@/components/FeaturedCarousel";
 import { GameCard } from "@/components/GameCard";
@@ -7,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useIsMobile } from "@/utils/useIsMobile";
 
 const HARDCODED_GAMES = [
   {
@@ -73,6 +73,7 @@ const HARDCODED_GAMES = [
 
 const Index = () => {
   const location = useLocation();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (location.state?.scrollToGames) {
@@ -85,15 +86,15 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="pt-24">
+      <div className="pt-16 md:pt-24">
         <FeaturedCarousel />
       </div>
       
-      <section id="games-grid" className="py-8 md:py-12">
-        <div className="container max-w-7xl">
+      <section id="games-grid" className="py-4 md:py-12">
+        <div className="container px-4 md:px-6 max-w-7xl">
           <FilterBar />
           
-          <div className="flex flex-col gap-8 mt-8">
+          <div className="flex flex-col gap-4 md:gap-8 mt-4 md:mt-8">
             {HARDCODED_GAMES.map((game, index) => (
               <motion.div
                 key={game.id}
