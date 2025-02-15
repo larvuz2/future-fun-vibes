@@ -2,7 +2,7 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/3d-button";
 import { FaGoogle, FaApple } from "react-icons/fa";
-import { SiMetamask as MetaMaskIcon } from "react-icons/si";
+import { SiEthereum as MetaMaskIcon } from "react-icons/si";
 
 export function LoginPopover({ children }: { children: React.ReactNode }) {
   return (
