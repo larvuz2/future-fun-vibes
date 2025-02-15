@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,79 +17,59 @@ const sizes = {
 
 export function ProfilePicture({ src, alt, size = "md", className = "" }: ProfilePictureProps) {
   const [isLoading, setIsLoading] = useState(true);
-  const [cachedUrl, setCachedUrl] = useState<string | null>(null);
-  const [error, setError] = useState<boolean>(false);
+  const [imageUrl, setImageUrl] = useState<string>(src);
   const sizeClass = sizes[size];
 
   useEffect(() => {
     const cacheProfilePicture = async () => {
       try {
-        // Generate a unique filename for the SVG
-        const filename = `${alt.toLowerCase().replace(/\s+/g, '-')}-${size}-${Date.now()}.svg`;
-        
-        // Try to fetch the image first to verify it exists
         const response = await fetch(src);
         if (!response.ok) {
           throw new Error('Failed to fetch image');
         }
-        
-        const svgBlob = await response.blob();
-        if (!svgBlob.type.includes('svg')) {
-          throw new Error('Invalid image type');
+
+        if (src.includes('dicebear.com')) {
+          setImageUrl(src);
+          setIsLoading(false);
+          return;
         }
 
-        // Upload to Supabase storage
+        const blob = await response.blob();
+        const filename = `${alt.toLowerCase().replace(/\s+/g, '-')}-${size}-${Date.now()}.${blob.type.includes('svg') ? 'svg' : 'png'}`;
+
         const { data: uploadedFile, error: uploadError } = await supabase.storage
           .from('profile-pictures')
-          .upload(filename, svgBlob, {
-            contentType: 'image/svg+xml',
-            cacheControl: '31536000', // Cache for 1 year
+          .upload(filename, blob, {
+            contentType: blob.type,
+            cacheControl: '31536000',
             upsert: true
           });
 
         if (uploadError) {
           console.error('Upload error:', uploadError);
-          throw uploadError;
+          return;
         }
 
-        // Get the public URL for the uploaded file
         const { data: { publicUrl } } = supabase.storage
           .from('profile-pictures')
           .getPublicUrl(filename);
 
-        if (!publicUrl) {
-          throw new Error('Failed to get public URL');
+        if (publicUrl) {
+          setImageUrl(publicUrl);
         }
-
-        setCachedUrl(publicUrl);
-        setError(false);
       } catch (error) {
         console.error('Error in profile picture handling:', error);
-        setCachedUrl(src); // Fallback to original URL
-        setError(true);
       } finally {
         setIsLoading(false);
       }
     };
 
     if (src) {
-      // Reset states when src changes
       setIsLoading(true);
-      setError(false);
-      setCachedUrl(null);
-      
-      // Start caching process
+      setImageUrl(src);
       cacheProfilePicture();
     }
   }, [src, alt, size]);
-
-  if (error) {
-    return (
-      <div className={`relative ${sizeClass} ${className} bg-muted rounded-full flex items-center justify-center`}>
-        <span className="text-muted-foreground text-xs">!</span>
-      </div>
-    );
-  }
 
   return (
     <div className={`relative ${sizeClass} ${className}`}>
@@ -98,15 +77,16 @@ export function ProfilePicture({ src, alt, size = "md", className = "" }: Profil
         <Skeleton className={`${sizeClass} rounded-full absolute inset-0`} />
       )}
       <img
-        src={cachedUrl || src}
+        src={imageUrl}
         alt={alt}
         className={`rounded-full object-cover ${sizeClass} transition-opacity duration-200 ${
           isLoading ? 'opacity-0' : 'opacity-100'
         }`}
         onLoad={() => setIsLoading(false)}
-        onError={() => {
-          setError(true);
+        onError={(e) => {
+          console.error('Error loading image:', e);
           setIsLoading(false);
+          setImageUrl(src);
         }}
         loading="lazy"
       />
