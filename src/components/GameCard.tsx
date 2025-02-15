@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -34,7 +33,6 @@ export function GameCard({
   videoUrl,
   profilePictureUrl
 }: GameCardProps) {
-  const [videoError, setVideoError] = useState(false);
   const gameUrl = `/game/${title.toLowerCase().replace(/\s+/g, '-')}`;
   
   return (
@@ -45,16 +43,15 @@ export function GameCard({
     >
       <Link to={gameUrl} className="relative w-[60%]">
         <div className="aspect-video overflow-hidden rounded-xl">
-          {videoUrl && !videoError ? (
+          {videoUrl ? (
             <video
+              key={videoUrl}
               src={videoUrl}
               className="w-full h-full object-cover"
               autoPlay
               loop
               muted
               playsInline
-              onError={() => setVideoError(true)}
-              poster={image}
             />
           ) : (
             <img 
