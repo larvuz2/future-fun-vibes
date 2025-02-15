@@ -10,10 +10,10 @@ export function LoginPopover({ children }: { children: React.ReactNode }) {
       <PopoverTrigger asChild>
         {children}
       </PopoverTrigger>
-      <PopoverContent className="w-80 p-6 bg-[#F1F0FB] border-none shadow-xl">
+      <PopoverContent className="w-80 p-6 bg-background border-none shadow-xl">
         <div className="space-y-4">
           <div className="text-center mb-6">
-            <h3 className="font-semibold text-xl mb-1">Welcome to Future.fun</h3>
+            <h3 className="font-semibold text-xl mb-1 text-foreground">Welcome to Future.fun</h3>
             <p className="text-sm text-muted-foreground">Choose how you want to join</p>
           </div>
           
@@ -38,7 +38,7 @@ export function LoginPopover({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="text-center mt-4">
-            <p className="text-sm text-[#8E9196] flex items-center justify-center gap-1">
+            <p className="text-sm text-muted-foreground flex items-center justify-center gap-1">
               Under Construction <span role="img" aria-label="construction">🚧</span>
             </p>
           </div>

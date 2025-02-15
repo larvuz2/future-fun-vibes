@@ -279,16 +279,19 @@ export default function GameDetails() {
               </div>
             </div>
 
-            <div className="relative rounded-lg overflow-hidden bg-card">
-              <div className="aspect-video w-full max-w-full relative">
-                <video 
-                  src={gameMedia?.video_url} 
-                  className="w-full h-full object-contain"
-                  controls
-                  autoPlay
-                  muted
-                  loop
-                />
+            <Card className="overflow-hidden bg-card">
+              <div className="w-full relative">
+                <div className="aspect-video">
+                  <video 
+                    src={gameMedia?.video_url} 
+                    className="w-full h-full object-contain"
+                    controls
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                  />
+                </div>
                 <div className="absolute bottom-4 right-4 left-4 flex flex-row items-center justify-between bg-black/70 p-3 rounded-lg">
                   <p className="text-sm text-white">You need tokens to start</p>
                   <Button 
@@ -300,7 +303,7 @@ export default function GameDetails() {
                   </Button>
                 </div>
               </div>
-            </div>
+            </Card>
 
             {isMobile && <SidebarContent />}
 
