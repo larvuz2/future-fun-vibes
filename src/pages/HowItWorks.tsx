@@ -7,7 +7,8 @@ import { Gamepad2, Zap, Scale, Laptop2, Users, Rocket, Crown, Smartphone, Coins 
 
 const HowItWorks = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-background to-black pointer-events-none" />
       <Navbar />
       
       {/* Hero Section with Background Image */}

@@ -57,20 +57,23 @@ export function GameCard({
         </div>
 
         <div className="w-full md:w-1/3 p-4 md:p-6 relative bg-card/40 backdrop-blur-xl">
-          <div className="flex items-start gap-3 absolute -top-12 md:top-6 left-4 md:left-6 z-10">
+          <div className={`flex items-start gap-3 md:absolute ${
+            // On mobile, position normally in the flow. On desktop, position absolutely
+            'relative md:absolute md:top-6 md:left-6'
+          } z-10 mb-6 md:mb-0`}>
             <ProfilePicture
               src={profilePictureUrl}
               alt={developer}
               size="md"
               className="border-2 border-background shadow-xl"
             />
-            <div className="text-white md:text-foreground">
+            <div className="text-foreground">
               <h3 className="font-bold text-xl md:text-2xl leading-tight">{title}</h3>
-              <p className="text-sm text-white/80">{developer}</p>
+              <p className="text-sm text-foreground/80">{developer}</p>
             </div>
           </div>
 
-          <div className="mt-16 md:mt-32 space-y-6">
+          <div className="md:mt-32 space-y-6">
             <div className="grid grid-cols-3 gap-4 text-center">
               <div className="bg-black/20 rounded-lg p-2">
                 <Users className="w-4 h-4 mx-auto mb-1 text-primary" />

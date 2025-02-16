@@ -5,13 +5,13 @@ import { motion } from "framer-motion";
 import { useEffect } from "react";
 
 const Upload = () => {
-  // Scroll to top on component mount
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-background to-black pointer-events-none" />
       <Navbar />
       
       <main className="flex-grow container mx-auto px-4 py-24">

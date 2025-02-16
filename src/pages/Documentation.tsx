@@ -112,7 +112,7 @@ const Documentation = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
         <p className="mt-4 text-lg">Loading documentation...</p>
       </div>
@@ -120,10 +120,11 @@ const Documentation = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-background to-black pointer-events-none" />
       <Navbar />
       
-      <main className="flex-1 container mx-auto px-4 py-24">
+      <main className="flex-1 container mx-auto px-4 py-24 relative z-10">
         <div className="max-w-[1400px] mx-auto">
           <div className="md:hidden w-full mb-4">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
