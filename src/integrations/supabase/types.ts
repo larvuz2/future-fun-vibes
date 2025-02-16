@@ -39,6 +39,39 @@ export type Database = {
         }
         Relationships: []
       }
+      audio_generations: {
+        Row: {
+          created_at: string
+          id: string
+          input_tracks: string[]
+          output_url: string | null
+          prompt: string | null
+          replicate_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input_tracks: string[]
+          output_url?: string | null
+          prompt?: string | null
+          replicate_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input_tracks?: string[]
+          output_url?: string | null
+          prompt?: string | null
+          replicate_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       bookmarks: {
         Row: {
           author: string
@@ -520,6 +553,33 @@ export type Database = {
           progress?: Json
           task_id?: string
           task_name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      tracks: {
+        Row: {
+          audio_url: string | null
+          created_at: string | null
+          id: string
+          name: string
+          prompt: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          audio_url?: string | null
+          created_at?: string | null
+          id?: string
+          name: string
+          prompt?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          audio_url?: string | null
+          created_at?: string | null
+          id?: string
+          name?: string
+          prompt?: string | null
           updated_at?: string | null
         }
         Relationships: []
