@@ -6,76 +6,30 @@ import { GameCard } from "@/components/GameCard";
 import { FilterBar } from "@/components/FilterBar";
 import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { GAMES, Game } from "@/data/games";
 
-const HARDCODED_GAMES = [
-  {
-    id: "1",
-    game_name: "Drillhorn",
-    studio_name: "Future Studios",
-    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//Bulldozer.mp4",
-    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=drillhorn",
-    image_1_url: "/placeholder.svg",
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: "2",
-    game_name: "Skyfang",
-    studio_name: "Dragon Games",
-    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//DRAGON.mp4",
-    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=skyfang",
-    image_1_url: "/placeholder.svg",
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: "3",
-    game_name: "Big Hairy Snowman",
-    studio_name: "Snow Studios",
-    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//HAIRY.mp4",
-    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=snowman",
-    image_1_url: "/placeholder.svg",
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: "4",
-    game_name: "Meme Legends",
-    studio_name: "Meme Factory",
-    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//MEME.mp4",
-    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=meme",
-    image_1_url: "/placeholder.svg",
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: "5",
-    game_name: "Fluid Simulation Puzzles",
-    studio_name: "Physics Games",
-    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//FLUID.mp4",
-    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=fluid",
-    image_1_url: "/placeholder.svg",
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: "6",
-    game_name: "Forest Drone",
-    studio_name: "Drone Games",
-    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//Drone%20and%20Basic%20Controller%20-%20Unreal%20Engine%20(1).mp4",
-    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=drone",
-    image_1_url: "/placeholder.svg",
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+// Fisher-Yates shuffle algorithm
+const shuffleArray = (array: Game[]): Game[] => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
-];
+  return shuffled;
+};
 
 const Index = () => {
   const location = useLocation();
   const isMobile = useIsMobile();
+  const [games, setGames] = useState<Game[]>([]);
+
+  useEffect(() => {
+    // Shuffle games on mount
+    setGames(shuffleArray(GAMES));
+  }, []);
 
   useEffect(() => {
     if (location.state?.scrollToGames) {
@@ -101,7 +55,7 @@ const Index = () => {
           <FilterBar />
           
           <div className="flex flex-col gap-4 md:gap-8 mt-4 md:mt-8">
-            {HARDCODED_GAMES.map((game, index) => (
+            {games.map((game, index) => (
               <motion.div
                 key={game.id}
                 initial={{ opacity: 0, y: 20 }}

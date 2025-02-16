@@ -86,6 +86,69 @@ const HARDCODED_GAME_MEDIA: Record<string, GameMedia> = {
   }
 };
 
+const GAMES = [
+  {
+    game_name: "Drillhorn",
+    studio_name: "Future Studios",
+    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//Bulldozer.mp4",
+    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=drillhorn",
+    image_1_url: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937",
+    image_2_url: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937",
+    image_3_url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625",
+    image_4_url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625"
+  },
+  {
+    game_name: "Skyfang",
+    studio_name: "Dragon Games",
+    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//DRAGON.mp4",
+    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=skyfang",
+    image_1_url: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
+    image_2_url: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937",
+    image_3_url: "https://images.unsplash.com/photo-1501286353178-1ec881214838",
+    image_4_url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625"
+  },
+  {
+    game_name: "Big Hairy Snowman",
+    studio_name: "Snow Studios",
+    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//HAIRY.mp4",
+    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=snowman",
+    image_1_url: "https://images.unsplash.com/photo-1473177104440-ffee2f376098",
+    image_2_url: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
+    image_3_url: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937",
+    image_4_url: "https://images.unsplash.com/photo-1501286353178-1ec881214838"
+  },
+  {
+    game_name: "Meme Legends",
+    studio_name: "Meme Factory",
+    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//MEME.mp4",
+    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=meme",
+    image_1_url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625",
+    image_2_url: "https://images.unsplash.com/photo-1473177104440-ffee2f376098",
+    image_3_url: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
+    image_4_url: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937"
+  },
+  {
+    game_name: "Fluid Simulation Puzzles",
+    studio_name: "Physics Games",
+    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//FLUID.mp4",
+    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=fluid",
+    image_1_url: "https://images.unsplash.com/photo-1501286353178-1ec881214838",
+    image_2_url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625",
+    image_3_url: "https://images.unsplash.com/photo-1473177104440-ffee2f376098",
+    image_4_url: "https://images.unsplash.com/photo-1582562124811-c09040d0a901"
+  },
+  {
+    game_name: "Forest Drone",
+    studio_name: "Drone Games",
+    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//Drone%20and%20Basic%20Controller%20-%20Unreal%20Engine%20(1).mp4",
+    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=drone",
+    image_1_url: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937",
+    image_2_url: "https://images.unsplash.com/photo-1501286353178-1ec881214838",
+    image_3_url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625",
+    image_4_url: "https://images.unsplash.com/photo-1473177104440-ffee2f376098"
+  }
+];
+
 export default function GameDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -101,9 +164,21 @@ export default function GameDetails() {
   useEffect(() => {
     if (!id) return;
     
-    const gameData = HARDCODED_GAME_MEDIA[id as keyof typeof HARDCODED_GAME_MEDIA];
+    const gameSlug = id.toLowerCase();
+    const foundGame = GAMES.find(g => g.game_name.toLowerCase().replace(/\s+/g, '-') === gameSlug);
     
-    if (!gameData) {
+    if (foundGame) {
+      setGameMedia({
+        game_name: foundGame.game_name,
+        studio_name: foundGame.studio_name,
+        video_url: foundGame.video_url,
+        profile_picture_url: foundGame.profile_picture_url,
+        image_1_url: foundGame.image_1_url,
+        image_2_url: foundGame.image_1_url,
+        image_3_url: foundGame.image_1_url,
+        image_4_url: foundGame.image_1_url
+      });
+    } else {
       toast({
         title: "Game Not Found",
         description: "The requested game could not be found",
@@ -113,15 +188,12 @@ export default function GameDetails() {
       return;
     }
 
-    setGameMedia(gameData);
-
-    // Extract frames from video
     const extractFrames = async () => {
       try {
         const response = await supabase.functions.invoke('extract-video-frames', {
           body: {
-            videoUrl: gameData.video_url,
-            gameName: gameData.game_name.toLowerCase().replace(/\s+/g, '-')
+            videoUrl: foundGame?.video_url,
+            gameName: foundGame?.game_name.toLowerCase().replace(/\s+/g, '-')
           }
         });
 
@@ -141,7 +213,7 @@ export default function GameDetails() {
 
     extractFrames();
   }, [id, toast, navigate]);
-  
+
   const handleLaunchGame = () => {
     navigate(`/game/${id}/play`);
   };
