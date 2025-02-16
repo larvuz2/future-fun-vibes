@@ -22,6 +22,7 @@ interface GameCardProps {
 
 export function GameCard({
   title,
+  image,
   genre,
   developer,
   marketCap,
@@ -33,17 +34,17 @@ export function GameCard({
   profilePictureUrl
 }: GameCardProps) {
   const navigate = useNavigate();
+  const gameUrl = `/game/${title.toLowerCase().replace(/\s+/g, '-')}`;
 
   const handleGameClick = () => {
-    const gameId = title.toLowerCase().replace(/\s+/g, '-');
-    navigate(`/game/${gameId}`);
+    navigate(gameUrl);
   };
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden glass-card elegant-hover">
       <div className="flex flex-col md:flex-row w-full">
         <div className="relative w-full md:w-2/3 cursor-pointer" onClick={handleGameClick}>
-          <div className="aspect-video relative">
+          <div className="aspect-video relative gradient-overlay">
             <video
               src={videoUrl}
               className="w-full h-full object-cover"
@@ -52,44 +53,43 @@ export function GameCard({
               autoPlay
               playsInline
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
           </div>
         </div>
 
-        <div className="w-full md:w-1/3 p-4 md:p-6 relative">
+        <div className="w-full md:w-1/3 p-4 md:p-6 relative bg-card/40 backdrop-blur-xl">
           <div className="flex items-start gap-3 absolute -top-12 md:top-6 left-4 md:left-6 z-10">
             <ProfilePicture
               src={profilePictureUrl}
               alt={developer}
               size="md"
-              className="border-2 border-background"
+              className="border-2 border-background shadow-xl"
             />
             <div className="text-white md:text-foreground">
               <h3 className="font-bold text-xl md:text-2xl leading-tight">{title}</h3>
-              <p className="text-sm opacity-90">{developer}</p>
+              <p className="text-sm text-white/80">{developer}</p>
             </div>
           </div>
 
           <div className="mt-16 md:mt-32 space-y-6">
             <div className="grid grid-cols-3 gap-4 text-center">
-              <div>
-                <Users className="w-4 h-4 mx-auto mb-1" />
+              <div className="bg-black/20 rounded-lg p-2">
+                <Users className="w-4 h-4 mx-auto mb-1 text-primary" />
                 <p className="text-sm font-medium">{plays.toLocaleString()}</p>
                 <p className="text-xs text-muted-foreground">Plays</p>
               </div>
-              <div>
-                <Timer className="w-4 h-4 mx-auto mb-1" />
+              <div className="bg-black/20 rounded-lg p-2">
+                <Timer className="w-4 h-4 mx-auto mb-1 text-primary" />
                 <p className="text-sm font-medium">{hours.toLocaleString()}</p>
                 <p className="text-xs text-muted-foreground">Hours</p>
               </div>
-              <div>
-                <BarChart3 className="w-4 h-4 mx-auto mb-1" />
+              <div className="bg-black/20 rounded-lg p-2">
+                <BarChart3 className="w-4 h-4 mx-auto mb-1 text-primary" />
                 <p className="text-sm font-medium">{mints.toLocaleString()}</p>
                 <p className="text-xs text-muted-foreground">Mints</p>
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2 bg-black/20 rounded-lg p-3">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Market Cap</span>
                 <span className="font-medium">{marketCap}</span>
@@ -106,10 +106,10 @@ export function GameCard({
 
             <div className="flex flex-col items-center">
               <Button 
-                className="w-full bg-[#9b87f5] hover:bg-[#7E69AB] border-[#6E59A5] border-b-4 text-white shadow-md flex items-center justify-center" 
+                className="w-full bg-primary hover:bg-primary/90 border-primary-foreground/20 border-b-4 text-primary-foreground shadow-xl flex items-center justify-center transition-all duration-300" 
                 onClick={handleGameClick}
               >
-                <Gamepad2 className="w-4 h-4 mr-1 text-white" /> Go to Game
+                <Gamepad2 className="w-4 h-4 mr-1" /> Play Now
               </Button>
               <div className="flex items-center gap-1 mt-1">
                 <GradientText colors={["#FF6B6B", "#4ECDC4", "#45B7D1"]} className="text-xs" animationSpeed={4}>

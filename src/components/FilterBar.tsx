@@ -1,3 +1,4 @@
+
 import {
   Select,
   SelectContent,
@@ -15,10 +16,10 @@ export function FilterBar() {
     <div className="w-full flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
       <div className="w-full md:w-auto">
         <Select defaultValue="featured">
-          <SelectTrigger className="w-full md:w-[180px]">
+          <SelectTrigger className="w-full md:w-[180px] glass elegant-hover">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="glass-card border-border/50">
             <SelectItem value="featured">
               <span className="flex items-center gap-2">
                 Featured <Flame className="w-4 h-4 text-orange-500" />
@@ -36,7 +37,7 @@ export function FilterBar() {
           <Button
             key={genre}
             variant="outline"
-            className="rounded-full whitespace-nowrap"
+            className="rounded-full whitespace-nowrap glass elegant-hover border-border/50"
             size="sm"
           >
             {genre}

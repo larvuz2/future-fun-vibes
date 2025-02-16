@@ -86,14 +86,17 @@ const Index = () => {
   }, [location]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-background to-black pointer-events-none" />
+      
       <Navbar />
       <Hero />
-      <div className="pt-4 md:pt-8">
+      
+      <div className="relative pt-4 md:pt-8 z-10">
         <FeaturedCarousel />
       </div>
       
-      <section id="games-grid" className="py-4 md:py-12">
+      <section id="games-grid" className="relative py-4 md:py-12 z-10">
         <div className="container px-4 md:px-6 max-w-7xl">
           <FilterBar />
           
