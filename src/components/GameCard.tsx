@@ -5,6 +5,7 @@ import { BarChart3, Users, Timer, Gamepad2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { GradientText } from "@/components/ui/gradient-text";
 import { ProfilePicture } from "@/components/ui/profile-picture";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface GameCardProps {
   title: string;
@@ -34,6 +35,7 @@ export function GameCard({
   profilePictureUrl
 }: GameCardProps) {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const gameUrl = `/game/${title.toLowerCase().replace(/\s+/g, '-')}`;
 
   const handleGameClick = () => {
@@ -41,7 +43,7 @@ export function GameCard({
   };
 
   return (
-    <Card className="overflow-hidden glass-card elegant-hover">
+    <Card className={`overflow-hidden glass-card ${!isMobile && 'elegant-hover'}`}>
       <div className="flex flex-col md:flex-row w-full">
         <div className="relative w-full md:w-2/3 cursor-pointer" onClick={handleGameClick}>
           <div className="aspect-video relative gradient-overlay">
@@ -57,10 +59,7 @@ export function GameCard({
         </div>
 
         <div className="w-full md:w-1/3 p-4 md:p-6 relative bg-card/40 backdrop-blur-xl">
-          <div className={`flex items-start gap-3 md:absolute ${
-            // On mobile, position normally in the flow. On desktop, position absolutely
-            'relative md:absolute md:top-6 md:left-6'
-          } z-10 mb-6 md:mb-0`}>
+          <div className="flex items-start gap-3">
             <ProfilePicture
               src={profilePictureUrl}
               alt={developer}
@@ -73,7 +72,7 @@ export function GameCard({
             </div>
           </div>
 
-          <div className="md:mt-32 space-y-6">
+          <div className="mt-6 space-y-6">
             <div className="grid grid-cols-3 gap-4 text-center">
               <div className="bg-black/20 rounded-lg p-2">
                 <Users className="w-4 h-4 mx-auto mb-1 text-primary" />
