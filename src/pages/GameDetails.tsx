@@ -1,3 +1,4 @@
+
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
@@ -11,6 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ProfilePicture } from "@/components/ui/profile-picture";
+import { GAMES } from "@/data/games";
 
 interface GameMedia {
   game_name: string;
@@ -22,132 +24,6 @@ interface GameMedia {
   image_3_url: string;
   image_4_url: string;
 }
-
-const HARDCODED_GAME_MEDIA: Record<string, GameMedia> = {
-  'drillhorn': {
-    game_name: "Drillhorn",
-    studio_name: "Future Studios",
-    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//Bulldozer.mp4",
-    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=drillhorn",
-    image_1_url: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937",
-    image_2_url: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937",
-    image_3_url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625",
-    image_4_url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625"
-  },
-  'skyfang': {
-    game_name: "Skyfang",
-    studio_name: "Dragon Games",
-    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//DRAGON.mp4",
-    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=skyfang",
-    image_1_url: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
-    image_2_url: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937",
-    image_3_url: "https://images.unsplash.com/photo-1501286353178-1ec881214838",
-    image_4_url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625"
-  },
-  'big-hairy-snowman': {
-    game_name: "Big Hairy Snowman",
-    studio_name: "Snow Studios",
-    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//HAIRY.mp4",
-    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=snowman",
-    image_1_url: "https://images.unsplash.com/photo-1473177104440-ffee2f376098",
-    image_2_url: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
-    image_3_url: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937",
-    image_4_url: "https://images.unsplash.com/photo-1501286353178-1ec881214838"
-  },
-  'meme-legends': {
-    game_name: "Meme Legends",
-    studio_name: "Meme Factory",
-    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//MEME.mp4",
-    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=meme",
-    image_1_url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625",
-    image_2_url: "https://images.unsplash.com/photo-1473177104440-ffee2f376098",
-    image_3_url: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
-    image_4_url: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937"
-  },
-  'fluid-simulation-puzzles': {
-    game_name: "Fluid Simulation Puzzles",
-    studio_name: "Physics Games",
-    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//FLUID.mp4",
-    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=fluid",
-    image_1_url: "https://images.unsplash.com/photo-1501286353178-1ec881214838",
-    image_2_url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625",
-    image_3_url: "https://images.unsplash.com/photo-1473177104440-ffee2f376098",
-    image_4_url: "https://images.unsplash.com/photo-1582562124811-c09040d0a901"
-  },
-  'forest-drone': {
-    game_name: "Forest Drone",
-    studio_name: "Drone Games",
-    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//Drone%20and%20Basic%20Controller%20-%20Unreal%20Engine%20(1).mp4",
-    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=drone",
-    image_1_url: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937",
-    image_2_url: "https://images.unsplash.com/photo-1501286353178-1ec881214838",
-    image_3_url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625",
-    image_4_url: "https://images.unsplash.com/photo-1473177104440-ffee2f376098"
-  }
-};
-
-const GAMES = [
-  {
-    game_name: "Drillhorn",
-    studio_name: "Future Studios",
-    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//Bulldozer.mp4",
-    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=drillhorn",
-    image_1_url: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937",
-    image_2_url: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937",
-    image_3_url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625",
-    image_4_url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625"
-  },
-  {
-    game_name: "Skyfang",
-    studio_name: "Dragon Games",
-    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//DRAGON.mp4",
-    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=skyfang",
-    image_1_url: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
-    image_2_url: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937",
-    image_3_url: "https://images.unsplash.com/photo-1501286353178-1ec881214838",
-    image_4_url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625"
-  },
-  {
-    game_name: "Big Hairy Snowman",
-    studio_name: "Snow Studios",
-    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//HAIRY.mp4",
-    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=snowman",
-    image_1_url: "https://images.unsplash.com/photo-1473177104440-ffee2f376098",
-    image_2_url: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
-    image_3_url: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937",
-    image_4_url: "https://images.unsplash.com/photo-1501286353178-1ec881214838"
-  },
-  {
-    game_name: "Meme Legends",
-    studio_name: "Meme Factory",
-    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//MEME.mp4",
-    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=meme",
-    image_1_url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625",
-    image_2_url: "https://images.unsplash.com/photo-1473177104440-ffee2f376098",
-    image_3_url: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
-    image_4_url: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937"
-  },
-  {
-    game_name: "Fluid Simulation Puzzles",
-    studio_name: "Physics Games",
-    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//FLUID.mp4",
-    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=fluid",
-    image_1_url: "https://images.unsplash.com/photo-1501286353178-1ec881214838",
-    image_2_url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625",
-    image_3_url: "https://images.unsplash.com/photo-1473177104440-ffee2f376098",
-    image_4_url: "https://images.unsplash.com/photo-1582562124811-c09040d0a901"
-  },
-  {
-    game_name: "Forest Drone",
-    studio_name: "Drone Games",
-    video_url: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media//Drone%20and%20Basic%20Controller%20-%20Unreal%20Engine%20(1).mp4",
-    profile_picture_url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=drone",
-    image_1_url: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937",
-    image_2_url: "https://images.unsplash.com/photo-1501286353178-1ec881214838",
-    image_3_url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625",
-    image_4_url: "https://images.unsplash.com/photo-1473177104440-ffee2f376098"
-  }
-];
 
 export default function GameDetails() {
   const { id } = useParams();
@@ -217,6 +93,18 @@ export default function GameDetails() {
   const handleLaunchGame = () => {
     navigate(`/game/${id}/play`);
   };
+
+  if (!gameMedia) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="container py-6 mt-20">
+          <div className="text-center">Loading...</div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   const SidebarContent = () => (
     <div className="space-y-6">
@@ -319,18 +207,6 @@ export default function GameDetails() {
       </Card>
     </div>
   );
-
-  if (!gameMedia) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <div className="container py-6 mt-20">
-          <div className="text-center">Loading...</div>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
