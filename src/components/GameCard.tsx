@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { BarChart3, Users, Timer, Gamepad2 } from "lucide-react";
@@ -44,7 +43,6 @@ export function GameCard({
   const videoRef = useRef<HTMLVideoElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // Mobile-specific intersection observer
   useEffect(() => {
     if (!isMobile) return;
 
@@ -66,7 +64,6 @@ export function GameCard({
     };
   }, [isMobile]);
 
-  // Desktop video initialization
   useEffect(() => {
     if (isMobile || !videoRef.current) return;
     
@@ -81,7 +78,6 @@ export function GameCard({
     }
   }, [isMobile]);
 
-  // Mobile video initialization
   useEffect(() => {
     if (!isMobile || !isInViewport || !videoRef.current) return;
 
@@ -196,10 +192,10 @@ export function GameCard({
 
             <div className="flex flex-col items-center">
               <Button 
-                className="w-full bg-primary hover:bg-primary/90 border-primary-foreground/20 border-b-4 text-primary-foreground shadow-xl flex items-center justify-center transition-all duration-300" 
+                className="w-full bg-[#9b87f5] hover:bg-[#7E69AB] border-[#6E59A5] border-b-4 text-white shadow-md flex items-center justify-center" 
                 onClick={handleGameClick}
               >
-                <Gamepad2 className="w-4 h-4 mr-1" /> Play Now
+                <Gamepad2 className="w-4 h-4 mr-1 text-white" /> Go to Game
               </Button>
               <div className="flex items-center gap-1 mt-1">
                 <GradientText colors={["#FF6B6B", "#4ECDC4", "#45B7D1"]} className="text-xs" animationSpeed={4}>
