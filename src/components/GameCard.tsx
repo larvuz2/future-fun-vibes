@@ -40,6 +40,7 @@ export function GameCard({
   const gameUrl = `/game/${title.toLowerCase().replace(/\s+/g, '-')}`;
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [hasVideoError, setHasVideoError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleGameClick = () => {
@@ -48,15 +49,34 @@ export function GameCard({
 
   const handleVideoError = (error: any) => {
     console.error('Video loading error:', error);
-    setHasVideoError(true);
+    if (retryCount < 2) {
+      // Retry loading with a slight delay
+      setTimeout(() => {
+        setRetryCount(prev => prev + 1);
+        if (videoRef.current) {
+          videoRef.current.load();
+        }
+      }, 1000);
+    } else {
+      setHasVideoError(true);
+    }
   };
 
   const handleVideoLoad = () => {
     setIsVideoLoaded(true);
-    // Ensure video plays on mobile
     if (videoRef.current) {
       videoRef.current.play().catch(error => {
         console.log('Autoplay prevented:', error);
+        // For mobile browsers that block autoplay
+        if (isMobile) {
+          const playPromise = videoRef.current?.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {
+              // Show poster image if autoplay is blocked
+              setHasVideoError(true);
+            });
+          }
+        }
       });
     }
   };
@@ -89,6 +109,8 @@ export function GameCard({
                 playsInline
                 webkit-playsinline="true"
                 preload="metadata"
+                crossOrigin="anonymous"
+                type="video/mp4"
                 onLoadedData={handleVideoLoad}
                 onError={handleVideoError}
               />
