@@ -1,4 +1,3 @@
-
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { FeaturedCarousel } from "@/components/FeaturedCarousel";
@@ -20,33 +19,30 @@ const shuffleArray = (array: Game[]): Game[] => {
   }
   return shuffled;
 };
-
 const Index = () => {
   const location = useLocation();
   const isMobile = useIsMobile();
   const [games, setGames] = useState<Game[]>([]);
-
   useEffect(() => {
     // Shuffle games on mount
     setGames(shuffleArray(GAMES));
   }, []);
-
   useEffect(() => {
     if (location.state?.scrollToGames) {
       const gamesSection = document.getElementById('games-grid');
-      gamesSection?.scrollIntoView({ behavior: 'smooth' });
+      gamesSection?.scrollIntoView({
+        behavior: 'smooth'
+      });
       window.history.replaceState({}, document.title);
     }
   }, [location]);
-
-  return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
+  return <div className="min-h-screen bg-background relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-background to-black pointer-events-none" />
       
       <Navbar />
       <Hero />
       
-      <div className="relative pt-4 md:pt-8 z-10">
+      <div className="relative pt-4 md:pt-8 z-10 my-0 px-[103px]">
         <FeaturedCarousel />
       </div>
       
@@ -55,36 +51,25 @@ const Index = () => {
           <FilterBar />
           
           <div className="flex flex-col gap-4 md:gap-8 mt-4 md:mt-8">
-            {games.map((game, index) => (
-              <motion.div
-                key={game.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <GameCard 
-                  title={game.game_name}
-                  image={game.image_1_url}
-                  genre="Action"
-                  developer={game.studio_name}
-                  marketCap="$1.5M"
-                  dateAdded="Recently added"
-                  plays={10000}
-                  hours={30000}
-                  mints={1500}
-                  videoUrl={game.video_url}
-                  profilePictureUrl={game.profile_picture_url}
-                />
-              </motion.div>
-            ))}
+            {games.map((game, index) => <motion.div key={game.id} initial={{
+            opacity: 0,
+            y: 20
+          }} whileInView={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.5,
+            delay: index * 0.1
+          }} viewport={{
+            once: true
+          }}>
+                <GameCard title={game.game_name} image={game.image_1_url} genre="Action" developer={game.studio_name} marketCap="$1.5M" dateAdded="Recently added" plays={10000} hours={30000} mints={1500} videoUrl={game.video_url} profilePictureUrl={game.profile_picture_url} />
+              </motion.div>)}
           </div>
         </div>
       </section>
 
       <Footer />
-    </div>
-  );
-}
-
+    </div>;
+};
 export default Index;
