@@ -44,6 +44,7 @@ export function GameCard({
   const videoRef = useRef<HTMLVideoElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
+  // Mobile-specific intersection observer
   useEffect(() => {
     if (!isMobile) return;
 
@@ -65,6 +66,22 @@ export function GameCard({
     };
   }, [isMobile]);
 
+  // Desktop video initialization
+  useEffect(() => {
+    if (isMobile || !videoRef.current) return;
+    
+    const video = videoRef.current;
+    video.load();
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((error) => {
+        console.log('Desktop autoplay prevented:', error);
+        setHasVideoError(true);
+      });
+    }
+  }, [isMobile]);
+
+  // Mobile video initialization
   useEffect(() => {
     if (!isMobile || !isInViewport || !videoRef.current) return;
 
@@ -91,12 +108,6 @@ export function GameCard({
 
   const handleVideoLoad = () => {
     setIsVideoLoaded(true);
-    if (!isMobile && videoRef.current) {
-      videoRef.current.play().catch(error => {
-        console.log('Autoplay prevented:', error);
-        setHasVideoError(true);
-      });
-    }
   };
 
   return (
