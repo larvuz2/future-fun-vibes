@@ -40,36 +40,15 @@ export function GameCard({
   const gameUrl = `/game/${title.toLowerCase().replace(/\s+/g, '-')}`;
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [hasVideoError, setHasVideoError] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
-
-  // Hardcoded test URLs based on the game title
-  const getVideoUrl = () => {
-    if (title === "Skyfang") {
-      return "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media/DRAGON.mp4";
-    }
-    if (title === "Forest Drone") {
-      return "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/game_media/Drone and Basic Controller - Unreal Engine (1).mp4";
-    }
-    return videoUrl;
-  };
 
   const handleGameClick = () => {
     navigate(gameUrl);
   };
 
-  const handleVideoError = (error: any) => {
-    console.error('Video loading error:', error);
-    if (retryCount < 2) {
-      setTimeout(() => {
-        setRetryCount(prev => prev + 1);
-        if (videoRef.current) {
-          videoRef.current.load();
-        }
-      }, 1000);
-    } else {
-      setHasVideoError(true);
-    }
+  const handleVideoError = () => {
+    console.error('Video loading error for:', title);
+    setHasVideoError(true);
   };
 
   const handleVideoLoad = () => {
@@ -77,14 +56,7 @@ export function GameCard({
     if (videoRef.current) {
       videoRef.current.play().catch(error => {
         console.log('Autoplay prevented:', error);
-        if (isMobile) {
-          const playPromise = videoRef.current?.play();
-          if (playPromise !== undefined) {
-            playPromise.catch(() => {
-              setHasVideoError(true);
-            });
-          }
-        }
+        setHasVideoError(true);
       });
     }
   };
@@ -108,15 +80,13 @@ export function GameCard({
             ) : (
               <video
                 ref={videoRef}
-                src={getVideoUrl()}
+                src={videoUrl}
                 poster={image}
                 className="w-full h-full object-cover"
                 loop
                 muted
                 autoPlay
                 playsInline
-                webkit-playsinline="true"
-                preload="auto"
                 onLoadedData={handleVideoLoad}
                 onError={handleVideoError}
               />
