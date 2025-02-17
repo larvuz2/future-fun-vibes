@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { GradientText } from "@/components/ui/gradient-text";
 import { ProfilePicture } from "@/components/ui/profile-picture";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 interface GameCardProps {
   title: string;
@@ -40,7 +40,45 @@ export function GameCard({
   const gameUrl = `/game/${title.toLowerCase().replace(/\s+/g, '-')}`;
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [hasVideoError, setHasVideoError] = useState(false);
+  const [isInViewport, setIsInViewport] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsInViewport(entry.isIntersecting);
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isMobile]);
+
+  useEffect(() => {
+    if (!isMobile || !isInViewport || !videoRef.current) return;
+
+    const video = videoRef.current;
+    video.load();
+    
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((error) => {
+        console.log('Mobile autoplay prevented:', error);
+        setHasVideoError(true);
+      });
+    }
+  }, [isMobile, isInViewport]);
 
   const handleGameClick = () => {
     navigate(gameUrl);
@@ -53,7 +91,7 @@ export function GameCard({
 
   const handleVideoLoad = () => {
     setIsVideoLoaded(true);
-    if (videoRef.current) {
+    if (!isMobile && videoRef.current) {
       videoRef.current.play().catch(error => {
         console.log('Autoplay prevented:', error);
         setHasVideoError(true);
@@ -62,7 +100,7 @@ export function GameCard({
   };
 
   return (
-    <Card className={`overflow-hidden glass-card ${!isMobile && 'elegant-hover'}`}>
+    <Card ref={cardRef} className={`overflow-hidden glass-card ${!isMobile && 'elegant-hover'}`}>
       <div className="flex flex-col md:flex-row w-full">
         <div className="relative w-full md:w-2/3 cursor-pointer" onClick={handleGameClick}>
           <div className="aspect-video relative gradient-overlay">
@@ -85,8 +123,11 @@ export function GameCard({
                 className="w-full h-full object-cover"
                 loop
                 muted
-                autoPlay
                 playsInline
+                webkit-playsinline="true"
+                x5-playsinline="true"
+                preload={isMobile ? "metadata" : "auto"}
+                autoPlay={!isMobile}
                 onLoadedData={handleVideoLoad}
                 onError={handleVideoError}
               />
