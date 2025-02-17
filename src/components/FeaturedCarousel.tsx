@@ -55,7 +55,7 @@ export function FeaturedCarousel() {
   const isMobile = useIsMobile();
 
   return (
-    <div className="w-full bg-gradient-to-b from-background/80 to-background pt-24">
+    <div className="w-full bg-gradient-to-b from-background/80 to-background">
       <Carousel className="w-full max-w-7xl mx-auto">
         <CarouselContent>
           {featuredGames.map((game) => {

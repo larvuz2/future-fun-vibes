@@ -39,7 +39,7 @@ export function Hero() {
         </div>
         
         <div className="flex flex-col h-full">
-          <div className="flex-1 p-8 relative z-10 flex flex-col justify-end pb-32">
+          <div className="flex-1 p-8 relative z-10 flex flex-col justify-end pb-48">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
