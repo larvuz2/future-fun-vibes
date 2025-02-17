@@ -23,6 +23,62 @@ interface GameCardProps {
   profilePictureUrl: string;
 }
 
+const MobileVideo = ({ videoUrl, image, onError }: { videoUrl: string; image: string; onError: (e: SyntheticEvent<HTMLVideoElement>) => void }) => {
+  return (
+    <video
+      src={videoUrl}
+      poster={image}
+      className="w-full h-full object-cover"
+      loop
+      muted
+      playsInline
+      autoPlay
+      onError={onError}
+    />
+  );
+};
+
+const DesktopVideo = ({ videoUrl, image, onError, onLoad }: { 
+  videoUrl: string; 
+  image: string; 
+  onError: (e: SyntheticEvent<HTMLVideoElement>) => void;
+  onLoad: () => void;
+}) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (!videoRef.current) return;
+    
+    const video = videoRef.current;
+    video.load();
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((error) => {
+        console.log('Desktop autoplay prevented:', error);
+      });
+    }
+  }, []);
+
+  return (
+    <video
+      ref={videoRef}
+      src={videoUrl}
+      poster={image}
+      className="w-full h-full object-cover"
+      loop
+      muted
+      playsInline
+      webkit-playsinline="true"
+      x5-playsinline="true"
+      preload="auto"
+      autoPlay
+      onLoadedData={onLoad}
+      onError={onError}
+      style={{ objectFit: 'cover' }}
+    />
+  );
+};
+
 export function GameCard({
   title,
   image,
@@ -41,47 +97,6 @@ export function GameCard({
   const gameUrl = `/game/${title.toLowerCase().replace(/\s+/g, '-')}`;
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [hasVideoError, setHasVideoError] = useState(false);
-  const [isInViewport, setIsInViewport] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  // Mobile-only viewport detection without manual loading
-  useEffect(() => {
-    if (!isMobile) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          setIsInViewport(entry.isIntersecting);
-          // Let browser handle video loading naturally
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    if (cardRef.current) {
-      observer.observe(cardRef.current);
-    }
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [isMobile]);
-
-  // Desktop-only video initialization
-  useEffect(() => {
-    if (isMobile || !videoRef.current) return;
-    
-    const video = videoRef.current;
-    video.load();
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise.catch((error) => {
-        console.log('Desktop autoplay prevented:', error);
-        setHasVideoError(true);
-      });
-    }
-  }, [isMobile]);
 
   const handleGameClick = () => {
     navigate(gameUrl);
@@ -103,11 +118,11 @@ export function GameCard({
   };
 
   return (
-    <Card ref={cardRef} className={`overflow-hidden glass-card ${!isMobile && 'elegant-hover'}`}>
+    <Card className={`overflow-hidden glass-card ${!isMobile && 'elegant-hover'}`}>
       <div className="flex flex-col md:flex-row w-full">
         <div className="relative w-full md:w-2/3 cursor-pointer" onClick={handleGameClick}>
           <div className="aspect-video relative gradient-overlay">
-            {!isVideoLoaded && !hasVideoError && (
+            {!isVideoLoaded && !hasVideoError && !isMobile && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/20">
                 <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
               </div>
@@ -119,22 +134,20 @@ export function GameCard({
                 className="w-full h-full object-cover"
               />
             ) : (
-              <video
-                ref={videoRef}
-                src={videoUrl}
-                poster={image}
-                className="w-full h-full object-cover"
-                loop
-                muted
-                playsInline
-                webkit-playsinline="true"
-                x5-playsinline="true"
-                preload="auto"
-                autoPlay
-                onLoadedData={handleVideoLoad}
-                onError={handleVideoError}
-                style={{ objectFit: 'cover' }}
-              />
+              isMobile ? (
+                <MobileVideo 
+                  videoUrl={videoUrl}
+                  image={image}
+                  onError={handleVideoError}
+                />
+              ) : (
+                <DesktopVideo
+                  videoUrl={videoUrl}
+                  image={image}
+                  onError={handleVideoError}
+                  onLoad={handleVideoLoad}
+                />
+              )
             )}
           </div>
         </div>
