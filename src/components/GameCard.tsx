@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { BarChart3, Users, Timer, Gamepad2 } from "lucide-react";
@@ -49,7 +50,12 @@ export function GameCard({
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          setIsInViewport(entry.isIntersecting);
+          if (entry.isIntersecting && videoRef.current) {
+            setIsInViewport(true);
+            videoRef.current.load(); // Only load when in viewport on mobile
+          } else {
+            setIsInViewport(false);
+          }
         });
       },
       { threshold: 0.1 }
@@ -64,6 +70,7 @@ export function GameCard({
     };
   }, [isMobile]);
 
+  // Desktop-only video initialization
   useEffect(() => {
     if (isMobile || !videoRef.current) return;
     
@@ -77,21 +84,6 @@ export function GameCard({
       });
     }
   }, [isMobile]);
-
-  useEffect(() => {
-    if (!isMobile || !isInViewport || !videoRef.current) return;
-
-    const video = videoRef.current;
-    video.load();
-    
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise.catch((error) => {
-        console.log('Mobile autoplay prevented:', error);
-        setHasVideoError(true);
-      });
-    }
-  }, [isMobile, isInViewport]);
 
   const handleGameClick = () => {
     navigate(gameUrl);
@@ -133,8 +125,8 @@ export function GameCard({
                 playsInline
                 webkit-playsinline="true"
                 x5-playsinline="true"
-                preload={isMobile ? "metadata" : "auto"}
-                autoPlay={!isMobile}
+                preload={isMobile ? "none" : "auto"}
+                autoPlay={true}
                 onLoadedData={handleVideoLoad}
                 onError={handleVideoError}
               />
