@@ -44,18 +44,15 @@ export function GameCard({
   const videoRef = useRef<HTMLVideoElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
+  // Mobile-only viewport detection without manual loading
   useEffect(() => {
     if (!isMobile) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && videoRef.current) {
-            setIsInViewport(true);
-            videoRef.current.load(); // Only load when in viewport on mobile
-          } else {
-            setIsInViewport(false);
-          }
+          setIsInViewport(entry.isIntersecting);
+          // Let browser handle video loading naturally
         });
       },
       { threshold: 0.1 }
@@ -89,8 +86,14 @@ export function GameCard({
     navigate(gameUrl);
   };
 
-  const handleVideoError = () => {
-    console.error('Video loading error for:', title);
+  const handleVideoError = (e: Event) => {
+    const video = e.target as HTMLVideoElement;
+    console.error('Video loading error for:', title, 
+      'Mobile:', isMobile,
+      'Error:', video.error?.message,
+      'Network State:', video.networkState,
+      'Ready State:', video.readyState
+    );
     setHasVideoError(true);
   };
 
@@ -125,10 +128,11 @@ export function GameCard({
                 playsInline
                 webkit-playsinline="true"
                 x5-playsinline="true"
-                preload={isMobile ? "none" : "auto"}
-                autoPlay={true}
+                preload="auto"
+                autoPlay
                 onLoadedData={handleVideoLoad}
                 onError={handleVideoError}
+                style={{ objectFit: 'cover' }}
               />
             )}
           </div>
