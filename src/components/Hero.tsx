@@ -42,7 +42,7 @@ export function Hero() {
         </div>
         
         <div className="flex flex-col h-full">
-          <div className="relative z-10 h-full flex flex-col justify-center pt-[20%] md:pt-[25%]">
+          <div className="relative z-10 h-full flex flex-col justify-center pt-[20%] md:pt-[25%] mobile:pt-[15%]">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

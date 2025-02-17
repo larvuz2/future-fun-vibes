@@ -1,3 +1,4 @@
+
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { FeaturedCarousel } from "@/components/FeaturedCarousel";
@@ -19,14 +20,17 @@ const shuffleArray = (array: Game[]): Game[] => {
   }
   return shuffled;
 };
+
 const Index = () => {
   const location = useLocation();
   const isMobile = useIsMobile();
   const [games, setGames] = useState<Game[]>([]);
+
   useEffect(() => {
     // Shuffle games on mount
     setGames(shuffleArray(GAMES));
   }, []);
+
   useEffect(() => {
     if (location.state?.scrollToGames) {
       const gamesSection = document.getElementById('games-grid');
@@ -36,13 +40,14 @@ const Index = () => {
       window.history.replaceState({}, document.title);
     }
   }, [location]);
+
   return <div className="min-h-screen bg-background relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-background to-black pointer-events-none" />
       
       <Navbar />
       <Hero />
       
-      <div className="relative pt-4 md:pt-8 z-10 my-0 px-[103px]">
+      <div className="relative pt-4 md:pt-8 z-10 my-0 px-0 md:px-[103px]">
         <FeaturedCarousel />
       </div>
       
@@ -72,4 +77,5 @@ const Index = () => {
       <Footer />
     </div>;
 };
+
 export default Index;
