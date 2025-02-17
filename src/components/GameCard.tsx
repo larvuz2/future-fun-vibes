@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { GradientText } from "@/components/ui/gradient-text";
 import { ProfilePicture } from "@/components/ui/profile-picture";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useState, useRef } from "react";
 
 interface GameCardProps {
   title: string;
@@ -37,9 +38,27 @@ export function GameCard({
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const gameUrl = `/game/${title.toLowerCase().replace(/\s+/g, '-')}`;
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const [hasVideoError, setHasVideoError] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleGameClick = () => {
     navigate(gameUrl);
+  };
+
+  const handleVideoError = (error: any) => {
+    console.error('Video loading error:', error);
+    setHasVideoError(true);
+  };
+
+  const handleVideoLoad = () => {
+    setIsVideoLoaded(true);
+    // Ensure video plays on mobile
+    if (videoRef.current) {
+      videoRef.current.play().catch(error => {
+        console.log('Autoplay prevented:', error);
+      });
+    }
   };
 
   return (
@@ -47,14 +66,33 @@ export function GameCard({
       <div className="flex flex-col md:flex-row w-full">
         <div className="relative w-full md:w-2/3 cursor-pointer" onClick={handleGameClick}>
           <div className="aspect-video relative gradient-overlay">
-            <video
-              src={videoUrl}
-              className="w-full h-full object-cover"
-              loop
-              muted
-              autoPlay
-              playsInline
-            />
+            {!isVideoLoaded && !hasVideoError && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+              </div>
+            )}
+            {hasVideoError ? (
+              <img 
+                src={image} 
+                alt={title}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <video
+                ref={videoRef}
+                src={videoUrl}
+                poster={image}
+                className="w-full h-full object-cover"
+                loop
+                muted
+                autoPlay
+                playsInline
+                webkit-playsinline="true"
+                preload="metadata"
+                onLoadedData={handleVideoLoad}
+                onError={handleVideoError}
+              />
+            )}
           </div>
         </div>
 
