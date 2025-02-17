@@ -18,12 +18,12 @@ export function Hero() {
   };
 
   return (
-    <div className="h-[120vh] -mt-20 flex items-end justify-center relative overflow-hidden">
-      <Card className="w-full max-w-none mx-auto bg-background/0 relative overflow-hidden border-0">
+    <div className="h-[140vh] -mt-20 flex items-end justify-center relative overflow-hidden">
+      <Card className="w-full max-w-none mx-auto bg-background/0 relative overflow-hidden border-0 h-full">
         <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
         
         {/* 3D Scene Container */}
-        <div className="absolute inset-0 w-full h-full">
+        <div className="absolute inset-0 w-full h-full scale-150 origin-center">
           <Suspense 
             fallback={
               <div className="w-full h-full flex items-center justify-center">
