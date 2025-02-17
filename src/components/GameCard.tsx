@@ -110,10 +110,11 @@ export function GameCard({
                 webkit-playsinline="true"
                 preload="metadata"
                 crossOrigin="anonymous"
-                type="video/mp4"
                 onLoadedData={handleVideoLoad}
                 onError={handleVideoError}
-              />
+              >
+                <source src={videoUrl} type="video/mp4" />
+              </video>
             )}
           </div>
         </div>
