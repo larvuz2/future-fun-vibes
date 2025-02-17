@@ -4,10 +4,13 @@ import { Spotlight } from "@/components/ui/spotlight";
 import { motion } from "framer-motion";
 import { StarBorder } from "@/components/ui/star-border";
 import { Suspense, lazy } from 'react';
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Spline = lazy(() => import('@splinetool/react-spline'));
 
 export function Hero() {
+  const isMobile = useIsMobile();
+
   const scrollToFeaturedGames = () => {
     const gamesSection = document.querySelector('#games-grid');
     if (gamesSection) {
@@ -23,7 +26,7 @@ export function Hero() {
         <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
         
         {/* 3D Scene Container */}
-        <div className="absolute inset-0 w-full h-full scale-150 origin-center">
+        <div className={`absolute inset-0 w-full h-full origin-center ${isMobile ? 'scale-[1.05]' : 'scale-150'} ${isMobile ? 'translate-y-[-15%]' : ''}`}>
           <Suspense 
             fallback={
               <div className="w-full h-full flex items-center justify-center">
@@ -39,7 +42,7 @@ export function Hero() {
         </div>
         
         <div className="flex flex-col h-full">
-          <div className="relative z-10 h-full flex flex-col justify-center pt-[20%]">
+          <div className="relative z-10 h-full flex flex-col justify-center pt-[20%] md:pt-[25%]">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
