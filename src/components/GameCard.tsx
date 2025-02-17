@@ -7,6 +7,7 @@ import { GradientText } from "@/components/ui/gradient-text";
 import { ProfilePicture } from "@/components/ui/profile-picture";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useRef, useEffect } from "react";
+import type { SyntheticEvent } from "react";
 
 interface GameCardProps {
   title: string;
@@ -86,8 +87,8 @@ export function GameCard({
     navigate(gameUrl);
   };
 
-  const handleVideoError = (e: Event) => {
-    const video = e.target as HTMLVideoElement;
+  const handleVideoError = (e: SyntheticEvent<HTMLVideoElement>) => {
+    const video = e.currentTarget;
     console.error('Video loading error for:', title, 
       'Mobile:', isMobile,
       'Error:', video.error?.message,
