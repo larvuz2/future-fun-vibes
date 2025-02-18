@@ -7,7 +7,7 @@ export function Footer() {
   return (
     <footer className="border-t border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container py-16">
-        <div className="flex items-center justify-center mb-8">
+        <div className="flex items-center justify-start mb-8">
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
             <span className="text-sm text-gray-200">All services are online</span>

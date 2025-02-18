@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,23 +16,47 @@ const sizes = {
   lg: "w-24 h-24"
 };
 
+const isIOS = () => {
+  return [
+    'iPad Simulator',
+    'iPhone Simulator',
+    'iPod Simulator',
+    'iPad',
+    'iPhone',
+    'iPod'
+  ].includes(navigator.platform)
+  || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+};
+
 export function ProfilePicture({ src, alt, size = "md", className = "" }: ProfilePictureProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [imageUrl, setImageUrl] = useState<string>(src);
+  const [errorCount, setErrorCount] = useState(0);
   const sizeClass = sizes[size];
+  const isIOSDevice = isIOS();
 
   useEffect(() => {
     const cacheProfilePicture = async () => {
       try {
-        const response = await fetch(src);
-        if (!response.ok) {
-          throw new Error('Failed to fetch image');
-        }
-
-        if (src.includes('dicebear.com')) {
+        // For iOS devices, use the original source directly
+        if (isIOSDevice) {
+          console.log('iOS device detected, using original source');
           setImageUrl(src);
           setIsLoading(false);
           return;
+        }
+
+        // For DiceBear avatars, use them directly
+        if (src.includes('dicebear.com')) {
+          console.log('DiceBear avatar detected, using original source');
+          setImageUrl(src);
+          setIsLoading(false);
+          return;
+        }
+
+        const response = await fetch(src);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`);
         }
 
         const blob = await response.blob();
@@ -46,7 +71,9 @@ export function ProfilePicture({ src, alt, size = "md", className = "" }: Profil
           });
 
         if (uploadError) {
-          console.error('Upload error:', uploadError);
+          console.error('Supabase upload error:', uploadError);
+          // Fallback to original source on upload error
+          setImageUrl(src);
           return;
         }
 
@@ -55,10 +82,14 @@ export function ProfilePicture({ src, alt, size = "md", className = "" }: Profil
           .getPublicUrl(filename);
 
         if (publicUrl) {
+          console.log('Successfully cached profile picture:', publicUrl);
           setImageUrl(publicUrl);
         }
       } catch (error) {
-        console.error('Error in profile picture handling:', error);
+        console.error('Profile picture handling error:', error);
+        // Increment error count and fallback to original source
+        setErrorCount(prev => prev + 1);
+        setImageUrl(src);
       } finally {
         setIsLoading(false);
       }
@@ -66,10 +97,9 @@ export function ProfilePicture({ src, alt, size = "md", className = "" }: Profil
 
     if (src) {
       setIsLoading(true);
-      setImageUrl(src);
       cacheProfilePicture();
     }
-  }, [src, alt, size]);
+  }, [src, alt, size, isIOSDevice]);
 
   return (
     <div className={`relative ${sizeClass} ${className}`}>
@@ -84,9 +114,12 @@ export function ProfilePicture({ src, alt, size = "md", className = "" }: Profil
         }`}
         onLoad={() => setIsLoading(false)}
         onError={(e) => {
-          console.error('Error loading image:', e);
+          console.error('Image loading error:', e);
           setIsLoading(false);
-          setImageUrl(src);
+          // If we haven't tried the original source yet, fall back to it
+          if (imageUrl !== src) {
+            setImageUrl(src);
+          }
         }}
         loading="lazy"
       />
