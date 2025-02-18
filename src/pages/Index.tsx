@@ -1,4 +1,3 @@
-
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { FeaturedCarousel } from "@/components/FeaturedCarousel";
@@ -12,6 +11,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { GAMES, Game } from "@/data/games";
 import { BentoGrid } from "@/components/ui/bento-grid";
 import { Star, Clock, CheckCircle, TrendingUp, Video, Globe } from "lucide-react";
+import { GradientText } from "@/components/ui/gradient-text";
 
 // Fisher-Yates shuffle algorithm
 const shuffleArray = (array: Game[]): Game[] => {
@@ -143,7 +143,13 @@ const Index = () => {
       <section className="relative py-12 z-10 bg-gradient-to-b from-background/50 to-background">
         <div className="container px-4 md:px-6">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold tracking-tight">Platform Features</h2>
+            <GradientText 
+              className="text-4xl md:text-5xl font-bold tracking-tight"
+              colors={["#ffaa40", "#9c40ff", "#ffaa40"]}
+              animationSpeed={8}
+            >
+              Platform Features
+            </GradientText>
             <p className="text-muted-foreground mt-2">What sets us apart from other gaming platforms</p>
           </div>
           <BentoGrid items={featureItems} />
