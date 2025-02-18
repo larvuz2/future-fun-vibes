@@ -1,3 +1,4 @@
+
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/3d-button";
@@ -55,7 +56,7 @@ export function FeaturedCarousel() {
   const isMobile = useIsMobile();
 
   return (
-    <div className="w-full bg-gradient-to-b from-background/80 to-background">
+    <div className="w-full">
       <Carousel className="w-full max-w-7xl mx-auto">
         <CarouselContent>
           {featuredGames.map((game) => {
