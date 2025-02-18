@@ -21,6 +21,14 @@ const shuffleArray = (array: Game[]): Game[] => {
   return shuffled;
 };
 
+const HIDE_ON_MOBILE = [
+  'Drillhorn',
+  'Subway Chase',
+  'Galleon Wars',
+  'HyperRail',
+  'Shenlong'
+];
+
 const Index = () => {
   const location = useLocation();
   const isMobile = useIsMobile();
@@ -41,6 +49,8 @@ const Index = () => {
     }
   }, [location]);
 
+  const filteredGames = games.filter(game => !isMobile || !HIDE_ON_MOBILE.includes(game.game_name));
+
   return <div className="min-h-screen bg-background relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-background to-black pointer-events-none" />
       
@@ -56,20 +66,29 @@ const Index = () => {
           <FilterBar />
           
           <div className="flex flex-col gap-4 md:gap-8 mt-4 md:mt-8">
-            {games.map((game, index) => <motion.div key={game.id} initial={{
-            opacity: 0,
-            y: 20
-          }} whileInView={{
-            opacity: 1,
-            y: 0
-          }} transition={{
-            duration: 0.5,
-            delay: index * 0.1
-          }} viewport={{
-            once: true
-          }}>
-                <GameCard title={game.game_name} image={game.image_1_url} genre="Action" developer={game.studio_name} marketCap="$1.5M" dateAdded="Recently added" plays={10000} hours={30000} mints={1500} videoUrl={game.video_url} profilePictureUrl={game.profile_picture_url} />
-              </motion.div>)}
+            {filteredGames.map((game, index) => (
+              <motion.div 
+                key={game.id} 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <GameCard 
+                  title={game.game_name} 
+                  image={game.image_1_url} 
+                  genre="Action" 
+                  developer={game.studio_name} 
+                  marketCap="$1.5M" 
+                  dateAdded="Recently added" 
+                  plays={10000} 
+                  hours={30000} 
+                  mints={1500} 
+                  videoUrl={game.video_url} 
+                  profilePictureUrl={game.profile_picture_url} 
+                />
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
