@@ -10,6 +10,8 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { GAMES, Game } from "@/data/games";
+import { BentoGrid } from "@/components/ui/bento-grid";
+import { Star, Clock, CheckCircle, TrendingUp, Video, Globe } from "lucide-react";
 
 // Fisher-Yates shuffle algorithm
 const shuffleArray = (array: Game[]): Game[] => {
@@ -27,6 +29,51 @@ const HIDE_ON_MOBILE = [
   'Galleon Wars',
   'HyperRail',
   'Shenlong'
+];
+
+const featureItems = [
+  {
+    title: "PREMIUM QUALITY FOCUS",
+    description: "Console-quality games in your browser. No downloads.",
+    icon: <Star className="w-4 h-4 text-yellow-500" />,
+    status: "Featured",
+    tags: ["Quality", "Gaming"],
+  },
+  {
+    title: "INSTANT ACCESS MODEL",
+    description: "Start playing in seconds.",
+    icon: <Clock className="w-4 h-4 text-emerald-500" />,
+    status: "Active",
+    tags: ["Speed", "Access"],
+  },
+  {
+    title: "OWNERSHIP & COMMUNITY",
+    description: "True ownership of your games.",
+    icon: <CheckCircle className="w-4 h-4 text-blue-500" />,
+    status: "New",
+    tags: ["Ownership", "Community"],
+  },
+  {
+    title: "TECHNOLOGY EDGE",
+    description: "Next-gen graphics in your browser.",
+    icon: <TrendingUp className="w-4 h-4 text-purple-500" />,
+    status: "Advanced",
+    tags: ["Tech", "Innovation"],
+  },
+  {
+    title: "CURATED EXPERIENCE",
+    description: "Carefully selected premium games.",
+    icon: <Video className="w-4 h-4 text-pink-500" />,
+    status: "Verified",
+    tags: ["Curated", "Premium"],
+  },
+  {
+    title: "DEVELOPER FRIENDLY",
+    description: "Direct connection to creators.",
+    icon: <Globe className="w-4 h-4 text-indigo-500" />,
+    status: "Active",
+    tags: ["Developers", "Community"],
+  },
 ];
 
 const Index = () => {
@@ -90,6 +137,16 @@ const Index = () => {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="relative py-12 z-10 bg-gradient-to-b from-background/50 to-background">
+        <div className="container px-4 md:px-6">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold tracking-tight">Platform Features</h2>
+            <p className="text-muted-foreground mt-2">What sets us apart from other gaming platforms</p>
+          </div>
+          <BentoGrid items={featureItems} />
         </div>
       </section>
 
