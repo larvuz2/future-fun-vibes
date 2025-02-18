@@ -23,10 +23,22 @@ interface GameCardProps {
   profilePictureUrl: string;
 }
 
-const MobileVideo = ({ videoUrl, image, onError }: { videoUrl: string; image: string; onError: (e: SyntheticEvent<HTMLVideoElement>) => void }) => {
+const MobileVideo = ({ title, videoUrl, image, onError }: { 
+  title: string;
+  videoUrl: string; 
+  image: string; 
+  onError: (e: SyntheticEvent<HTMLVideoElement>) => void 
+}) => {
+  // Test with a known working video URL for Drillhorn
+  const testUrl = title === 'Drillhorn' ? 
+    'https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/Future%20Fun/Big%20Hairy%20Creature%20For%20UE4.mp4' : 
+    videoUrl;
+
+  console.log('Mobile Video URL for', title, ':', testUrl);
+
   return (
     <video
-      src={videoUrl}
+      src={testUrl}
       poster={image}
       className="w-full h-full object-cover"
       loop
@@ -136,6 +148,7 @@ export function GameCard({
             ) : (
               isMobile ? (
                 <MobileVideo 
+                  title={title}
                   videoUrl={videoUrl}
                   image={image}
                   onError={handleVideoError}
