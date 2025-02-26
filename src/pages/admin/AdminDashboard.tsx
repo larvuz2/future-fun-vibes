@@ -16,17 +16,19 @@ import { useToast } from "@/hooks/use-toast";
 
 const ADMIN_USER_ID = "b1101d11-a765-4706-84f0-683cf045f956";
 
+interface GameFunding {
+  funding_goal: number;
+  current_funding: number;
+  funding_end_date: string;
+  website_url: string;
+  twitter_url: string;
+}
+
 interface GameListItem {
   id: string;
   game_name: string;
   studio_name: string;
-  game_funding?: {
-    funding_goal: number;
-    current_funding: number;
-    funding_end_date: string;
-    website_url: string;
-    twitter_url: string;
-  }[];
+  game_funding: GameFunding[];
 }
 
 export default function AdminDashboard() {
@@ -71,10 +73,10 @@ export default function AdminDashboard() {
       const { data: gameData, error: gameError } = await supabase
         .from("game_media")
         .select(`
-          id,
+          id:id,
           game_name,
           studio_name,
-          game_funding (
+          game_funding!game_funding_game_id_fkey (
             funding_goal,
             current_funding,
             funding_end_date,
