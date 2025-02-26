@@ -26,7 +26,7 @@ interface Game {
     funding_goal: number;
     current_funding: number;
     funding_end_date: string;
-  }[];
+  };
 }
 
 export default function AdminDashboard() {
@@ -144,14 +144,14 @@ export default function AdminDashboard() {
                   <TableCell className="font-medium">{game.name}</TableCell>
                   <TableCell>{game.studio.name}</TableCell>
                   <TableCell>
-                    ${game.funding?.[0]?.funding_goal?.toLocaleString() || 'N/A'}
+                    ${game.funding?.funding_goal?.toLocaleString() || 'N/A'}
                   </TableCell>
                   <TableCell>
-                    ${game.funding?.[0]?.current_funding?.toLocaleString() || 'N/A'}
+                    ${game.funding?.current_funding?.toLocaleString() || 'N/A'}
                   </TableCell>
                   <TableCell>
-                    {game.funding?.[0]?.funding_end_date 
-                      ? new Date(game.funding[0].funding_end_date).toLocaleDateString() 
+                    {game.funding?.funding_end_date 
+                      ? new Date(game.funding.funding_end_date).toLocaleDateString() 
                       : 'N/A'}
                   </TableCell>
                   <TableCell className="text-right">
