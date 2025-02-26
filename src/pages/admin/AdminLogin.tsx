@@ -24,18 +24,29 @@ export default function AdminLogin() {
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Login Error",
+          description: error.message || "Invalid credentials. Please try again.",
+        });
+        return;
+      }
 
-      if (email === "gus@metazooie.com") {
+      if (data.user && email === "gus@metazooie.com") {
         navigate("/admin/dashboard");
       } else {
-        throw new Error("Unauthorized access");
+        toast({
+          variant: "destructive",
+          title: "Login Error",
+          description: "Unauthorized access. Please try again.",
+        });
       }
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Login Error",
-        description: "Invalid credentials. Please try again.",
+        description: "An unexpected error occurred. Please try again.",
       });
     } finally {
       setLoading(false);
