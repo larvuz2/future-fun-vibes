@@ -37,8 +37,10 @@ export default function AdminDashboard() {
   const checkAuth = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
+      console.log("Current user:", user);
       
       if (!user || user.id !== ADMIN_USER_ID) {
+        console.log("Auth failed - User not admin:", user?.id);
         localStorage.removeItem('isAdminAuthenticated');
         navigate("/admin", { replace: true });
         return false;
@@ -46,10 +48,12 @@ export default function AdminDashboard() {
       
       const isAuthenticated = localStorage.getItem('isAdminAuthenticated');
       if (!isAuthenticated || isAuthenticated !== 'true') {
+        console.log("Auth failed - Not authenticated in localStorage");
         navigate("/admin", { replace: true });
         return false;
       }
       
+      console.log("Auth successful");
       return true;
     } catch (error) {
       console.error('Auth check error:', error);
@@ -63,20 +67,19 @@ export default function AdminDashboard() {
   const fetchGames = async () => {
     setLoading(true);
     try {
-      console.log('Fetching games...');
       // First, let's check what's in the game_media table
-      const { data: allGames, error: basicError } = await supabase
+      const { data: gameMediaData, error: mediaError } = await supabase
         .from("game_media")
         .select('*');
       
-      console.log('All games in game_media:', allGames);
-
-      if (basicError) {
-        console.error('Basic query error:', basicError);
-        throw basicError;
+      console.log('Raw game_media data:', gameMediaData);
+      
+      if (mediaError) {
+        console.error('Error fetching game_media:', mediaError);
+        throw mediaError;
       }
 
-      // Now let's try the full query with funding information
+      // Now fetch with the funding data
       const { data: gameData, error: gameError } = await supabase
         .from("game_media")
         .select(`
@@ -91,12 +94,15 @@ export default function AdminDashboard() {
         `);
 
       if (gameError) {
-        console.error('Game fetch error:', gameError);
+        console.error('Error fetching games with funding:', gameError);
         throw gameError;
       }
 
       console.log('Games with funding data:', gameData);
-      setGames(gameData || []);
+      
+      if (gameData) {
+        setGames(gameData);
+      }
     } catch (error) {
       console.error('Fetch error:', error);
       toast({
@@ -113,7 +119,7 @@ export default function AdminDashboard() {
     const init = async () => {
       const isAuthed = await checkAuth();
       if (isAuthed) {
-        fetchGames();
+        await fetchGames();
       }
     };
 
