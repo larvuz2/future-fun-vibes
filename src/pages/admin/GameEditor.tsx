@@ -28,6 +28,8 @@ interface GameData {
   }[];
 }
 
+type GameDataKey = keyof GameData;
+
 export default function GameEditor() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -130,6 +132,29 @@ export default function GameEditor() {
     }
   };
 
+  const handleInputChange = (field: GameDataKey, value: string) => {
+    if (!gameData) return;
+    setGameData({ ...gameData, [field]: value });
+  };
+
+  const handleFundingChange = (field: string, value: string | number) => {
+    if (!gameData) return;
+    
+    const currentFunding = gameData.game_funding?.[0] || {
+      funding_goal: 0,
+      current_funding: 0,
+      funding_end_date: new Date().toISOString(),
+    };
+
+    setGameData({
+      ...gameData,
+      game_funding: [{
+        ...currentFunding,
+        [field]: value
+      }]
+    });
+  };
+
   if (loading) {
     return (
       <div className="container mx-auto p-8">
@@ -169,7 +194,7 @@ export default function GameEditor() {
               <Input
                 id="game_name"
                 value={gameData.game_name}
-                onChange={(e) => setGameData({ ...gameData, game_name: e.target.value })}
+                onChange={(e) => handleInputChange('game_name', e.target.value)}
                 required
               />
             </div>
@@ -179,7 +204,7 @@ export default function GameEditor() {
               <Input
                 id="studio_name"
                 value={gameData.studio_name}
-                onChange={(e) => setGameData({ ...gameData, studio_name: e.target.value })}
+                onChange={(e) => handleInputChange('studio_name', e.target.value)}
                 required
               />
             </div>
@@ -190,13 +215,7 @@ export default function GameEditor() {
                 id="funding_goal"
                 type="number"
                 value={gameData.game_funding?.[0]?.funding_goal || ''}
-                onChange={(e) => setGameData({
-                  ...gameData,
-                  game_funding: [{
-                    ...gameData.game_funding?.[0],
-                    funding_goal: Number(e.target.value)
-                  }]
-                })}
+                onChange={(e) => handleFundingChange('funding_goal', Number(e.target.value))}
               />
             </div>
 
@@ -206,13 +225,7 @@ export default function GameEditor() {
                 id="current_funding"
                 type="number"
                 value={gameData.game_funding?.[0]?.current_funding || ''}
-                onChange={(e) => setGameData({
-                  ...gameData,
-                  game_funding: [{
-                    ...gameData.game_funding?.[0],
-                    current_funding: Number(e.target.value)
-                  }]
-                })}
+                onChange={(e) => handleFundingChange('current_funding', Number(e.target.value))}
               />
             </div>
 
@@ -221,7 +234,7 @@ export default function GameEditor() {
               <Input
                 id="profile_picture_url"
                 value={gameData.profile_picture_url}
-                onChange={(e) => setGameData({ ...gameData, profile_picture_url: e.target.value })}
+                onChange={(e) => handleInputChange('profile_picture_url', e.target.value)}
                 required
               />
             </div>
@@ -231,7 +244,7 @@ export default function GameEditor() {
               <Input
                 id="video_url"
                 value={gameData.video_url}
-                onChange={(e) => setGameData({ ...gameData, video_url: e.target.value })}
+                onChange={(e) => handleInputChange('video_url', e.target.value)}
                 required
               />
             </div>
@@ -242,10 +255,7 @@ export default function GameEditor() {
                 <Input
                   id={`image_${num}_url`}
                   value={gameData[`image_${num}_url` as keyof GameData] || ''}
-                  onChange={(e) => setGameData({
-                    ...gameData,
-                    [`image_${num}_url`]: e.target.value
-                  })}
+                  onChange={(e) => handleInputChange(`image_${num}_url` as GameDataKey, e.target.value)}
                 />
               </div>
             ))}
@@ -255,13 +265,7 @@ export default function GameEditor() {
               <Input
                 id="website_url"
                 value={gameData.game_funding?.[0]?.website_url || ''}
-                onChange={(e) => setGameData({
-                  ...gameData,
-                  game_funding: [{
-                    ...gameData.game_funding?.[0],
-                    website_url: e.target.value
-                  }]
-                })}
+                onChange={(e) => handleFundingChange('website_url', e.target.value)}
               />
             </div>
 
@@ -270,13 +274,7 @@ export default function GameEditor() {
               <Input
                 id="twitter_url"
                 value={gameData.game_funding?.[0]?.twitter_url || ''}
-                onChange={(e) => setGameData({
-                  ...gameData,
-                  game_funding: [{
-                    ...gameData.game_funding?.[0],
-                    twitter_url: e.target.value
-                  }]
-                })}
+                onChange={(e) => handleFundingChange('twitter_url', e.target.value)}
               />
             </div>
           </div>
