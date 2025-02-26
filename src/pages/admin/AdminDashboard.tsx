@@ -14,6 +14,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+const ADMIN_USER_ID = "b1101d11-a765-4706-84f0-683cf045f956";
+
 interface GameListItem {
   id: string;
   game_name: string;
@@ -32,16 +34,18 @@ export default function AdminDashboard() {
 
   const checkAuth = async () => {
     try {
-      const isAuthenticated = localStorage.getItem('isAdminAuthenticated');
-      if (!isAuthenticated || isAuthenticated !== 'true') {
+      // First check if user is logged in
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user || user.id !== ADMIN_USER_ID) {
+        localStorage.removeItem('isAdminAuthenticated');
         navigate("/admin", { replace: true });
         return false;
       }
       
-      // Double-check with Supabase
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user || user.email !== "gus@metazooie.com") {
-        localStorage.removeItem('isAdminAuthenticated');
+      // Additional check for admin status
+      const isAuthenticated = localStorage.getItem('isAdminAuthenticated');
+      if (!isAuthenticated || isAuthenticated !== 'true') {
         navigate("/admin", { replace: true });
         return false;
       }
@@ -63,7 +67,22 @@ export default function AdminDashboard() {
         fetchGames();
       }
     };
+
     init();
+
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_OUT' || !session) {
+        navigate("/admin", { replace: true });
+      } else if (session.user.id !== ADMIN_USER_ID) {
+        navigate("/admin", { replace: true });
+      }
+    });
+
+    // Cleanup subscription
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const fetchGames = async () => {
@@ -144,7 +163,6 @@ export default function AdminDashboard() {
           </TableHeader>
           <TableBody>
             {loading ? (
-              // Skeleton loading state
               Array.from({ length: 5 }).map((_, index) => (
                 <TableRow key={index}>
                   <TableCell><Skeleton className="h-4 w-[200px]" /></TableCell>
