@@ -24,6 +24,8 @@ interface GameListItem {
     funding_goal: number;
     current_funding: number;
     funding_end_date: string;
+    website_url: string;
+    twitter_url: string;
   }[];
 }
 
@@ -53,7 +55,6 @@ export default function AdminDashboard() {
         return false;
       }
       
-      console.log("Auth successful");
       return true;
     } catch (error) {
       console.error('Auth check error:', error);
@@ -67,42 +68,26 @@ export default function AdminDashboard() {
   const fetchGames = async () => {
     setLoading(true);
     try {
-      // First, let's check what's in the game_media table
-      const { data: gameMediaData, error: mediaError } = await supabase
-        .from("game_media")
-        .select('*');
-      
-      console.log('Raw game_media data:', gameMediaData);
-      
-      if (mediaError) {
-        console.error('Error fetching game_media:', mediaError);
-        throw mediaError;
-      }
-
-      // Now fetch with the funding data
       const { data: gameData, error: gameError } = await supabase
         .from("game_media")
         .select(`
-          id,
-          game_name,
-          studio_name,
+          *,
           game_funding (
             funding_goal,
             current_funding,
-            funding_end_date
+            funding_end_date,
+            website_url,
+            twitter_url
           )
-        `);
+        `)
+        .order('game_name');
 
       if (gameError) {
-        console.error('Error fetching games with funding:', gameError);
         throw gameError;
       }
 
-      console.log('Games with funding data:', gameData);
-      
-      if (gameData) {
-        setGames(gameData);
-      }
+      console.log('Fetched games:', gameData);
+      setGames(gameData || []);
     } catch (error) {
       console.error('Fetch error:', error);
       toast({
@@ -206,7 +191,7 @@ export default function AdminDashboard() {
             ) : (
               games.map((game) => (
                 <TableRow key={game.id}>
-                  <TableCell>{game.game_name}</TableCell>
+                  <TableCell className="font-medium">{game.game_name}</TableCell>
                   <TableCell>{game.studio_name}</TableCell>
                   <TableCell>
                     ${game.game_funding?.[0]?.funding_goal?.toLocaleString() || 'N/A'}
