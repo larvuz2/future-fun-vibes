@@ -6,26 +6,30 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 
 interface GameData {
   id: string;
-  game_name: string;
-  studio_name: string;
-  profile_picture_url: string;
-  video_url: string;
-  image_1_url: string | null;
-  image_2_url: string | null;
-  image_3_url: string | null;
-  image_4_url: string | null;
-  game_funding?: {
+  name: string;
+  studio: {
+    id: string;
+    name: string;
+    website_url?: string;
+    twitter_url?: string;
+  };
+  media: {
+    profile_picture_url: string;
+    video_url: string;
+    image_1_url: string | null;
+    image_2_url: string | null;
+    image_3_url: string | null;
+    image_4_url: string | null;
+  };
+  funding?: {
     funding_goal: number;
     current_funding: number;
     funding_end_date: string;
-    website_url?: string;
-    twitter_url?: string;
-  }[];
+  };
 }
 
 export default function GameEditor() {
@@ -39,19 +43,38 @@ export default function GameEditor() {
   useEffect(() => {
     const fetchGameData = async () => {
       try {
-        const { data, error } = await supabase
-          .from('game_media')
+        const { data: gameData, error: gameError } = await supabase
+          .from('games')
           .select(`
-            *,
-            game_funding (*)
+            id,
+            name,
+            studio:studio_id (
+              id,
+              name,
+              website_url,
+              twitter_url
+            ),
+            media:game_media (
+              profile_picture_url,
+              video_url,
+              image_1_url,
+              image_2_url,
+              image_3_url,
+              image_4_url
+            ),
+            funding:game_funding (
+              funding_goal,
+              current_funding,
+              funding_end_date
+            )
           `)
           .eq('id', id)
           .single();
 
-        if (error) throw error;
+        if (gameError) throw gameError;
 
-        if (data) {
-          setGameData(data);
+        if (gameData) {
+          setGameData(gameData);
         } else {
           toast({
             variant: "destructive",
@@ -83,46 +106,63 @@ export default function GameEditor() {
 
     setSaving(true);
     try {
+      // Update game name
       const { error: gameError } = await supabase
-        .from('game_media')
+        .from('games')
         .update({
-          game_name: gameData.game_name,
-          studio_name: gameData.studio_name,
-          profile_picture_url: gameData.profile_picture_url,
-          video_url: gameData.video_url,
-          image_1_url: gameData.image_1_url,
-          image_2_url: gameData.image_2_url,
-          image_3_url: gameData.image_3_url,
-          image_4_url: gameData.image_4_url,
+          name: gameData.name
         })
         .eq('id', id);
 
       if (gameError) throw gameError;
 
-      if (gameData.game_funding?.[0]) {
+      // Update studio
+      const { error: studioError } = await supabase
+        .from('studios')
+        .update({
+          name: gameData.studio.name,
+          website_url: gameData.studio.website_url,
+          twitter_url: gameData.studio.twitter_url
+        })
+        .eq('id', gameData.studio.id);
+
+      if (studioError) throw studioError;
+
+      // Update media
+      const { error: mediaError } = await supabase
+        .from('game_media')
+        .update({
+          profile_picture_url: gameData.media.profile_picture_url,
+          video_url: gameData.media.video_url,
+          image_1_url: gameData.media.image_1_url,
+          image_2_url: gameData.media.image_2_url,
+          image_3_url: gameData.media.image_3_url,
+          image_4_url: gameData.media.image_4_url,
+        })
+        .eq('game_id', id);
+
+      if (mediaError) throw mediaError;
+
+      // Update funding if it exists
+      if (gameData.funding) {
         const { error: fundingError } = await supabase
           .from('game_funding')
           .upsert({
             game_id: id,
-            funding_goal: gameData.game_funding[0].funding_goal,
-            current_funding: gameData.game_funding[0].current_funding,
-            funding_end_date: gameData.game_funding[0].funding_end_date,
-            website_url: gameData.game_funding[0].website_url,
-            twitter_url: gameData.game_funding[0].twitter_url,
+            funding_goal: gameData.funding.funding_goal,
+            current_funding: gameData.funding.current_funding,
+            funding_end_date: gameData.funding.funding_end_date,
           });
 
         if (fundingError) throw fundingError;
       }
 
-      // Show success toast
       toast({
         title: "Success",
         description: "Game updated successfully"
       });
 
-      // Navigate back to dashboard
       navigate('/admin/dashboard');
-      
     } catch (error) {
       console.error('Error updating game:', error);
       toast({
@@ -135,34 +175,22 @@ export default function GameEditor() {
     }
   };
 
-  const handleInputChange = (key: keyof Omit<GameData, 'game_funding'>, value: string) => {
-    if (!gameData) return;
-    setGameData(prev => {
-      if (!prev) return prev;
-      return { ...prev, [key]: value };
-    });
-  };
-
-  const handleFundingChange = (field: keyof GameData['game_funding'][0], value: string | number) => {
+  const handleInputChange = (path: string, value: string | number) => {
     if (!gameData) return;
     
-    const currentFunding = gameData.game_funding?.[0] || {
-      funding_goal: 0,
-      current_funding: 0,
-      funding_end_date: new Date().toISOString(),
-      website_url: '',
-      twitter_url: ''
-    };
-
     setGameData(prev => {
       if (!prev) return prev;
-      return {
-        ...prev,
-        game_funding: [{
-          ...currentFunding,
-          [field]: value
-        }]
-      };
+      
+      const newData = { ...prev };
+      const parts = path.split('.');
+      
+      let current: any = newData;
+      for (let i = 0; i < parts.length - 1; i++) {
+        current = current[parts[i]];
+      }
+      current[parts[parts.length - 1]] = value;
+      
+      return newData;
     });
   };
 
@@ -204,8 +232,8 @@ export default function GameEditor() {
               <Label htmlFor="game_name">Game Name</Label>
               <Input
                 id="game_name"
-                value={gameData.game_name}
-                onChange={(e) => handleInputChange('game_name', e.target.value)}
+                value={gameData.name}
+                onChange={(e) => handleInputChange('name', e.target.value)}
                 required
               />
             </div>
@@ -214,8 +242,8 @@ export default function GameEditor() {
               <Label htmlFor="studio_name">Studio Name</Label>
               <Input
                 id="studio_name"
-                value={gameData.studio_name}
-                onChange={(e) => handleInputChange('studio_name', e.target.value)}
+                value={gameData.studio.name}
+                onChange={(e) => handleInputChange('studio.name', e.target.value)}
                 required
               />
             </div>
@@ -225,8 +253,8 @@ export default function GameEditor() {
               <Input
                 id="funding_goal"
                 type="number"
-                value={gameData.game_funding?.[0]?.funding_goal || ''}
-                onChange={(e) => handleFundingChange('funding_goal', Number(e.target.value))}
+                value={gameData.funding?.funding_goal || ''}
+                onChange={(e) => handleInputChange('funding.funding_goal', Number(e.target.value))}
               />
             </div>
 
@@ -235,8 +263,8 @@ export default function GameEditor() {
               <Input
                 id="current_funding"
                 type="number"
-                value={gameData.game_funding?.[0]?.current_funding || ''}
-                onChange={(e) => handleFundingChange('current_funding', Number(e.target.value))}
+                value={gameData.funding?.current_funding || ''}
+                onChange={(e) => handleInputChange('funding.current_funding', Number(e.target.value))}
               />
             </div>
 
@@ -244,8 +272,8 @@ export default function GameEditor() {
               <Label htmlFor="profile_picture_url">Profile Picture URL</Label>
               <Input
                 id="profile_picture_url"
-                value={gameData.profile_picture_url}
-                onChange={(e) => handleInputChange('profile_picture_url', e.target.value)}
+                value={gameData.media.profile_picture_url}
+                onChange={(e) => handleInputChange('media.profile_picture_url', e.target.value)}
                 required
               />
             </div>
@@ -254,21 +282,21 @@ export default function GameEditor() {
               <Label htmlFor="video_url">Video URL</Label>
               <Input
                 id="video_url"
-                value={gameData.video_url}
-                onChange={(e) => handleInputChange('video_url', e.target.value)}
+                value={gameData.media.video_url}
+                onChange={(e) => handleInputChange('media.video_url', e.target.value)}
                 required
               />
             </div>
 
             {[1, 2, 3, 4].map((num) => {
-              const key = `image_${num}_url` as keyof Omit<GameData, 'game_funding'>;
+              const key = `image_${num}_url` as keyof typeof gameData.media;
               return (
                 <div key={num} className="space-y-2">
                   <Label htmlFor={key}>Image {num} URL</Label>
                   <Input
                     id={key}
-                    value={gameData[key] || ''}
-                    onChange={(e) => handleInputChange(key, e.target.value)}
+                    value={gameData.media[key] || ''}
+                    onChange={(e) => handleInputChange(`media.${key}`, e.target.value)}
                   />
                 </div>
               );
@@ -278,8 +306,8 @@ export default function GameEditor() {
               <Label htmlFor="website_url">Website URL</Label>
               <Input
                 id="website_url"
-                value={gameData.game_funding?.[0]?.website_url || ''}
-                onChange={(e) => handleFundingChange('website_url', e.target.value)}
+                value={gameData.studio.website_url || ''}
+                onChange={(e) => handleInputChange('studio.website_url', e.target.value)}
               />
             </div>
 
@@ -287,8 +315,8 @@ export default function GameEditor() {
               <Label htmlFor="twitter_url">Twitter URL</Label>
               <Input
                 id="twitter_url"
-                value={gameData.game_funding?.[0]?.twitter_url || ''}
-                onChange={(e) => handleFundingChange('twitter_url', e.target.value)}
+                value={gameData.studio.twitter_url || ''}
+                onChange={(e) => handleInputChange('studio.twitter_url', e.target.value)}
               />
             </div>
           </div>

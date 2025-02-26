@@ -297,9 +297,7 @@ export type Database = {
           funding_goal: number
           game_id: string | null
           id: string
-          twitter_url: string | null
           updated_at: string | null
-          website_url: string | null
         }
         Insert: {
           created_at?: string | null
@@ -308,9 +306,7 @@ export type Database = {
           funding_goal: number
           game_id?: string | null
           id?: string
-          twitter_url?: string | null
           updated_at?: string | null
-          website_url?: string | null
         }
         Update: {
           created_at?: string | null
@@ -319,67 +315,64 @@ export type Database = {
           funding_goal?: number
           game_id?: string | null
           id?: string
-          twitter_url?: string | null
           updated_at?: string | null
-          website_url?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "game_funding_game_id_fkey"
+            foreignKeyName: "new_game_funding_game_id_fkey"
             columns: ["game_id"]
-            isOneToOne: false
-            referencedRelation: "game_media"
+            isOneToOne: true
+            referencedRelation: "games"
             referencedColumns: ["id"]
           },
         ]
       }
       game_media: {
         Row: {
-          cached_profile_picture_url: string | null
           created_at: string | null
-          game_name: string
+          game_id: string | null
           id: string
           image_1_url: string | null
           image_2_url: string | null
           image_3_url: string | null
           image_4_url: string | null
-          profile_picture_metadata: Json | null
           profile_picture_url: string
-          studio_name: string
           updated_at: string | null
           video_url: string
         }
         Insert: {
-          cached_profile_picture_url?: string | null
           created_at?: string | null
-          game_name: string
+          game_id?: string | null
           id?: string
           image_1_url?: string | null
           image_2_url?: string | null
           image_3_url?: string | null
           image_4_url?: string | null
-          profile_picture_metadata?: Json | null
           profile_picture_url: string
-          studio_name: string
           updated_at?: string | null
           video_url: string
         }
         Update: {
-          cached_profile_picture_url?: string | null
           created_at?: string | null
-          game_name?: string
+          game_id?: string | null
           id?: string
           image_1_url?: string | null
           image_2_url?: string | null
           image_3_url?: string | null
           image_4_url?: string | null
-          profile_picture_metadata?: Json | null
           profile_picture_url?: string
-          studio_name?: string
           updated_at?: string | null
           video_url?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "new_game_media_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: true
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       game_milestones: {
         Row: {
@@ -409,15 +402,7 @@ export type Database = {
           title?: string
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "game_milestones_game_id_fkey"
-            columns: ["game_id"]
-            isOneToOne: false
-            referencedRelation: "game_media"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       game_polls: {
         Row: {
@@ -444,15 +429,7 @@ export type Database = {
           question?: string
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "game_polls_game_id_fkey"
-            columns: ["game_id"]
-            isOneToOne: false
-            referencedRelation: "game_media"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       game_projects: {
         Row: {
@@ -517,10 +494,48 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "game_updates_game_id_fkey"
+            foreignKeyName: "new_game_updates_game_id_fkey"
             columns: ["game_id"]
             isOneToOne: false
-            referencedRelation: "game_media"
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      games: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          slug: string
+          status: string | null
+          studio_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+          slug: string
+          status?: string | null
+          studio_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          status?: string | null
+          studio_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "games_studio_id_fkey"
+            columns: ["studio_id"]
+            isOneToOne: false
+            referencedRelation: "studios"
             referencedColumns: ["id"]
           },
         ]
@@ -791,6 +806,33 @@ export type Database = {
           scene_id?: string
           story_id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      studios: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          twitter_url: string | null
+          updated_at: string | null
+          website_url: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+          twitter_url?: string | null
+          updated_at?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          twitter_url?: string | null
+          updated_at?: string | null
+          website_url?: string | null
         }
         Relationships: []
       }

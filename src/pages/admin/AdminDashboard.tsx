@@ -16,30 +16,27 @@ import { useToast } from "@/hooks/use-toast";
 
 const ADMIN_USER_ID = "b1101d11-a765-4706-84f0-683cf045f956";
 
-interface GameFunding {
-  funding_goal: number;
-  current_funding: number;
-  funding_end_date: string;
-  website_url: string;
-  twitter_url: string;
-}
-
-interface GameListItem {
+interface Game {
   id: string;
-  game_name: string;
-  studio_name: string;
-  game_funding?: GameFunding[];
+  name: string;
+  studio: {
+    name: string;
+  };
+  funding?: {
+    funding_goal: number;
+    current_funding: number;
+    funding_end_date: string;
+  }[];
 }
 
 export default function AdminDashboard() {
-  const [games, setGames] = useState<GameListItem[]>([]);
+  const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const fetchGames = async () => {
     try {
-      // First check if user is admin
       const { data: { user } } = await supabase.auth.getUser();
       console.log("Current user:", user);
       
@@ -49,20 +46,20 @@ export default function AdminDashboard() {
       }
 
       const { data: gameData, error: gameError } = await supabase
-        .from("game_media")
+        .from("games")
         .select(`
           id,
-          game_name,
-          studio_name,
-          game_funding (
+          name,
+          studio:studio_id (
+            name
+          ),
+          funding:game_funding (
             funding_goal,
             current_funding,
-            funding_end_date,
-            website_url,
-            twitter_url
+            funding_end_date
           )
         `)
-        .order('game_name');
+        .order('name');
 
       if (gameError) {
         console.error('Error fetching games:', gameError);
@@ -144,17 +141,17 @@ export default function AdminDashboard() {
             ) : (
               games.map((game) => (
                 <TableRow key={game.id}>
-                  <TableCell className="font-medium">{game.game_name}</TableCell>
-                  <TableCell>{game.studio_name}</TableCell>
+                  <TableCell className="font-medium">{game.name}</TableCell>
+                  <TableCell>{game.studio.name}</TableCell>
                   <TableCell>
-                    ${game.game_funding?.[0]?.funding_goal?.toLocaleString() || 'N/A'}
+                    ${game.funding?.[0]?.funding_goal?.toLocaleString() || 'N/A'}
                   </TableCell>
                   <TableCell>
-                    ${game.game_funding?.[0]?.current_funding?.toLocaleString() || 'N/A'}
+                    ${game.funding?.[0]?.current_funding?.toLocaleString() || 'N/A'}
                   </TableCell>
                   <TableCell>
-                    {game.game_funding?.[0]?.funding_end_date 
-                      ? new Date(game.game_funding[0].funding_end_date).toLocaleDateString() 
+                    {game.funding?.[0]?.funding_end_date 
+                      ? new Date(game.funding[0].funding_end_date).toLocaleDateString() 
                       : 'N/A'}
                   </TableCell>
                   <TableCell className="text-right">
