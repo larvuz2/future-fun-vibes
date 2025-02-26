@@ -114,10 +114,15 @@ export default function GameEditor() {
         if (fundingError) throw fundingError;
       }
 
+      // Show success toast
       toast({
         title: "Success",
         description: "Game updated successfully"
       });
+
+      // Navigate back to dashboard
+      navigate('/admin/dashboard');
+      
     } catch (error) {
       console.error('Error updating game:', error);
       toast({
