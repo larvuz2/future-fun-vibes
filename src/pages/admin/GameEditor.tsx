@@ -157,14 +157,14 @@ export default function GameEditor() {
 
       // Create or update game media
       if (!gameId) {
-        const { data: gameData, error: gameError } = await supabase
+        const { data: newGameData, error: gameError } = await supabase
           .from("game_media")
           .insert(gameData)
           .select()
           .single();
 
         if (gameError) throw gameError;
-        gameId = gameData.id;
+        gameId = newGameData.id;
       } else {
         const { error: gameError } = await supabase
           .from("game_media")
