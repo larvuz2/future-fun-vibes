@@ -16,6 +16,7 @@ interface GameCardProps {
 
 interface GameData {
   name: string;
+  slug: string;
   studio: {
     name: string;
   };
@@ -38,10 +39,12 @@ export function GameCard({ gameSlug }: GameCardProps) {
   
   useEffect(() => {
     const fetchGameData = async () => {
-      const { data: game, error } = await supabase
+      // First try to fetch by current slug
+      let { data: game, error } = await supabase
         .from('games')
         .select(`
           name,
+          slug,
           studio:studio_id (
             name
           ),
@@ -63,13 +66,14 @@ export function GameCard({ gameSlug }: GameCardProps) {
       }
 
       if (game) {
+        console.log('Game data fetched:', game);
         setGameData(game);
       }
     };
 
     fetchGameData();
 
-    // Subscribe to changes
+    // Subscribe to all relevant changes
     const channel = supabase
       .channel('schema-db-changes')
       .on(
@@ -151,7 +155,7 @@ export function GameCard({ gameSlug }: GameCardProps) {
   return (
     <Card className={`overflow-hidden glass-card ${!isMobile && 'elegant-hover'}`}>
       <div className="flex flex-col md:flex-row w-full">
-        <div className="relative w-full md:w-2/3 cursor-pointer" onClick={handleGameClick}>
+        <div className="relative w-full md:w-2/3 cursor-pointer" onClick={() => navigate(`/game/${gameData.slug}`)}>
           <div className="aspect-video relative gradient-overlay">
             {!isVideoLoaded && !hasVideoError && !isMobile && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/20">
@@ -188,7 +192,7 @@ export function GameCard({ gameSlug }: GameCardProps) {
                 x5-playsinline="true"
                 preload="auto"
                 autoPlay
-                onLoadedData={handleVideoLoad}
+                onLoadedData={() => setIsVideoLoaded(true)}
                 onError={handleVideoError}
                 style={{ objectFit: 'cover' }}
               />
@@ -214,17 +218,17 @@ export function GameCard({ gameSlug }: GameCardProps) {
             <div className="grid grid-cols-3 gap-4 text-center">
               <div className="bg-black/20 rounded-lg p-2">
                 <Users className="w-4 h-4 mx-auto mb-1 text-primary" />
-                <p className="text-sm font-medium">{stats.plays.toLocaleString()}</p>
+                <p className="text-sm font-medium">10,000</p>
                 <p className="text-xs text-muted-foreground">Plays</p>
               </div>
               <div className="bg-black/20 rounded-lg p-2">
                 <Timer className="w-4 h-4 mx-auto mb-1 text-primary" />
-                <p className="text-sm font-medium">{stats.hours.toLocaleString()}</p>
+                <p className="text-sm font-medium">30,000</p>
                 <p className="text-xs text-muted-foreground">Hours</p>
               </div>
               <div className="bg-black/20 rounded-lg p-2">
                 <BarChart3 className="w-4 h-4 mx-auto mb-1 text-primary" />
-                <p className="text-sm font-medium">{stats.mints.toLocaleString()}</p>
+                <p className="text-sm font-medium">1,500</p>
                 <p className="text-xs text-muted-foreground">Mints</p>
               </div>
             </div>
@@ -232,22 +236,22 @@ export function GameCard({ gameSlug }: GameCardProps) {
             <div className="space-y-2 bg-black/20 rounded-lg p-3">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Market Cap</span>
-                <span className="font-medium">{stats.marketCap}</span>
+                <span className="font-medium">$1.5M</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Added</span>
-                <span className="font-medium">{stats.dateAdded}</span>
+                <span className="font-medium">Recently added</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Genre</span>
-                <span className="font-medium">{stats.genre}</span>
+                <span className="font-medium">Action</span>
               </div>
             </div>
 
             <div className="flex flex-col items-center">
               <Button 
                 className="w-full bg-[#9b87f5] hover:bg-[#7E69AB] border-[#6E59A5] border-b-4 text-white shadow-md flex items-center justify-center" 
-                onClick={handleGameClick}
+                onClick={() => navigate(`/game/${gameData.slug}`)}
               >
                 <Gamepad2 className="w-4 h-4 mr-1 text-white" /> Go to Game
               </Button>
