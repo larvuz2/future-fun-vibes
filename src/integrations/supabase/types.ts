@@ -39,6 +39,30 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_users: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          password_hash: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          password_hash: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          password_hash?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       audio_generations: {
         Row: {
           created_at: string
@@ -265,6 +289,50 @@ export type Database = {
           },
         ]
       }
+      game_funding: {
+        Row: {
+          created_at: string | null
+          current_funding: number | null
+          funding_end_date: string
+          funding_goal: number
+          game_id: string | null
+          id: string
+          twitter_url: string | null
+          updated_at: string | null
+          website_url: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_funding?: number | null
+          funding_end_date: string
+          funding_goal: number
+          game_id?: string | null
+          id?: string
+          twitter_url?: string | null
+          updated_at?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          current_funding?: number | null
+          funding_end_date?: string
+          funding_goal?: number
+          game_id?: string | null
+          id?: string
+          twitter_url?: string | null
+          updated_at?: string | null
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_funding_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "game_media"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       game_media: {
         Row: {
           cached_profile_picture_url: string | null
@@ -313,6 +381,79 @@ export type Database = {
         }
         Relationships: []
       }
+      game_milestones: {
+        Row: {
+          completed: boolean | null
+          created_at: string | null
+          date: string
+          game_id: string | null
+          id: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          completed?: boolean | null
+          created_at?: string | null
+          date: string
+          game_id?: string | null
+          id?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          completed?: boolean | null
+          created_at?: string | null
+          date?: string
+          game_id?: string | null
+          id?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_milestones_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "game_media"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      game_polls: {
+        Row: {
+          active: boolean | null
+          created_at: string | null
+          game_id: string | null
+          id: string
+          question: string
+          updated_at: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string | null
+          game_id?: string | null
+          id?: string
+          question: string
+          updated_at?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string | null
+          game_id?: string | null
+          id?: string
+          question?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_polls_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "game_media"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       game_projects: {
         Row: {
           code: string | null
@@ -345,6 +486,44 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      game_updates: {
+        Row: {
+          category: string
+          content: string
+          created_at: string | null
+          game_id: string | null
+          id: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          content: string
+          created_at?: string | null
+          game_id?: string | null
+          id?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          content?: string
+          created_at?: string | null
+          game_id?: string | null
+          id?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_updates_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "game_media"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       generated_images: {
         Row: {
@@ -468,6 +647,41 @@ export type Database = {
           zodiac_sign?: string | null
         }
         Relationships: []
+      }
+      poll_options: {
+        Row: {
+          created_at: string | null
+          id: string
+          option_text: string
+          poll_id: string | null
+          updated_at: string | null
+          votes: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          option_text: string
+          poll_id?: string | null
+          updated_at?: string | null
+          votes?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          option_text?: string
+          poll_id?: string | null
+          updated_at?: string | null
+          votes?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "poll_options_poll_id_fkey"
+            columns: ["poll_id"]
+            isOneToOne: false
+            referencedRelation: "game_polls"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
