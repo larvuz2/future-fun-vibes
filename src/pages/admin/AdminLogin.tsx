@@ -7,6 +7,8 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
+const ADMIN_USER_ID = "532eb30a-a70e-4665-b949-4739fc36a7ec";
+
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,39 +21,37 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      // First try to sign in with Supabase
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
-      // Check if it's the admin email
-      if (email === "gus@metazooie.com" && password === "Larklabs2020") {
+      // Check if the logged-in user is the admin
+      if (data.user?.id === ADMIN_USER_ID) {
         localStorage.setItem('isAdminAuthenticated', 'true');
         toast({
           title: "Success",
-          description: "Successfully logged in",
+          description: "Welcome back, admin!",
         });
         navigate("/admin/dashboard", { replace: true });
       } else {
+        // Not the admin user
         toast({
           variant: "destructive",
           title: "Access Denied",
-          description: "You don't have admin privileges",
+          description: "You don't have administrator privileges.",
         });
-        // Sign out if not admin
         await supabase.auth.signOut();
+        localStorage.removeItem('isAdminAuthenticated');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
       toast({
         variant: "destructive",
-        title: "Login Error",
-        description: "Invalid credentials or network error. Please try again.",
+        title: "Login Failed",
+        description: error.message || "Invalid credentials. Please try again.",
       });
     } finally {
       setLoading(false);
@@ -60,10 +60,18 @@ export default function AdminLogin() {
 
   // Check if already authenticated
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem('isAdminAuthenticated');
-    if (isAuthenticated === 'true') {
-      navigate("/admin/dashboard", { replace: true });
-    }
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      const isAuthenticated = localStorage.getItem('isAdminAuthenticated');
+      
+      if (user?.id === ADMIN_USER_ID && isAuthenticated === 'true') {
+        navigate("/admin/dashboard", { replace: true });
+      } else {
+        localStorage.removeItem('isAdminAuthenticated');
+      }
+    };
+
+    checkAuth();
   }, [navigate]);
 
   return (
