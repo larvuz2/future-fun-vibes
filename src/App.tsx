@@ -10,6 +10,7 @@ import Community from "@/pages/Community";
 import Upload from "@/pages/Upload";
 import AdminLogin from "@/pages/admin/AdminLogin";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
+import GameEditor from "@/pages/admin/GameEditor";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/upload" element={<Upload />} />
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/games/:id" element={<GameEditor />} />
       </Routes>
     </Router>
   );
