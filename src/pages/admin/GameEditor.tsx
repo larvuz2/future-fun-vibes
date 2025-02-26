@@ -28,8 +28,6 @@ interface GameData {
   }[];
 }
 
-type GameDataKey = keyof GameData;
-
 export default function GameEditor() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -132,26 +130,34 @@ export default function GameEditor() {
     }
   };
 
-  const handleInputChange = (field: GameDataKey, value: string) => {
+  const handleInputChange = (key: keyof Omit<GameData, 'game_funding'>, value: string) => {
     if (!gameData) return;
-    setGameData({ ...gameData, [field]: value });
+    setGameData(prev => {
+      if (!prev) return prev;
+      return { ...prev, [key]: value };
+    });
   };
 
-  const handleFundingChange = (field: string, value: string | number) => {
+  const handleFundingChange = (field: keyof GameData['game_funding'][0], value: string | number) => {
     if (!gameData) return;
     
     const currentFunding = gameData.game_funding?.[0] || {
       funding_goal: 0,
       current_funding: 0,
       funding_end_date: new Date().toISOString(),
+      website_url: '',
+      twitter_url: ''
     };
 
-    setGameData({
-      ...gameData,
-      game_funding: [{
-        ...currentFunding,
-        [field]: value
-      }]
+    setGameData(prev => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        game_funding: [{
+          ...currentFunding,
+          [field]: value
+        }]
+      };
     });
   };
 
@@ -249,16 +255,19 @@ export default function GameEditor() {
               />
             </div>
 
-            {[1, 2, 3, 4].map((num) => (
-              <div key={num} className="space-y-2">
-                <Label htmlFor={`image_${num}_url`}>Image {num} URL</Label>
-                <Input
-                  id={`image_${num}_url`}
-                  value={gameData[`image_${num}_url` as keyof GameData] || ''}
-                  onChange={(e) => handleInputChange(`image_${num}_url` as GameDataKey, e.target.value)}
-                />
-              </div>
-            ))}
+            {[1, 2, 3, 4].map((num) => {
+              const key = `image_${num}_url` as keyof Omit<GameData, 'game_funding'>;
+              return (
+                <div key={num} className="space-y-2">
+                  <Label htmlFor={key}>Image {num} URL</Label>
+                  <Input
+                    id={key}
+                    value={gameData[key] || ''}
+                    onChange={(e) => handleInputChange(key, e.target.value)}
+                  />
+                </div>
+              );
+            })}
 
             <div className="space-y-2">
               <Label htmlFor="website_url">Website URL</Label>
