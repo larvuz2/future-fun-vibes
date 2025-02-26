@@ -10,9 +10,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { GAMES } from "@/data/games";
 
 interface GameListItem {
   id: string;
@@ -26,20 +26,45 @@ interface GameListItem {
 export default function AdminDashboard() {
   const [games, setGames] = useState<GameListItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  useEffect(() => {
-    checkAuth();
-    fetchGames();
-  }, []);
-
   const checkAuth = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user || user.email !== "gus@metazooie.com") {
-      navigate("/admin");
+    try {
+      const isAuthenticated = localStorage.getItem('isAdminAuthenticated');
+      if (!isAuthenticated || isAuthenticated !== 'true') {
+        navigate("/admin", { replace: true });
+        return false;
+      }
+      
+      // Double-check with Supabase
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || user.email !== "gus@metazooie.com") {
+        localStorage.removeItem('isAdminAuthenticated');
+        navigate("/admin", { replace: true });
+        return false;
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Auth check error:', error);
+      navigate("/admin", { replace: true });
+      return false;
+    } finally {
+      setIsCheckingAuth(false);
     }
   };
+
+  useEffect(() => {
+    const init = async () => {
+      const isAuthed = await checkAuth();
+      if (isAuthed) {
+        fetchGames();
+      }
+    };
+    init();
+  }, []);
 
   const fetchGames = async () => {
     try {
@@ -80,15 +105,23 @@ export default function AdminDashboard() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate("/admin");
+    localStorage.removeItem('isAdminAuthenticated');
+    navigate("/admin", { replace: true });
   };
 
-  if (loading) {
-    return <div className="p-8">Loading...</div>;
+  if (isCheckingAuth) {
+    return (
+      <div className="container mx-auto p-8">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 w-48 bg-muted rounded"></div>
+          <div className="h-[400px] bg-muted rounded"></div>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="container mx-auto p-8">
+    <div className="container mx-auto p-8 animate-fade-in">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Game Management</h1>
         <div className="space-x-4">
@@ -97,42 +130,58 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Game Name</TableHead>
-            <TableHead>Studio</TableHead>
-            <TableHead>Funding Goal</TableHead>
-            <TableHead>Current Funding</TableHead>
-            <TableHead>End Date</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {games.map((game) => (
-            <TableRow key={game.id}>
-              <TableCell>{game.game_name}</TableCell>
-              <TableCell>{game.studio_name}</TableCell>
-              <TableCell>${game.funding_goal?.toLocaleString() || 'N/A'}</TableCell>
-              <TableCell>${game.current_funding?.toLocaleString() || 'N/A'}</TableCell>
-              <TableCell>
-                {game.funding_end_date 
-                  ? new Date(game.funding_end_date).toLocaleDateString() 
-                  : 'N/A'}
-              </TableCell>
-              <TableCell>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleEdit(game.id)}
-                >
-                  Edit
-                </Button>
-              </TableCell>
+      <div className="bg-card rounded-lg shadow">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Game Name</TableHead>
+              <TableHead>Studio</TableHead>
+              <TableHead>Funding Goal</TableHead>
+              <TableHead>Current Funding</TableHead>
+              <TableHead>End Date</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {loading ? (
+              // Skeleton loading state
+              Array.from({ length: 5 }).map((_, index) => (
+                <TableRow key={index}>
+                  <TableCell><Skeleton className="h-4 w-[200px]" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-[150px]" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-[120px]" /></TableCell>
+                  <TableCell><Skeleton className="h-8 w-[60px]" /></TableCell>
+                </TableRow>
+              ))
+            ) : (
+              games.map((game) => (
+                <TableRow key={game.id}>
+                  <TableCell>{game.game_name}</TableCell>
+                  <TableCell>{game.studio_name}</TableCell>
+                  <TableCell>${game.funding_goal?.toLocaleString() || 'N/A'}</TableCell>
+                  <TableCell>${game.current_funding?.toLocaleString() || 'N/A'}</TableCell>
+                  <TableCell>
+                    {game.funding_end_date 
+                      ? new Date(game.funding_end_date).toLocaleDateString() 
+                      : 'N/A'}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleEdit(game.id)}
+                    >
+                      Edit
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }
