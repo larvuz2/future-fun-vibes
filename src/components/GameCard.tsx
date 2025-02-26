@@ -33,6 +33,7 @@ interface GameData {
 export function GameCard({ gameSlug }: GameCardProps) {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [gameData, setGameData] = useState<GameData | null>(null);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [hasVideoError, setHasVideoError] = useState(false);
@@ -119,10 +120,6 @@ export function GameCard({ gameSlug }: GameCardProps) {
     };
   }, [gameSlug]);
 
-  const handleGameClick = () => {
-    navigate(`/game/${gameSlug}`);
-  };
-
   const handleVideoError = (e: SyntheticEvent<HTMLVideoElement>) => {
     const video = e.currentTarget;
     console.error('Video loading error for:', gameData?.name, 
@@ -134,23 +131,9 @@ export function GameCard({ gameSlug }: GameCardProps) {
     setHasVideoError(true);
   };
 
-  const handleVideoLoad = () => {
-    setIsVideoLoaded(true);
-  };
-
   if (!gameData?.media) {
     return null;
   }
-
-  // Mock data for the game card stats
-  const stats = {
-    plays: 10000,
-    hours: 30000,
-    mints: 1500,
-    marketCap: "$1.5M",
-    dateAdded: "Recently added",
-    genre: "Action"
-  };
 
   return (
     <Card className={`overflow-hidden glass-card ${!isMobile && 'elegant-hover'}`}>
@@ -181,7 +164,7 @@ export function GameCard({ gameSlug }: GameCardProps) {
               />
             ) : (
               <video
-                ref={useRef<HTMLVideoElement>(null)}
+                ref={videoRef}
                 src={gameData.media.video_url}
                 poster={gameData.media.image_1_url || undefined}
                 className="w-full h-full object-cover"
