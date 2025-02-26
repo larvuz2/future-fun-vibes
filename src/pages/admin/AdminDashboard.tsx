@@ -28,55 +28,33 @@ interface GameListItem {
   id: string;
   game_name: string;
   studio_name: string;
-  game_funding: GameFunding[];
+  game_funding?: GameFunding[];
 }
 
 export default function AdminDashboard() {
   const [games, setGames] = useState<GameListItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const checkAuth = async () => {
+  const fetchGames = async () => {
     try {
+      // First check if user is admin
       const { data: { user } } = await supabase.auth.getUser();
       console.log("Current user:", user);
       
       if (!user || user.id !== ADMIN_USER_ID) {
-        console.log("Auth failed - User not admin:", user?.id);
-        localStorage.removeItem('isAdminAuthenticated');
         navigate("/admin", { replace: true });
-        return false;
+        return;
       }
-      
-      const isAuthenticated = localStorage.getItem('isAdminAuthenticated');
-      if (!isAuthenticated || isAuthenticated !== 'true') {
-        console.log("Auth failed - Not authenticated in localStorage");
-        navigate("/admin", { replace: true });
-        return false;
-      }
-      
-      return true;
-    } catch (error) {
-      console.error('Auth check error:', error);
-      navigate("/admin", { replace: true });
-      return false;
-    } finally {
-      setIsCheckingAuth(false);
-    }
-  };
 
-  const fetchGames = async () => {
-    setLoading(true);
-    try {
       const { data: gameData, error: gameError } = await supabase
         .from("game_media")
         .select(`
-          id:id,
+          id,
           game_name,
           studio_name,
-          game_funding!game_funding_game_id_fkey (
+          game_funding (
             funding_goal,
             current_funding,
             funding_end_date,
@@ -106,26 +84,7 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    const init = async () => {
-      const isAuthed = await checkAuth();
-      if (isAuthed) {
-        await fetchGames();
-      }
-    };
-
-    init();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_OUT' || !session) {
-        navigate("/admin", { replace: true });
-      } else if (session.user.id !== ADMIN_USER_ID) {
-        navigate("/admin", { replace: true });
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
+    fetchGames();
   }, []);
 
   const handleEdit = (gameId: string) => {
@@ -142,7 +101,7 @@ export default function AdminDashboard() {
     navigate("/admin", { replace: true });
   };
 
-  if (isCheckingAuth) {
+  if (loading) {
     return (
       <div className="container mx-auto p-8">
         <div className="animate-pulse space-y-4">
@@ -154,7 +113,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="container mx-auto p-8 animate-fade-in">
+    <div className="container mx-auto p-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Game Management</h1>
         <div className="space-x-4">
@@ -176,18 +135,7 @@ export default function AdminDashboard() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {loading ? (
-              Array.from({ length: 5 }).map((_, index) => (
-                <TableRow key={index}>
-                  <TableCell><Skeleton className="h-4 w-[200px]" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-[150px]" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-[120px]" /></TableCell>
-                  <TableCell><Skeleton className="h-8 w-[60px]" /></TableCell>
-                </TableRow>
-              ))
-            ) : games.length === 0 ? (
+            {games.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-8">
                   No games found. Add your first game to get started.
