@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
@@ -19,27 +18,14 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        toast({
-          variant: "destructive",
-          title: "Login Error",
-          description: error.message || "Invalid credentials. Please try again.",
-        });
-        return;
-      }
-
-      if (data.user && email === "gus@metazooie.com") {
+      // Hardcoded admin credentials check
+      if (email === "gus@metazooie.com" && password === "Larklabs2020") {
         navigate("/admin/dashboard");
       } else {
         toast({
           variant: "destructive",
           title: "Login Error",
-          description: "Unauthorized access. Please try again.",
+          description: "Invalid credentials. Please try again.",
         });
       }
     } catch (error) {
