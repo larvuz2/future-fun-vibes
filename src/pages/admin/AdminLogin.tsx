@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
@@ -17,20 +18,44 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
 
-    // Hardcoded admin credentials check
-    if (email === "gus@metazooie.com" && password === "Larklabs2020") {
-      // Set a session flag in localStorage
-      localStorage.setItem('isAdminAuthenticated', 'true');
-      navigate("/admin/dashboard", { replace: true });
-    } else {
+    try {
+      // First try to sign in with Supabase
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      // Check if it's the admin email
+      if (email === "gus@metazooie.com" && password === "Larklabs2020") {
+        localStorage.setItem('isAdminAuthenticated', 'true');
+        toast({
+          title: "Success",
+          description: "Successfully logged in",
+        });
+        navigate("/admin/dashboard", { replace: true });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Access Denied",
+          description: "You don't have admin privileges",
+        });
+        // Sign out if not admin
+        await supabase.auth.signOut();
+      }
+    } catch (error) {
+      console.error('Login error:', error);
       toast({
         variant: "destructive",
         title: "Login Error",
-        description: "Invalid credentials. Please try again.",
+        description: "Invalid credentials or network error. Please try again.",
       });
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   // Check if already authenticated
@@ -58,6 +83,7 @@ export default function AdminLogin() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               required
+              disabled={loading}
             />
           </div>
           <div className="space-y-2">
@@ -69,9 +95,14 @@ export default function AdminLogin() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
               required
+              disabled={loading}
             />
           </div>
-          <Button className="w-full" type="submit" disabled={loading}>
+          <Button 
+            className="w-full" 
+            type="submit" 
+            disabled={loading}
+          >
             {loading ? "Signing in..." : "Sign in"}
           </Button>
         </form>
