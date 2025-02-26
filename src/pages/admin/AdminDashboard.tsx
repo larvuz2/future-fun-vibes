@@ -71,7 +71,9 @@ export default function AdminDashboard() {
       const { data: gameData, error: gameError } = await supabase
         .from("game_media")
         .select(`
-          *,
+          id,
+          game_name,
+          studio_name,
           game_funding (
             funding_goal,
             current_funding,
@@ -83,6 +85,7 @@ export default function AdminDashboard() {
         .order('game_name');
 
       if (gameError) {
+        console.error('Error fetching games:', gameError);
         throw gameError;
       }
 
