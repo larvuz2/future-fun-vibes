@@ -64,6 +64,19 @@ export default function AdminDashboard() {
     setLoading(true);
     try {
       console.log('Fetching games...');
+      // First, let's check what's in the game_media table
+      const { data: allGames, error: basicError } = await supabase
+        .from("game_media")
+        .select('*');
+      
+      console.log('All games in game_media:', allGames);
+
+      if (basicError) {
+        console.error('Basic query error:', basicError);
+        throw basicError;
+      }
+
+      // Now let's try the full query with funding information
       const { data: gameData, error: gameError } = await supabase
         .from("game_media")
         .select(`
@@ -82,7 +95,7 @@ export default function AdminDashboard() {
         throw gameError;
       }
 
-      console.log('Games fetched:', gameData);
+      console.log('Games with funding data:', gameData);
       setGames(gameData || []);
     } catch (error) {
       console.error('Fetch error:', error);
