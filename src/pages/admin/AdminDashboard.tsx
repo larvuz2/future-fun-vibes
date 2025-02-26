@@ -20,9 +20,11 @@ interface GameListItem {
   id: string;
   game_name: string;
   studio_name: string;
-  funding_goal?: number;
-  current_funding?: number;
-  funding_end_date?: string;
+  game_funding?: {
+    funding_goal: number;
+    current_funding: number;
+    funding_end_date: string;
+  }[];
 }
 
 export default function AdminDashboard() {
@@ -34,7 +36,6 @@ export default function AdminDashboard() {
 
   const checkAuth = async () => {
     try {
-      // First check if user is logged in
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user || user.id !== ADMIN_USER_ID) {
@@ -43,7 +44,6 @@ export default function AdminDashboard() {
         return false;
       }
       
-      // Additional check for admin status
       const isAuthenticated = localStorage.getItem('isAdminAuthenticated');
       if (!isAuthenticated || isAuthenticated !== 'true') {
         navigate("/admin", { replace: true });
@@ -60,33 +60,10 @@ export default function AdminDashboard() {
     }
   };
 
-  useEffect(() => {
-    const init = async () => {
-      const isAuthed = await checkAuth();
-      if (isAuthed) {
-        fetchGames();
-      }
-    };
-
-    init();
-
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_OUT' || !session) {
-        navigate("/admin", { replace: true });
-      } else if (session.user.id !== ADMIN_USER_ID) {
-        navigate("/admin", { replace: true });
-      }
-    });
-
-    // Cleanup subscription
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
-
   const fetchGames = async () => {
+    setLoading(true);
     try {
+      console.log('Fetching games...');
       const { data: gameData, error: gameError } = await supabase
         .from("game_media")
         .select(`
@@ -100,19 +77,47 @@ export default function AdminDashboard() {
           )
         `);
 
-      if (gameError) throw gameError;
+      if (gameError) {
+        console.error('Game fetch error:', gameError);
+        throw gameError;
+      }
 
+      console.log('Games fetched:', gameData);
       setGames(gameData || []);
     } catch (error) {
+      console.error('Fetch error:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to fetch games",
+        description: "Failed to fetch games. Please try again.",
       });
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const init = async () => {
+      const isAuthed = await checkAuth();
+      if (isAuthed) {
+        fetchGames();
+      }
+    };
+
+    init();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_OUT' || !session) {
+        navigate("/admin", { replace: true });
+      } else if (session.user.id !== ADMIN_USER_ID) {
+        navigate("/admin", { replace: true });
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const handleEdit = (gameId: string) => {
     navigate(`/admin/games/${gameId}`);
@@ -158,7 +163,7 @@ export default function AdminDashboard() {
               <TableHead>Funding Goal</TableHead>
               <TableHead>Current Funding</TableHead>
               <TableHead>End Date</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -173,19 +178,29 @@ export default function AdminDashboard() {
                   <TableCell><Skeleton className="h-8 w-[60px]" /></TableCell>
                 </TableRow>
               ))
+            ) : games.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} className="text-center py-8">
+                  No games found. Add your first game to get started.
+                </TableCell>
+              </TableRow>
             ) : (
               games.map((game) => (
                 <TableRow key={game.id}>
                   <TableCell>{game.game_name}</TableCell>
                   <TableCell>{game.studio_name}</TableCell>
-                  <TableCell>${game.funding_goal?.toLocaleString() || 'N/A'}</TableCell>
-                  <TableCell>${game.current_funding?.toLocaleString() || 'N/A'}</TableCell>
                   <TableCell>
-                    {game.funding_end_date 
-                      ? new Date(game.funding_end_date).toLocaleDateString() 
-                      : 'N/A'}
+                    ${game.game_funding?.[0]?.funding_goal?.toLocaleString() || 'N/A'}
                   </TableCell>
                   <TableCell>
+                    ${game.game_funding?.[0]?.current_funding?.toLocaleString() || 'N/A'}
+                  </TableCell>
+                  <TableCell>
+                    {game.game_funding?.[0]?.funding_end_date 
+                      ? new Date(game.game_funding[0].funding_end_date).toLocaleDateString() 
+                      : 'N/A'}
+                  </TableCell>
+                  <TableCell className="text-right">
                     <Button
                       variant="outline"
                       size="sm"
