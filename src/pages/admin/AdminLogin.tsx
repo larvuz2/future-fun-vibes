@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
-const ADMIN_USER_ID = "532eb30a-a70e-4665-b949-4739fc36a7ec";
+const ADMIN_USER_ID = "b1101d11-a765-4706-84f0-683cf045f956";
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
@@ -26,7 +26,14 @@ export default function AdminLogin() {
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Login Failed",
+          description: error.message,
+        });
+        return;
+      }
 
       // Check if the logged-in user is the admin
       if (data.user?.id === ADMIN_USER_ID) {
@@ -50,8 +57,8 @@ export default function AdminLogin() {
       console.error('Login error:', error);
       toast({
         variant: "destructive",
-        title: "Login Failed",
-        description: error.message || "Invalid credentials. Please try again.",
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
       });
     } finally {
       setLoading(false);
