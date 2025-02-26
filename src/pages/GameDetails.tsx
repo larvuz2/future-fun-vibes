@@ -1,4 +1,3 @@
-
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
@@ -139,41 +138,20 @@ export default function GameDetails() {
     <div className="space-y-6">
       <Card className="p-4">
         <div className="space-y-6">
-          <div>
-            <h3 className="text-lg font-bold mb-2">Back this Project</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Join {gameMedia?.game_name}'s journey and get exclusive rewards
-            </p>
+          <div className="flex flex-col md:flex-row gap-4 items-start">
+            <ProfilePicture 
+              src={gameMedia?.profile_picture_url}
+              alt={gameMedia?.studio_name || ''}
+              size="md"
+              className="border-2 border-border"
+            />
+            <div>
+              <h3 className="text-xl font-bold">{gameMedia?.game_name}</h3>
+              <p className="text-sm text-muted-foreground">{gameMedia?.studio_name}</p>
+            </div>
           </div>
 
-          {BACKING_TIERS.map((tier, index) => (
-            <div key={index} className="p-4 border rounded-lg space-y-3">
-              <div className="flex justify-between items-center">
-                <h4 className="font-semibold">{tier.name}</h4>
-                <span className="text-xl font-bold">${tier.amount}</span>
-              </div>
-              {tier.limited && (
-                <div className="text-sm text-muted-foreground">
-                  {tier.remaining} of {tier.limited} remaining
-                </div>
-              )}
-              <ul className="space-y-2">
-                {tier.perks.map((perk, i) => (
-                  <li key={i} className="text-sm flex items-center gap-2">
-                    <span className="text-primary">•</span> {perk}
-                  </li>
-                ))}
-              </ul>
-              <Button className="w-full">Select Reward</Button>
-            </div>
-          ))}
-        </div>
-      </Card>
-
-      <Card className="p-4">
-        <div className="space-y-6">
           <div>
-            <h2 className="text-2xl font-bold mb-2">{gameMedia?.game_name}</h2>
             <p className="text-muted-foreground mb-4">
               A fast-paced, third-person action roguelike where Capy, a heroic capybara, teams up with viral internet icons like MoodDeng and Doge to battle across chaotic multiverses and restore balance.
             </p>
@@ -254,6 +232,39 @@ export default function GameDetails() {
           </div>
         </div>
       </Card>
+
+      <Card className="p-4">
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-lg font-bold mb-2">Back this Project</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Join {gameMedia?.game_name}'s journey and get exclusive rewards
+            </p>
+          </div>
+
+          {BACKING_TIERS.map((tier, index) => (
+            <div key={index} className="p-4 border rounded-lg space-y-3">
+              <div className="flex justify-between items-center">
+                <h4 className="font-semibold">{tier.name}</h4>
+                <span className="text-xl font-bold">${tier.amount}</span>
+              </div>
+              {tier.limited && (
+                <div className="text-sm text-muted-foreground">
+                  {tier.remaining} of {tier.limited} remaining
+                </div>
+              )}
+              <ul className="space-y-2">
+                {tier.perks.map((perk, i) => (
+                  <li key={i} className="text-sm flex items-center gap-2">
+                    <span className="text-primary">•</span> {perk}
+                  </li>
+                ))}
+              </ul>
+              <Button className="w-full">Select Reward</Button>
+            </div>
+          ))}
+        </div>
+      </Card>
     </div>
   );
 
@@ -275,19 +286,6 @@ export default function GameDetails() {
       <div className="container py-6 mt-20">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <div className="flex flex-col md:flex-row gap-4 items-start">
-              <ProfilePicture 
-                src={gameMedia?.profile_picture_url}
-                alt={gameMedia?.studio_name || ''}
-                size="md"
-                className="border-2 border-border"
-              />
-              <div>
-                <h3 className="text-xl font-bold">{gameMedia?.game_name}</h3>
-                <p className="text-sm text-muted-foreground">{gameMedia?.studio_name}</p>
-              </div>
-            </div>
-
             <Card className="overflow-hidden bg-card">
               <div className="w-full relative">
                 <div className="aspect-video">
@@ -349,6 +347,32 @@ export default function GameDetails() {
 
             <Card className="p-6">
               <div className="space-y-6">
+                <div>
+                  <h2 className="text-2xl font-bold mb-4">Feature Poll</h2>
+                  <div className="p-4 border rounded-lg space-y-4">
+                    <h3 className="text-lg font-semibold">Which feature should we prioritize next?</h3>
+                    <div className="space-y-3">
+                      {[
+                        { option: "New Game Mode: Survival", votes: 145, percentage: 45 },
+                        { option: "Character Customization", votes: 98, percentage: 30 },
+                        { option: "Multiplayer Co-op", votes: 82, percentage: 25 }
+                      ].map((poll, index) => (
+                        <div key={index} className="space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span>{poll.option}</span>
+                            <span>{poll.votes} votes</span>
+                          </div>
+                          <Progress value={poll.percentage} className="h-2" />
+                          <div className="text-xs text-muted-foreground text-right">
+                            {poll.percentage}%
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <Button className="w-full mt-4">Cast Your Vote</Button>
+                  </div>
+                </div>
+
                 <div>
                   <h2 className="text-2xl font-bold mb-4">Latest Updates</h2>
                   <div className="space-y-6">
