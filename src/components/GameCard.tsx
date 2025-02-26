@@ -8,115 +8,120 @@ import { ProfilePicture } from "@/components/ui/profile-picture";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useRef, useEffect } from "react";
 import type { SyntheticEvent } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface GameCardProps {
-  title: string;
-  image: string;
-  genre: string;
-  developer: string;
-  marketCap: string;
-  dateAdded: string;
-  plays: number;
-  hours: number;
-  mints: number;
-  videoUrl: string;
-  profilePictureUrl: string;
+  gameSlug: string;
 }
 
-const MobileVideo = ({ title, videoUrl, image, onError }: { 
-  title: string;
-  videoUrl: string; 
-  image: string; 
-  onError: (e: SyntheticEvent<HTMLVideoElement>) => void 
-}) => {
-  // Test with a known working video URL for Drillhorn
-  const testUrl = title === 'Drillhorn' ? 
-    'https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/Future%20Fun/Big%20Hairy%20Creature%20For%20UE4.mp4' : 
-    videoUrl;
+interface GameData {
+  name: string;
+  studio: {
+    name: string;
+  };
+  media: {
+    profile_picture_url: string;
+    video_url: string;
+    image_1_url: string | null;
+    image_2_url: string | null;
+    image_3_url: string | null;
+    image_4_url: string | null;
+  };
+}
 
-  console.log('Mobile Video URL for', title, ':', testUrl);
-
-  return (
-    <video
-      src={testUrl}
-      poster={image}
-      className="w-full h-full object-cover"
-      loop
-      muted
-      playsInline
-      autoPlay
-      onError={onError}
-    />
-  );
-};
-
-const DesktopVideo = ({ videoUrl, image, onError, onLoad }: { 
-  videoUrl: string; 
-  image: string; 
-  onError: (e: SyntheticEvent<HTMLVideoElement>) => void;
-  onLoad: () => void;
-}) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    if (!videoRef.current) return;
-    
-    const video = videoRef.current;
-    video.load();
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise.catch((error) => {
-        console.log('Desktop autoplay prevented:', error);
-      });
-    }
-  }, []);
-
-  return (
-    <video
-      ref={videoRef}
-      src={videoUrl}
-      poster={image}
-      className="w-full h-full object-cover"
-      loop
-      muted
-      playsInline
-      webkit-playsinline="true"
-      x5-playsinline="true"
-      preload="auto"
-      autoPlay
-      onLoadedData={onLoad}
-      onError={onError}
-      style={{ objectFit: 'cover' }}
-    />
-  );
-};
-
-export function GameCard({
-  title,
-  image,
-  genre,
-  developer,
-  marketCap,
-  dateAdded,
-  plays,
-  hours,
-  mints,
-  videoUrl,
-  profilePictureUrl
-}: GameCardProps) {
+export function GameCard({ gameSlug }: GameCardProps) {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const gameUrl = `/game/${title.toLowerCase().replace(/\s+/g, '-')}`;
+  const [gameData, setGameData] = useState<GameData | null>(null);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [hasVideoError, setHasVideoError] = useState(false);
+  
+  useEffect(() => {
+    const fetchGameData = async () => {
+      const { data: game, error } = await supabase
+        .from('games')
+        .select(`
+          name,
+          studio:studio_id (
+            name
+          ),
+          media:game_media (
+            profile_picture_url,
+            video_url,
+            image_1_url,
+            image_2_url,
+            image_3_url,
+            image_4_url
+          )
+        `)
+        .eq('slug', gameSlug)
+        .single();
+
+      if (error) {
+        console.error('Error fetching game:', error);
+        return;
+      }
+
+      if (game) {
+        setGameData(game);
+      }
+    };
+
+    fetchGameData();
+
+    // Subscribe to changes
+    const channel = supabase
+      .channel('schema-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'games'
+        },
+        (payload) => {
+          console.log('Game changed:', payload);
+          fetchGameData();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'studios'
+        },
+        (payload) => {
+          console.log('Studio changed:', payload);
+          fetchGameData();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'game_media'
+        },
+        (payload) => {
+          console.log('Media changed:', payload);
+          fetchGameData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [gameSlug]);
 
   const handleGameClick = () => {
-    navigate(gameUrl);
+    navigate(`/game/${gameSlug}`);
   };
 
   const handleVideoError = (e: SyntheticEvent<HTMLVideoElement>) => {
     const video = e.currentTarget;
-    console.error('Video loading error for:', title, 
+    console.error('Video loading error for:', gameData?.name, 
       'Mobile:', isMobile,
       'Error:', video.error?.message,
       'Network State:', video.networkState,
@@ -127,6 +132,20 @@ export function GameCard({
 
   const handleVideoLoad = () => {
     setIsVideoLoaded(true);
+  };
+
+  if (!gameData?.media) {
+    return null;
+  }
+
+  // Mock data for the game card stats
+  const stats = {
+    plays: 10000,
+    hours: 30000,
+    mints: 1500,
+    marketCap: "$1.5M",
+    dateAdded: "Recently added",
+    genre: "Action"
   };
 
   return (
@@ -141,26 +160,38 @@ export function GameCard({
             )}
             {hasVideoError ? (
               <img 
-                src={image} 
-                alt={title}
+                src={gameData.media.image_1_url || ''} 
+                alt={gameData.name}
                 className="w-full h-full object-cover"
               />
+            ) : isMobile ? (
+              <video
+                src={gameData.media.video_url}
+                poster={gameData.media.image_1_url || undefined}
+                className="w-full h-full object-cover"
+                loop
+                muted
+                playsInline
+                autoPlay
+                onError={handleVideoError}
+              />
             ) : (
-              isMobile ? (
-                <MobileVideo 
-                  title={title}
-                  videoUrl={videoUrl}
-                  image={image}
-                  onError={handleVideoError}
-                />
-              ) : (
-                <DesktopVideo
-                  videoUrl={videoUrl}
-                  image={image}
-                  onError={handleVideoError}
-                  onLoad={handleVideoLoad}
-                />
-              )
+              <video
+                ref={useRef<HTMLVideoElement>(null)}
+                src={gameData.media.video_url}
+                poster={gameData.media.image_1_url || undefined}
+                className="w-full h-full object-cover"
+                loop
+                muted
+                playsInline
+                webkit-playsinline="true"
+                x5-playsinline="true"
+                preload="auto"
+                autoPlay
+                onLoadedData={handleVideoLoad}
+                onError={handleVideoError}
+                style={{ objectFit: 'cover' }}
+              />
             )}
           </div>
         </div>
@@ -168,14 +199,14 @@ export function GameCard({
         <div className="w-full md:w-1/3 p-4 md:p-6 relative bg-card/40 backdrop-blur-xl">
           <div className="flex items-start gap-3">
             <ProfilePicture
-              src={profilePictureUrl}
-              alt={developer}
+              src={gameData.media.profile_picture_url}
+              alt={gameData.studio.name}
               size="md"
               className="border-2 border-background shadow-xl"
             />
             <div className="text-foreground">
-              <h3 className="font-bold text-xl md:text-2xl leading-tight">{title}</h3>
-              <p className="text-sm text-foreground/80">{developer}</p>
+              <h3 className="font-bold text-xl md:text-2xl leading-tight">{gameData.name}</h3>
+              <p className="text-sm text-foreground/80">{gameData.studio.name}</p>
             </div>
           </div>
 
@@ -183,17 +214,17 @@ export function GameCard({
             <div className="grid grid-cols-3 gap-4 text-center">
               <div className="bg-black/20 rounded-lg p-2">
                 <Users className="w-4 h-4 mx-auto mb-1 text-primary" />
-                <p className="text-sm font-medium">{plays.toLocaleString()}</p>
+                <p className="text-sm font-medium">{stats.plays.toLocaleString()}</p>
                 <p className="text-xs text-muted-foreground">Plays</p>
               </div>
               <div className="bg-black/20 rounded-lg p-2">
                 <Timer className="w-4 h-4 mx-auto mb-1 text-primary" />
-                <p className="text-sm font-medium">{hours.toLocaleString()}</p>
+                <p className="text-sm font-medium">{stats.hours.toLocaleString()}</p>
                 <p className="text-xs text-muted-foreground">Hours</p>
               </div>
               <div className="bg-black/20 rounded-lg p-2">
                 <BarChart3 className="w-4 h-4 mx-auto mb-1 text-primary" />
-                <p className="text-sm font-medium">{mints.toLocaleString()}</p>
+                <p className="text-sm font-medium">{stats.mints.toLocaleString()}</p>
                 <p className="text-xs text-muted-foreground">Mints</p>
               </div>
             </div>
@@ -201,15 +232,15 @@ export function GameCard({
             <div className="space-y-2 bg-black/20 rounded-lg p-3">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Market Cap</span>
-                <span className="font-medium">{marketCap}</span>
+                <span className="font-medium">{stats.marketCap}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Added</span>
-                <span className="font-medium">{dateAdded}</span>
+                <span className="font-medium">{stats.dateAdded}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Genre</span>
-                <span className="font-medium">{genre}</span>
+                <span className="font-medium">{stats.genre}</span>
               </div>
             </div>
 

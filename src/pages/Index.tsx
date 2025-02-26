@@ -1,3 +1,4 @@
+
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { FeaturedCarousel } from "@/components/FeaturedCarousel";
@@ -8,27 +9,21 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { GAMES, Game } from "@/data/games";
+import { supabase } from "@/integrations/supabase/client";
 import { BentoGrid } from "@/components/ui/bento-grid";
 import { Star, Clock, CheckCircle, TrendingUp, Video, Globe } from "lucide-react";
 import { GradientText } from "@/components/ui/gradient-text";
 
-// Fisher-Yates shuffle algorithm
-const shuffleArray = (array: Game[]): Game[] => {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-};
+interface GameSlug {
+  slug: string;
+}
 
 const HIDE_ON_MOBILE = [
-  'Drillhorn',
-  'Subway Chase',
-  'Galleon Wars',
-  'HyperRail',
-  'Shenlong'
+  'drillhorn',
+  'subway-chase',
+  'galleon-wars',
+  'hyperrail',
+  'shenlong'
 ];
 
 const featureItems = [
@@ -79,11 +74,46 @@ const featureItems = [
 const Index = () => {
   const location = useLocation();
   const isMobile = useIsMobile();
-  const [games, setGames] = useState<Game[]>([]);
+  const [games, setGames] = useState<GameSlug[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Shuffle games on mount
-    setGames(shuffleArray(GAMES));
+    const fetchGames = async () => {
+      const { data, error } = await supabase
+        .from('games')
+        .select('slug')
+        .order('name');
+
+      if (error) {
+        console.error('Error fetching games:', error);
+        return;
+      }
+
+      setGames(data || []);
+      setLoading(false);
+    };
+
+    fetchGames();
+
+    // Subscribe to changes
+    const channel = supabase
+      .channel('schema-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'games'
+        },
+        () => {
+          fetchGames();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   useEffect(() => {
@@ -96,9 +126,22 @@ const Index = () => {
     }
   }, [location]);
 
-  const filteredGames = games.filter(game => !isMobile || !HIDE_ON_MOBILE.includes(game.game_name));
+  const filteredGames = games.filter(game => !isMobile || !HIDE_ON_MOBILE.includes(game.slug));
 
-  return <div className="min-h-screen bg-background relative overflow-hidden">
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="container py-6 mt-20">
+          <div className="text-center">Loading...</div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-background to-black pointer-events-none" />
       
       <Navbar />
@@ -115,25 +158,13 @@ const Index = () => {
           <div className="flex flex-col gap-4 md:gap-8 mt-4 md:mt-8">
             {filteredGames.map((game, index) => (
               <motion.div 
-                key={game.id} 
+                key={game.slug} 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <GameCard 
-                  title={game.game_name} 
-                  image={game.image_1_url} 
-                  genre="Action" 
-                  developer={game.studio_name} 
-                  marketCap="$1.5M" 
-                  dateAdded="Recently added" 
-                  plays={10000} 
-                  hours={30000} 
-                  mints={1500} 
-                  videoUrl={game.video_url} 
-                  profilePictureUrl={game.profile_picture_url} 
-                />
+                <GameCard gameSlug={game.slug} />
               </motion.div>
             ))}
           </div>
@@ -157,7 +188,8 @@ const Index = () => {
       </section>
 
       <Footer />
-    </div>;
+    </div>
+  );
 };
 
 export default Index;
