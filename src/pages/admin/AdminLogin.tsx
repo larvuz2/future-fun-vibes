@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,27 +17,29 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
 
-    try {
-      // Hardcoded admin credentials check
-      if (email === "gus@metazooie.com" && password === "Larklabs2020") {
-        navigate("/admin/dashboard");
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Login Error",
-          description: "Invalid credentials. Please try again.",
-        });
-      }
-    } catch (error) {
+    // Hardcoded admin credentials check
+    if (email === "gus@metazooie.com" && password === "Larklabs2020") {
+      // Set a session flag in localStorage
+      localStorage.setItem('isAdminAuthenticated', 'true');
+      navigate("/admin/dashboard", { replace: true });
+    } else {
       toast({
         variant: "destructive",
         title: "Login Error",
-        description: "An unexpected error occurred. Please try again.",
+        description: "Invalid credentials. Please try again.",
       });
-    } finally {
-      setLoading(false);
     }
+    
+    setLoading(false);
   };
+
+  // Check if already authenticated
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem('isAdminAuthenticated');
+    if (isAuthenticated === 'true') {
+      navigate("/admin/dashboard", { replace: true });
+    }
+  }, [navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">

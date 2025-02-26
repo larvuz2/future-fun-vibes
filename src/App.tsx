@@ -8,7 +8,6 @@ import HowItWorks from "@/pages/HowItWorks";
 import DocsAdmin from "@/pages/DocsAdmin";
 import Community from "@/pages/Community";
 import Upload from "@/pages/Upload";
-import Admin from "@/pages/Admin";
 import AdminLogin from "@/pages/admin/AdminLogin";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 
@@ -26,7 +25,6 @@ function App() {
         <Route path="/upload" element={<Upload />} />
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin" element={<Admin />} />
       </Routes>
     </Router>
   );
