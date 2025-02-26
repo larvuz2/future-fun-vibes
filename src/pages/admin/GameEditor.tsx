@@ -378,4 +378,264 @@ export default function GameEditor() {
               />
             </div>
 
-            <div className="space
+            <div className="space-y-2">
+              <Label htmlFor="current_funding">Current Funding ($)</Label>
+              <Input
+                id="current_funding"
+                type="number"
+                value={funding.current_funding}
+                onChange={(e) => setFunding(prev => ({ ...prev, current_funding: Number(e.target.value) }))}
+              />
+              <Progress value={(funding.current_funding / funding.funding_goal) * 100} />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="funding_end_date">Funding End Date</Label>
+              <Input
+                id="funding_end_date"
+                type="date"
+                value={funding.funding_end_date}
+                onChange={(e) => setFunding(prev => ({ ...prev, funding_end_date: e.target.value }))}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="website_url">Website URL</Label>
+              <Input
+                id="website_url"
+                value={funding.website_url || ''}
+                onChange={(e) => setFunding(prev => ({ ...prev, website_url: e.target.value }))}
+                placeholder="Enter website URL"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="twitter_url">Twitter URL</Label>
+              <Input
+                id="twitter_url"
+                value={funding.twitter_url || ''}
+                onChange={(e) => setFunding(prev => ({ ...prev, twitter_url: e.target.value }))}
+                placeholder="Enter Twitter URL"
+              />
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* Milestones */}
+      <Card className="p-6 space-y-6">
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold">Milestones</h2>
+          <Button onClick={() => setMilestones([...milestones, { title: '', date: '', completed: false }])}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Milestone
+          </Button>
+        </div>
+
+        <div className="space-y-4">
+          {milestones.map((milestone, index) => (
+            <div key={index} className="flex gap-4 items-start">
+              <Input
+                value={milestone.title}
+                onChange={(e) => {
+                  const newMilestones = [...milestones];
+                  newMilestones[index].title = e.target.value;
+                  setMilestones(newMilestones);
+                }}
+                placeholder="Milestone title"
+              />
+              <Input
+                type="date"
+                value={milestone.date}
+                onChange={(e) => {
+                  const newMilestones = [...milestones];
+                  newMilestones[index].date = e.target.value;
+                  setMilestones(newMilestones);
+                }}
+              />
+              <Input
+                type="checkbox"
+                checked={milestone.completed}
+                onChange={(e) => {
+                  const newMilestones = [...milestones];
+                  newMilestones[index].completed = e.target.checked;
+                  setMilestones(newMilestones);
+                }}
+                className="w-6 h-6"
+              />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  const newMilestones = [...milestones];
+                  newMilestones.splice(index, 1);
+                  setMilestones(newMilestones);
+                }}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Feature Polls */}
+      <Card className="p-6 space-y-6">
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold">Feature Polls</h2>
+          <Button onClick={() => setPolls([...polls, { question: '', options: [], active: true }])}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Poll
+          </Button>
+        </div>
+
+        <div className="space-y-6">
+          {polls.map((poll, pollIndex) => (
+            <div key={pollIndex} className="space-y-4 border p-4 rounded-lg">
+              <div className="flex gap-4 items-start">
+                <Input
+                  value={poll.question}
+                  onChange={(e) => {
+                    const newPolls = [...polls];
+                    newPolls[pollIndex].question = e.target.value;
+                    setPolls(newPolls);
+                  }}
+                  placeholder="Poll question"
+                  className="flex-1"
+                />
+                <Input
+                  type="checkbox"
+                  checked={poll.active}
+                  onChange={(e) => {
+                    const newPolls = [...polls];
+                    newPolls[pollIndex].active = e.target.checked;
+                    setPolls(newPolls);
+                  }}
+                  className="w-6 h-6"
+                />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    const newPolls = [...polls];
+                    newPolls.splice(pollIndex, 1);
+                    setPolls(newPolls);
+                  }}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+
+              <div className="space-y-2">
+                {poll.options.map((option, optionIndex) => (
+                  <div key={optionIndex} className="flex gap-4 items-center">
+                    <Input
+                      value={option.option_text}
+                      onChange={(e) => {
+                        const newPolls = [...polls];
+                        newPolls[pollIndex].options[optionIndex].option_text = e.target.value;
+                        setPolls(newPolls);
+                      }}
+                      placeholder="Option text"
+                      className="flex-1"
+                    />
+                    <Input
+                      type="number"
+                      value={option.votes}
+                      onChange={(e) => {
+                        const newPolls = [...polls];
+                        newPolls[pollIndex].options[optionIndex].votes = Number(e.target.value);
+                        setPolls(newPolls);
+                      }}
+                      className="w-24"
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        const newPolls = [...polls];
+                        newPolls[pollIndex].options.splice(optionIndex, 1);
+                        setPolls(newPolls);
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    const newPolls = [...polls];
+                    newPolls[pollIndex].options.push({ option_text: '', votes: 0 });
+                    setPolls(newPolls);
+                  }}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Option
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Updates */}
+      <Card className="p-6 space-y-6">
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold">Updates</h2>
+          <Button onClick={() => setUpdates([...updates, { title: '', content: '', category: 'Development' }])}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Update
+          </Button>
+        </div>
+
+        <div className="space-y-6">
+          {updates.map((update, index) => (
+            <div key={index} className="space-y-4 border p-4 rounded-lg">
+              <div className="flex gap-4">
+                <Input
+                  value={update.title}
+                  onChange={(e) => {
+                    const newUpdates = [...updates];
+                    newUpdates[index].title = e.target.value;
+                    setUpdates(newUpdates);
+                  }}
+                  placeholder="Update title"
+                  className="flex-1"
+                />
+                <Input
+                  value={update.category}
+                  onChange={(e) => {
+                    const newUpdates = [...updates];
+                    newUpdates[index].category = e.target.value;
+                    setUpdates(newUpdates);
+                  }}
+                  placeholder="Category"
+                />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    const newUpdates = [...updates];
+                    newUpdates.splice(index, 1);
+                    setUpdates(newUpdates);
+                  }}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+              <WYSIWYGEditor
+                value={update.content}
+                onChange={(content) => {
+                  const newUpdates = [...updates];
+                  newUpdates[index].content = content;
+                  setUpdates(newUpdates);
+                }}
+              />
+            </div>
+          ))}
+        </div>
+      </Card>
+    </div>
+  );
+}
