@@ -138,6 +138,38 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          game_project_id: string
+          id: string
+          role: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          game_project_id: string
+          id?: string
+          role: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          game_project_id?: string
+          id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_game_project_id_fkey"
+            columns: ["game_project_id"]
+            isOneToOne: false
+            referencedRelation: "game_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       custom_tasks: {
         Row: {
           category: string
@@ -281,6 +313,39 @@ export type Database = {
         }
         Relationships: []
       }
+      game_projects: {
+        Row: {
+          code: string | null
+          created_at: string
+          description: string
+          id: string
+          published_url: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          code?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          published_url?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          code?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          published_url?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       generated_images: {
         Row: {
           created_at: string | null
@@ -401,6 +466,27 @@ export type Database = {
           status?: string | null
           updated_at?: string | null
           zodiac_sign?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          updated_at: string
+          username: string | null
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          updated_at?: string
+          username?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          updated_at?: string
+          username?: string | null
         }
         Relationships: []
       }
