@@ -22,11 +22,11 @@ interface GameData {
   };
   media: {
     profile_picture_url: string;
-    video_url: string;
-    image_1_url: string | null;
-    image_2_url: string | null;
-    image_3_url: string | null;
-    image_4_url: string | null;
+    media_1_url: string;
+    media_2_url: string | null;
+    media_3_url: string | null;
+    media_4_url: string | null;
+    media_5_url: string | null;
   };
 }
 
@@ -50,11 +50,11 @@ export function GameCard({ gameSlug }: GameCardProps) {
           ),
           media:game_media (
             profile_picture_url,
-            video_url,
-            image_1_url,
-            image_2_url,
-            image_3_url,
-            image_4_url
+            media_1_url,
+            media_2_url,
+            media_3_url,
+            media_4_url,
+            media_5_url
           )
         `)
         .eq('slug', gameSlug)
@@ -129,6 +129,10 @@ export function GameCard({ gameSlug }: GameCardProps) {
     setHasVideoError(true);
   };
 
+  const isVideoUrl = (url: string) => {
+    return url.match(/\.(mp4|webm|ogg)$/i) !== null;
+  };
+
   if (!gameData?.media) {
     return null;
   }
@@ -138,21 +142,21 @@ export function GameCard({ gameSlug }: GameCardProps) {
       <div className="flex flex-col md:flex-row w-full">
         <div className="relative w-full md:w-2/3 cursor-pointer" onClick={() => navigate(`/game/${gameData.slug}`)}>
           <div className="aspect-video relative gradient-overlay">
-            {!isVideoLoaded && !hasVideoError && !isMobile && (
+            {!isVideoLoaded && !hasVideoError && !isMobile && isVideoUrl(gameData.media.media_1_url) && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/20">
                 <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
               </div>
             )}
-            {hasVideoError ? (
+            {hasVideoError || !isVideoUrl(gameData.media.media_1_url) ? (
               <img 
-                src={gameData.media.image_1_url || ''} 
+                src={gameData.media.media_1_url} 
                 alt={gameData.name}
                 className="w-full h-full object-cover"
               />
             ) : isMobile ? (
               <video
-                src={gameData.media.video_url}
-                poster={gameData.media.image_1_url || undefined}
+                src={gameData.media.media_1_url}
+                poster={gameData.media.media_2_url || undefined}
                 className="w-full h-full object-cover"
                 loop
                 muted
@@ -163,8 +167,8 @@ export function GameCard({ gameSlug }: GameCardProps) {
             ) : (
               <video
                 ref={videoRef}
-                src={gameData.media.video_url}
-                poster={gameData.media.image_1_url || undefined}
+                src={gameData.media.media_1_url}
+                poster={gameData.media.media_2_url || undefined}
                 className="w-full h-full object-cover"
                 loop
                 muted

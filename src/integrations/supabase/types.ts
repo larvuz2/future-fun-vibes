@@ -332,37 +332,37 @@ export type Database = {
           created_at: string | null
           game_id: string | null
           id: string
-          image_1_url: string | null
-          image_2_url: string | null
-          image_3_url: string | null
-          image_4_url: string | null
+          media_1_url: string | null
+          media_2_url: string | null
+          media_3_url: string | null
+          media_4_url: string | null
+          media_5_url: string | null
           profile_picture_url: string
           updated_at: string | null
-          video_url: string
         }
         Insert: {
           created_at?: string | null
           game_id?: string | null
           id?: string
-          image_1_url?: string | null
-          image_2_url?: string | null
-          image_3_url?: string | null
-          image_4_url?: string | null
+          media_1_url?: string | null
+          media_2_url?: string | null
+          media_3_url?: string | null
+          media_4_url?: string | null
+          media_5_url?: string | null
           profile_picture_url: string
           updated_at?: string | null
-          video_url: string
         }
         Update: {
           created_at?: string | null
           game_id?: string | null
           id?: string
-          image_1_url?: string | null
-          image_2_url?: string | null
-          image_3_url?: string | null
-          image_4_url?: string | null
+          media_1_url?: string | null
+          media_2_url?: string | null
+          media_3_url?: string | null
+          media_4_url?: string | null
+          media_5_url?: string | null
           profile_picture_url?: string
           updated_at?: string | null
-          video_url?: string
         }
         Relationships: [
           {
@@ -373,6 +373,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      game_media_backup: {
+        Row: {
+          created_at: string | null
+          game_id: string | null
+          id: string | null
+          image_1_url: string | null
+          image_2_url: string | null
+          image_3_url: string | null
+          image_4_url: string | null
+          profile_picture_url: string | null
+          updated_at: string | null
+          video_url: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          game_id?: string | null
+          id?: string | null
+          image_1_url?: string | null
+          image_2_url?: string | null
+          image_3_url?: string | null
+          image_4_url?: string | null
+          profile_picture_url?: string | null
+          updated_at?: string | null
+          video_url?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          game_id?: string | null
+          id?: string | null
+          image_1_url?: string | null
+          image_2_url?: string | null
+          image_3_url?: string | null
+          image_4_url?: string | null
+          profile_picture_url?: string | null
+          updated_at?: string | null
+          video_url?: string | null
+        }
+        Relationships: []
       }
       game_milestones: {
         Row: {

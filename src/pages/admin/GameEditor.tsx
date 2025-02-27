@@ -19,11 +19,11 @@ interface GameData {
   };
   media: {
     profile_picture_url: string;
-    video_url: string;
-    image_1_url: string | null;
-    image_2_url: string | null;
-    image_3_url: string | null;
-    image_4_url: string | null;
+    media_1_url: string;
+    media_2_url: string | null;
+    media_3_url: string | null;
+    media_4_url: string | null;
+    media_5_url: string | null;
   };
   funding?: {
     funding_goal: number;
@@ -56,11 +56,11 @@ export default function GameEditor() {
             ),
             media:game_media (
               profile_picture_url,
-              video_url,
-              image_1_url,
-              image_2_url,
-              image_3_url,
-              image_4_url
+              media_1_url,
+              media_2_url,
+              media_3_url,
+              media_4_url,
+              media_5_url
             ),
             funding:game_funding (
               funding_goal,
@@ -74,6 +74,7 @@ export default function GameEditor() {
         if (gameError) throw gameError;
 
         if (gameData) {
+          console.log('Fetched game data:', gameData);
           setGameData(gameData);
         } else {
           toast({
@@ -133,24 +134,24 @@ export default function GameEditor() {
         .from('game_media')
         .update({
           profile_picture_url: gameData.media.profile_picture_url,
-          video_url: gameData.media.video_url,
-          image_1_url: gameData.media.image_1_url,
-          image_2_url: gameData.media.image_2_url,
-          image_3_url: gameData.media.image_3_url,
-          image_4_url: gameData.media.image_4_url,
+          media_1_url: gameData.media.media_1_url,
+          media_2_url: gameData.media.media_2_url,
+          media_3_url: gameData.media.media_3_url,
+          media_4_url: gameData.media.media_4_url,
+          media_5_url: gameData.media.media_5_url
         })
         .eq('game_id', id);
 
       if (mediaError) throw mediaError;
 
-      // Update funding if it exists
+      // Update or create funding
       if (gameData.funding) {
         const { error: fundingError } = await supabase
           .from('game_funding')
           .upsert({
             game_id: id,
-            funding_goal: gameData.funding.funding_goal,
-            current_funding: gameData.funding.current_funding,
+            funding_goal: Number(gameData.funding.funding_goal),
+            current_funding: Number(gameData.funding.current_funding),
             funding_end_date: gameData.funding.funding_end_date,
           });
 
@@ -186,6 +187,9 @@ export default function GameEditor() {
       
       let current: any = newData;
       for (let i = 0; i < parts.length - 1; i++) {
+        if (!current[parts[i]]) {
+          current[parts[i]] = {};
+        }
         current = current[parts[i]];
       }
       current[parts[parts.length - 1]] = value;
@@ -278,25 +282,23 @@ export default function GameEditor() {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="video_url">Video URL</Label>
-              <Input
-                id="video_url"
-                value={gameData.media.video_url}
-                onChange={(e) => handleInputChange('media.video_url', e.target.value)}
-                required
-              />
-            </div>
-
-            {[1, 2, 3, 4].map((num) => {
-              const key = `image_${num}_url` as keyof typeof gameData.media;
+            {[1, 2, 3, 4, 5].map((num) => {
+              const key = `media_${num}_url` as keyof typeof gameData.media;
               return (
                 <div key={num} className="space-y-2">
-                  <Label htmlFor={key}>Image {num} URL</Label>
+                  <Label htmlFor={key}>
+                    Media {num} URL
+                    {num === 1 && (
+                      <span className="text-xs text-muted-foreground ml-1">
+                        (Primary - shown in card)
+                      </span>
+                    )}
+                  </Label>
                   <Input
                     id={key}
                     value={gameData.media[key] || ''}
                     onChange={(e) => handleInputChange(`media.${key}`, e.target.value)}
+                    required={num === 1}
                   />
                 </div>
               );
