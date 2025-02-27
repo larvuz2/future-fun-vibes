@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -98,6 +97,10 @@ export default function AdminDashboard() {
     fetchGames();
   }, []);
 
+  const generateSlug = (name: string) => {
+    return name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  };
+
   const handleCreateGame = async () => {
     if (!newGameName || !newStudioName) {
       toast({
@@ -119,12 +122,15 @@ export default function AdminDashboard() {
 
       if (studioError) throw studioError;
 
-      // Then create the game
+      // Then create the game with slug
       const { data: gameData, error: gameError } = await supabase
         .from('games')
         .insert([{
           name: newGameName,
-          studio_id: studioData.id
+          slug: generateSlug(newGameName),
+          studio_id: studioData.id,
+          status: 'active',
+          is_visible: true
         }])
         .select()
         .single();

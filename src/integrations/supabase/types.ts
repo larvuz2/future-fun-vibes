@@ -557,7 +557,7 @@ export type Database = {
           id?: string
           is_visible?: boolean
           name: string
-          slug: string
+          slug?: string
           status?: string | null
           studio_id?: string | null
           updated_at?: string | null
