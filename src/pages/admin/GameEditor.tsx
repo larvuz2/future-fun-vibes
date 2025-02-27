@@ -40,66 +40,87 @@ export default function GameEditor() {
   const [saving, setSaving] = useState(false);
   const [gameData, setGameData] = useState<GameData | null>(null);
 
-  useEffect(() => {
-    const fetchGameData = async () => {
-      try {
-        const { data: gameData, error: gameError } = await supabase
-          .from('games')
-          .select(`
+  const fetchGameData = async () => {
+    try {
+      const { data: gameData, error: gameError } = await supabase
+        .from('games')
+        .select(`
+          id,
+          name,
+          studio:studio_id (
             id,
             name,
-            studio:studio_id (
-              id,
-              name,
-              website_url,
-              twitter_url
-            ),
-            media:game_media (
-              profile_picture_url,
-              media_1_url,
-              media_2_url,
-              media_3_url,
-              media_4_url,
-              media_5_url
-            ),
-            funding:game_funding (
-              funding_goal,
-              current_funding,
-              funding_end_date
-            )
-          `)
-          .eq('id', id)
-          .single();
+            website_url,
+            twitter_url
+          ),
+          media:game_media (
+            profile_picture_url,
+            media_1_url,
+            media_2_url,
+            media_3_url,
+            media_4_url,
+            media_5_url
+          ),
+          funding:game_funding (
+            funding_goal,
+            current_funding,
+            funding_end_date
+          )
+        `)
+        .eq('id', id)
+        .single();
 
-        if (gameError) throw gameError;
+      if (gameError) throw gameError;
 
-        if (gameData) {
-          console.log('Fetched game data:', gameData);
-          setGameData(gameData);
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Game not found"
-          });
-          navigate('/admin/dashboard');
-        }
-      } catch (error) {
-        console.error('Error fetching game:', error);
+      if (gameData) {
+        console.log('Fetched game data:', gameData);
+        setGameData(gameData);
+      } else {
         toast({
           variant: "destructive",
           title: "Error",
-          description: "Failed to load game data"
+          description: "Game not found"
         });
-      } finally {
-        setLoading(false);
+        navigate('/admin/dashboard');
       }
-    };
+    } catch (error) {
+      console.error('Error fetching game:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to load game data"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     if (id) {
       fetchGameData();
     }
-  }, [id, navigate, toast]);
+
+    // Subscribe to real-time updates
+    const channel = supabase
+      .channel('game-funding-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'game_funding'
+        },
+        (payload) => {
+          console.log('Funding changed:', payload);
+          fetchGameData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [id]);
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,12 +128,10 @@ export default function GameEditor() {
 
     setSaving(true);
     try {
-      // Update game name
+      // Start with game update
       const { error: gameError } = await supabase
         .from('games')
-        .update({
-          name: gameData.name
-        })
+        .update({ name: gameData.name })
         .eq('id', id);
 
       if (gameError) throw gameError;
@@ -144,32 +163,56 @@ export default function GameEditor() {
 
       if (mediaError) throw mediaError;
 
-      // Update or create funding
+      // Handle funding update separately with proper error handling
       if (gameData.funding) {
-        const { error: fundingError } = await supabase
+        // First try to get existing funding record
+        const { data: existingFunding } = await supabase
           .from('game_funding')
-          .upsert({
-            game_id: id,
-            funding_goal: Number(gameData.funding.funding_goal),
-            current_funding: Number(gameData.funding.current_funding),
-            funding_end_date: gameData.funding.funding_end_date,
-          });
+          .select('id')
+          .eq('game_id', id)
+          .maybeSingle();
+
+        const fundingData = {
+          game_id: id,
+          funding_goal: Number(gameData.funding.funding_goal),
+          current_funding: Number(gameData.funding.current_funding),
+          funding_end_date: gameData.funding.funding_end_date,
+        };
+
+        let fundingError;
+        if (existingFunding) {
+          // Update existing record
+          const { error } = await supabase
+            .from('game_funding')
+            .update(fundingData)
+            .eq('game_id', id);
+          fundingError = error;
+        } else {
+          // Insert new record
+          const { error } = await supabase
+            .from('game_funding')
+            .insert(fundingData);
+          fundingError = error;
+        }
 
         if (fundingError) throw fundingError;
       }
 
       toast({
         title: "Success",
-        description: "Game updated successfully"
+        description: "Game updated successfully",
+        duration: 5000,
       });
 
-      navigate('/admin/dashboard');
-    } catch (error) {
+      // Fetch updated data to ensure UI reflects current state
+      await fetchGameData();
+    } catch (error: any) {
       console.error('Error updating game:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to update game"
+        description: error.message || "Failed to update game",
+        duration: 5000,
       });
     } finally {
       setSaving(false);
