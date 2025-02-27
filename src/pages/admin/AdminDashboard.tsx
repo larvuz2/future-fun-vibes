@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label";
 interface Game {
   id: string;
   name: string;
+  slug: string;
   studio: {
     name: string;
   };
@@ -39,6 +40,7 @@ export default function AdminDashboard() {
       .select(`
         id,
         name,
+        slug,
         is_visible,
         studio:studio_id (
           name
@@ -57,6 +59,10 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchGames();
   }, []);
+
+  const generateSlug = (name: string) => {
+    return name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  };
 
   const handleCreateGame = async () => {
     if (!newGameName || !newStudioName) {
@@ -80,15 +86,14 @@ export default function AdminDashboard() {
       if (studioError) throw studioError;
 
       // Then create the game with the studio ID
-      const { data: gameData, error: gameError } = await supabase
+      const { error: gameError } = await supabase
         .from('games')
         .insert([{
           name: newGameName,
+          slug: generateSlug(newGameName),
           studio_id: studioData.id,
           is_visible: true
-        }])
-        .select()
-        .single();
+        }]);
 
       if (gameError) throw gameError;
 

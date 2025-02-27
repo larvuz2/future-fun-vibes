@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 interface GameData {
   id: string;
   name: string;
+  slug: string;
   is_visible: boolean;
   studio: {
     id: string;
@@ -41,12 +42,15 @@ export default function GameEditor() {
   const [gameData, setGameData] = useState<GameData | null>(null);
 
   const fetchGameData = async () => {
+    if (!id) return;
+    
     try {
-      const { data: gameData, error: gameError } = await supabase
+      const { data: game, error } = await supabase
         .from('games')
         .select(`
           id,
           name,
+          slug,
           is_visible,
           studio:studio_id (
             id,
@@ -71,26 +75,20 @@ export default function GameEditor() {
         .eq('id', id)
         .single();
 
-      if (gameError) throw gameError;
+      if (error) throw error;
 
-      if (gameData) {
-        console.log('Fetched game data:', gameData);
-        setGameData(gameData);
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Game not found"
-        });
-        navigate('/admin/dashboard');
+      if (game) {
+        console.log('Game data fetched:', game);
+        setGameData(game);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching game:', error);
       toast({
         variant: "destructive",
         title: "Error",
         description: "Failed to load game data"
       });
+      navigate('/admin/dashboard');
     } finally {
       setLoading(false);
     }
