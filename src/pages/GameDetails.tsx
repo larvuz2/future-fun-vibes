@@ -1,3 +1,4 @@
+
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
@@ -11,7 +12,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ProfilePicture } from "@/components/ui/profile-picture";
-import { GAMES } from "@/data/games";
 import { Badge } from "@/components/ui/badge";
 
 interface GameMedia {
@@ -73,10 +73,11 @@ const MILESTONES: Milestone[] = [
 export default function GameDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [gameMedia, setGameMedia] = useState<GameMedia | null>(null);
+  const [gameData, setGameData] = useState<any>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [currentFunding, setCurrentFunding] = useState(75000);
-  const [fundingGoal] = useState(100000);
+  const [fundingProgress, setFundingProgress] = useState<number>(0);
+  const [currentFunding, setCurrentFunding] = useState<number>(0);
+  const [fundingGoal, setFundingGoal] = useState<number>(0);
   const isMobile = useIsMobile();
   const { toast } = useToast();
   
@@ -84,25 +85,39 @@ export default function GameDetails() {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
+  const fetchGameData = async () => {
     if (!id) return;
     
     const gameSlug = id.toLowerCase();
-    const foundGame = GAMES.find(g => g.game_name.toLowerCase().replace(/\s+/g, '-') === gameSlug);
-    
-    if (foundGame) {
-      setGameMedia({
-        game_name: foundGame.game_name,
-        studio_name: foundGame.studio_name,
-        video_url: foundGame.video_url,
-        profile_picture_url: foundGame.profile_picture_url,
-        image_1_url: foundGame.image_1_url,
-        image_2_url: foundGame.image_1_url,
-        image_3_url: foundGame.image_1_url,
-        image_4_url: foundGame.image_1_url
-      });
-      setSelectedImage(foundGame.video_url);
-    } else {
+    let { data: game, error } = await supabase
+      .from('games')
+      .select(`
+        name,
+        slug,
+        studio:studio_id (
+          name,
+          website_url,
+          twitter_url
+        ),
+        media:game_media (
+          profile_picture_url,
+          media_1_url,
+          media_2_url,
+          media_3_url,
+          media_4_url,
+          media_5_url
+        ),
+        funding:game_funding (
+          funding_goal,
+          current_funding,
+          funding_end_date
+        )
+      `)
+      .eq('slug', gameSlug)
+      .single();
+
+    if (error) {
+      console.error('Error fetching game:', error);
       toast({
         title: "Game Not Found",
         description: "The requested game could not be found",
@@ -111,7 +126,57 @@ export default function GameDetails() {
       navigate('/');
       return;
     }
-  }, [id, toast, navigate]);
+
+    if (game) {
+      console.log('Game data fetched:', game);
+      setGameData(game);
+      setSelectedImage(game.media.media_1_url);
+      
+      if (game.funding) {
+        setCurrentFunding(game.funding.current_funding);
+        setFundingGoal(game.funding.funding_goal);
+        const progress = (game.funding.current_funding / game.funding.funding_goal) * 100;
+        setFundingProgress(progress);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchGameData();
+
+    // Subscribe to real-time updates
+    const channel = supabase
+      .channel('game-details-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'games'
+        },
+        () => {
+          console.log('Game changed, refetching...');
+          fetchGameData();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'game_funding'
+        },
+        (payload) => {
+          console.log('Funding changed:', payload);
+          fetchGameData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [id]);
 
   const handlePlaytest = () => {
     navigate(`/game/${id}/play`);
@@ -140,14 +205,14 @@ export default function GameDetails() {
         <div className="space-y-6">
           <div className="flex flex-col md:flex-row gap-4 items-start">
             <ProfilePicture 
-              src={gameMedia?.profile_picture_url}
-              alt={gameMedia?.studio_name || ''}
+              src={gameData?.media.profile_picture_url}
+              alt={gameData?.studio.name || ''}
               size="md"
               className="border-2 border-border"
             />
             <div>
-              <h3 className="text-xl font-bold">{gameMedia?.game_name}</h3>
-              <p className="text-sm text-muted-foreground">{gameMedia?.studio_name}</p>
+              <h3 className="text-xl font-bold">{gameData?.name}</h3>
+              <p className="text-sm text-muted-foreground">{gameData?.studio.name}</p>
             </div>
           </div>
 
@@ -160,9 +225,9 @@ export default function GameDetails() {
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span>Funding Progress</span>
-              <span>{Math.round((currentFunding / fundingGoal) * 100)}%</span>
+              <span>{Math.round(fundingProgress)}%</span>
             </div>
-            <Progress value={(currentFunding / fundingGoal) * 100} className="h-2" />
+            <Progress value={fundingProgress} className="h-2" />
             <div className="flex justify-between text-sm pt-1">
               <span className="font-medium">${currentFunding.toLocaleString()}</span>
               <span className="text-muted-foreground">of ${fundingGoal.toLocaleString()}</span>
@@ -177,28 +242,34 @@ export default function GameDetails() {
             </div>
             <div className="p-3 border rounded-lg">
               <Clock className="w-5 h-5 mx-auto mb-1" />
-              <div className="font-semibold">{calculateDaysUntil(getNextMilestone().date)}</div>
+              <div className="font-semibold">
+                {gameData?.funding ? calculateDaysUntil(gameData.funding.funding_end_date) : 0}
+              </div>
               <div className="text-xs text-muted-foreground">Days Left</div>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <Button 
-              variant="outline" 
-              className="w-full"
-              onClick={() => window.open('https://metazooie.com/', '_blank')}
-            >
-              <ExternalLink className="w-4 h-4 mr-2" />
-              Website
-            </Button>
-            <Button 
-              variant="outline" 
-              className="w-full"
-              onClick={() => window.open('https://x.com/metazooie', '_blank')}
-            >
-              <Twitter className="w-4 h-4 mr-2" />
-              Twitter/X
-            </Button>
+            {gameData?.studio?.website_url && (
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => window.open(gameData.studio.website_url, '_blank')}
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Website
+              </Button>
+            )}
+            {gameData?.studio?.twitter_url && (
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => window.open(gameData.studio.twitter_url, '_blank')}
+              >
+                <Twitter className="w-4 h-4 mr-2" />
+                Twitter/X
+              </Button>
+            )}
           </div>
 
           <div>
@@ -238,7 +309,7 @@ export default function GameDetails() {
           <div>
             <h3 className="text-lg font-bold mb-2">Back this Project</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Join {gameMedia?.game_name}'s journey and get exclusive rewards
+              Join {gameData?.name}'s journey and get exclusive rewards
             </p>
           </div>
 
@@ -268,7 +339,7 @@ export default function GameDetails() {
     </div>
   );
 
-  if (!gameMedia) {
+  if (!gameData) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
@@ -301,7 +372,7 @@ export default function GameDetails() {
                     />
                   ) : (
                     <img 
-                      src={selectedImage || gameMedia.image_1_url} 
+                      src={selectedImage || gameData.media.media_1_url} 
                       alt="Game preview"
                       className="w-full h-full object-contain"
                     />
@@ -319,28 +390,35 @@ export default function GameDetails() {
                 </div>
               </div>
               <div className="grid grid-cols-4 gap-2 p-2">
-                {[gameMedia.video_url, gameMedia.image_1_url, gameMedia.image_2_url, gameMedia.image_3_url].map((url, index) => (
-                  <div
-                    key={index}
-                    className={`aspect-video cursor-pointer rounded-md overflow-hidden border-2 ${
-                      selectedImage === url ? 'border-primary' : 'border-transparent'
-                    }`}
-                    onClick={() => handleImageSelect(url)}
-                  >
-                    {url.endsWith('.mp4') ? (
-                      <video 
-                        src={url}
-                        className="w-full h-full object-cover"
-                        muted
-                      />
-                    ) : (
-                      <img 
-                        src={url}
-                        alt={`Preview ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-                  </div>
+                {[
+                  gameData.media.media_1_url,
+                  gameData.media.media_2_url,
+                  gameData.media.media_3_url,
+                  gameData.media.media_4_url
+                ].map((url, index) => (
+                  url && (
+                    <div
+                      key={index}
+                      className={`aspect-video cursor-pointer rounded-md overflow-hidden border-2 ${
+                        selectedImage === url ? 'border-primary' : 'border-transparent'
+                      }`}
+                      onClick={() => handleImageSelect(url)}
+                    >
+                      {url.endsWith('.mp4') ? (
+                        <video 
+                          src={url}
+                          className="w-full h-full object-cover"
+                          muted
+                        />
+                      ) : (
+                        <img 
+                          src={url}
+                          alt={`Preview ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </div>
+                  )
                 ))}
               </div>
             </Card>
