@@ -40,7 +40,6 @@ export function GameCard({ gameSlug }: GameCardProps) {
   
   useEffect(() => {
     const fetchGameData = async () => {
-      // First try to fetch by current slug
       let { data: game, error } = await supabase
         .from('games')
         .select(`
@@ -74,7 +73,6 @@ export function GameCard({ gameSlug }: GameCardProps) {
 
     fetchGameData();
 
-    // Subscribe to all relevant changes
     const channel = supabase
       .channel('schema-db-changes')
       .on(
