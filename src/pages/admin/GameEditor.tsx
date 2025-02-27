@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -163,15 +162,8 @@ export default function GameEditor() {
 
       if (mediaError) throw mediaError;
 
-      // Handle funding update separately with proper error handling
+      // Handle funding update with upsert
       if (gameData.funding) {
-        // First try to get existing funding record
-        const { data: existingFunding } = await supabase
-          .from('game_funding')
-          .select('id')
-          .eq('game_id', id)
-          .maybeSingle();
-
         const fundingData = {
           game_id: id,
           funding_goal: Number(gameData.funding.funding_goal),
@@ -179,21 +171,12 @@ export default function GameEditor() {
           funding_end_date: gameData.funding.funding_end_date,
         };
 
-        let fundingError;
-        if (existingFunding) {
-          // Update existing record
-          const { error } = await supabase
-            .from('game_funding')
-            .update(fundingData)
-            .eq('game_id', id);
-          fundingError = error;
-        } else {
-          // Insert new record
-          const { error } = await supabase
-            .from('game_funding')
-            .insert(fundingData);
-          fundingError = error;
-        }
+        const { error: fundingError } = await supabase
+          .from('game_funding')
+          .upsert(fundingData, {
+            onConflict: 'game_id',
+            ignoreDuplicates: false
+          });
 
         if (fundingError) throw fundingError;
       }

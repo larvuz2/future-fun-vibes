@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { GradientText } from "@/components/ui/gradient-text";
 import { ProfilePicture } from "@/components/ui/profile-picture";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Progress } from "@/components/ui/progress";
 import { useState, useRef, useEffect } from "react";
 import type { SyntheticEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,6 +29,11 @@ interface GameData {
     media_4_url: string | null;
     media_5_url: string | null;
   };
+  funding?: {
+    funding_goal: number;
+    current_funding: number;
+    funding_end_date: string;
+  };
 }
 
 export function GameCard({ gameSlug }: GameCardProps) {
@@ -37,6 +43,7 @@ export function GameCard({ gameSlug }: GameCardProps) {
   const [gameData, setGameData] = useState<GameData | null>(null);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [hasVideoError, setHasVideoError] = useState(false);
+  const [fundingProgress, setFundingProgress] = useState<number>(0);
   
   useEffect(() => {
     const fetchGameData = async () => {
@@ -55,6 +62,11 @@ export function GameCard({ gameSlug }: GameCardProps) {
             media_3_url,
             media_4_url,
             media_5_url
+          ),
+          funding:game_funding (
+            funding_goal,
+            current_funding,
+            funding_end_date
           )
         `)
         .eq('slug', gameSlug)
@@ -68,11 +80,16 @@ export function GameCard({ gameSlug }: GameCardProps) {
       if (game) {
         console.log('Game data fetched:', game);
         setGameData(game);
+        if (game.funding) {
+          const progress = (game.funding.current_funding / game.funding.funding_goal) * 100;
+          setFundingProgress(progress);
+        }
       }
     };
 
     fetchGameData();
 
+    // Subscribe to real-time updates for both game and funding changes
     const channel = supabase
       .channel('schema-db-changes')
       .on(
@@ -82,8 +99,8 @@ export function GameCard({ gameSlug }: GameCardProps) {
           schema: 'public',
           table: 'games'
         },
-        (payload) => {
-          console.log('Game changed:', payload);
+        () => {
+          console.log('Game changed, refetching...');
           fetchGameData();
         }
       )
@@ -92,22 +109,10 @@ export function GameCard({ gameSlug }: GameCardProps) {
         {
           event: '*',
           schema: 'public',
-          table: 'studios'
+          table: 'game_funding'
         },
         (payload) => {
-          console.log('Studio changed:', payload);
-          fetchGameData();
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'game_media'
-        },
-        (payload) => {
-          console.log('Media changed:', payload);
+          console.log('Funding changed:', payload);
           fetchGameData();
         }
       )
@@ -200,6 +205,20 @@ export function GameCard({ gameSlug }: GameCardProps) {
           </div>
 
           <div className="mt-6 space-y-6">
+            {gameData.funding && (
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Funding Progress</span>
+                  <span className="font-medium">{Math.round(fundingProgress)}%</span>
+                </div>
+                <Progress value={fundingProgress} className="h-2" />
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>${gameData.funding.current_funding.toLocaleString()}</span>
+                  <span>${gameData.funding.funding_goal.toLocaleString()}</span>
+                </div>
+              </div>
+            )}
+
             <div className="grid grid-cols-3 gap-4 text-center">
               <div className="bg-black/20 rounded-lg p-2">
                 <Users className="w-4 h-4 mx-auto mb-1 text-primary" />

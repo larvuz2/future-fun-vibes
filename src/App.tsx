@@ -1,5 +1,6 @@
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Toaster } from "@/components/ui/toaster";
 import Index from "@/pages/Index";
 import GameDetails from "@/pages/GameDetails";
 import GamePlay from "@/pages/GamePlay";
@@ -28,6 +29,7 @@ function App() {
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/games/:id" element={<GameEditor />} />
       </Routes>
+      <Toaster />
     </Router>
   );
 }
