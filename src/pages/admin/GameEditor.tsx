@@ -10,17 +10,15 @@ import { supabase } from "@/integrations/supabase/client";
 interface GameData {
   id: string;
   name: string;
-  slug: string;
-  is_visible: boolean;
   studio: {
     id: string;
     name: string;
-    website_url?: string | null;
-    twitter_url?: string | null;
+    website_url?: string;
+    twitter_url?: string;
   };
   media: {
     profile_picture_url: string;
-    media_1_url: string | null;
+    media_1_url: string;
     media_2_url: string | null;
     media_3_url: string | null;
     media_4_url: string | null;
@@ -30,7 +28,7 @@ interface GameData {
     funding_goal: number;
     current_funding: number;
     funding_end_date: string;
-  } | null;
+  };
 }
 
 export default function GameEditor() {
@@ -42,16 +40,12 @@ export default function GameEditor() {
   const [gameData, setGameData] = useState<GameData | null>(null);
 
   const fetchGameData = async () => {
-    if (!id) return;
-    
     try {
-      const { data: game, error } = await supabase
+      const { data: gameData, error: gameError } = await supabase
         .from('games')
         .select(`
           id,
           name,
-          slug,
-          is_visible,
           studio:studio_id (
             id,
             name,
@@ -75,19 +69,26 @@ export default function GameEditor() {
         .eq('id', id)
         .single();
 
-      if (error) throw error;
+      if (gameError) throw gameError;
 
-      if (game) {
-        setGameData(game as GameData);
+      if (gameData) {
+        console.log('Fetched game data:', gameData);
+        setGameData(gameData);
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Game not found"
+        });
+        navigate('/admin/dashboard');
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error fetching game:', error);
       toast({
         variant: "destructive",
         title: "Error",
         description: "Failed to load game data"
       });
-      navigate('/admin/dashboard');
     } finally {
       setLoading(false);
     }
@@ -98,6 +99,7 @@ export default function GameEditor() {
       fetchGameData();
     }
 
+    // Subscribe to real-time updates
     const channel = supabase
       .channel('game-funding-changes')
       .on(
@@ -125,16 +127,15 @@ export default function GameEditor() {
 
     setSaving(true);
     try {
+      // Start with game update
       const { error: gameError } = await supabase
         .from('games')
-        .update({ 
-          name: gameData.name,
-          is_visible: gameData.is_visible 
-        })
+        .update({ name: gameData.name })
         .eq('id', id);
 
       if (gameError) throw gameError;
 
+      // Update studio
       const { error: studioError } = await supabase
         .from('studios')
         .update({
@@ -146,6 +147,7 @@ export default function GameEditor() {
 
       if (studioError) throw studioError;
 
+      // Update media
       const { error: mediaError } = await supabase
         .from('game_media')
         .update({
@@ -160,6 +162,7 @@ export default function GameEditor() {
 
       if (mediaError) throw mediaError;
 
+      // Handle funding update with upsert
       if (gameData.funding) {
         const fundingData = {
           game_id: id,
@@ -184,6 +187,7 @@ export default function GameEditor() {
         duration: 5000,
       });
 
+      // Fetch updated data to ensure UI reflects current state
       await fetchGameData();
     } catch (error: any) {
       console.error('Error updating game:', error);
@@ -342,31 +346,6 @@ export default function GameEditor() {
                 value={gameData.studio.twitter_url || ''}
                 onChange={(e) => handleInputChange('studio.twitter_url', e.target.value)}
               />
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between border-t pt-6 mt-6">
-            <div className="space-y-0.5">
-              <h2 className="text-lg font-semibold">Game Visibility</h2>
-              <p className="text-sm text-muted-foreground">
-                Toggle whether this game should be visible on the main page
-              </p>
-            </div>
-            <div className="space-x-2">
-              <Button
-                type="button"
-                variant={gameData?.is_visible ? "default" : "outline"}
-                onClick={() => setGameData(prev => prev ? {...prev, is_visible: true} : prev)}
-              >
-                Visible
-              </Button>
-              <Button
-                type="button"
-                variant={!gameData?.is_visible ? "default" : "outline"}
-                onClick={() => setGameData(prev => prev ? {...prev, is_visible: false} : prev)}
-              >
-                Hidden
-              </Button>
             </div>
           </div>
 
