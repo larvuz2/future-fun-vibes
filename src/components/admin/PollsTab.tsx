@@ -27,6 +27,17 @@ interface PollOption {
   votes: number;
 }
 
+// Define the shape of the raw poll data we get from Supabase
+interface RawPollData {
+  id: string;
+  question: string;
+  closes_at: string | null; // This might be null in the database
+  active: boolean | null;
+  created_at: string | null;
+  updated_at: string | null;
+  game_id: string | null;
+}
+
 interface PollsTabProps {
   gameId: string;
   gameName: string;
@@ -66,7 +77,7 @@ export default function PollsTab({ gameId, gameName }: PollsTabProps) {
       
       // Then fetch options for each poll
       const pollsWithOptions = await Promise.all(
-        pollsData.map(async (poll) => {
+        pollsData.map(async (poll: RawPollData) => {
           const { data: optionsData, error: optionsError } = await supabase
             .from('poll_options')
             .select('*')
@@ -75,10 +86,20 @@ export default function PollsTab({ gameId, gameName }: PollsTabProps) {
           
           if (optionsError) throw optionsError;
           
-          return {
-            ...poll,
-            options: optionsData || []
+          // Transform the raw poll data to match our Poll interface
+          const transformedPoll: Poll = {
+            id: poll.id,
+            question: poll.question,
+            closes_at: poll.closes_at || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // Default if not set
+            active: poll.active || false,
+            options: optionsData?.map(option => ({
+              id: option.id,
+              option_text: option.option_text,
+              votes: option.votes || 0
+            })) || []
           };
+          
+          return transformedPoll;
         })
       );
       
@@ -432,6 +453,7 @@ export default function PollsTab({ gameId, gameName }: PollsTabProps) {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleTogglePollStatus(poll.id, poll.active)}
+                          title={poll.active ? "Deactivate poll" : "Activate poll"}
                         >
                           {poll.active ? (
                             <X className="h-4 w-4" />
@@ -443,6 +465,7 @@ export default function PollsTab({ gameId, gameName }: PollsTabProps) {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleDeletePoll(poll.id)}
+                          title="Delete poll"
                         >
                           <X className="h-4 w-4" />
                         </Button>
