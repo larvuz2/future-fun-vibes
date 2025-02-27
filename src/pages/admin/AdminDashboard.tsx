@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -21,7 +20,7 @@ interface Game {
   slug: string;
   studio: {
     name: string;
-  };
+  } | null;
   is_visible: boolean;
 }
 
@@ -35,25 +34,34 @@ export default function AdminDashboard() {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const fetchGames = async () => {
-    const { data, error } = await supabase
-      .from('games')
-      .select(`
-        id,
-        name,
-        slug,
-        is_visible,
-        studio:studio_id (
-          name
-        )
-      `);
+    try {
+      const { data, error } = await supabase
+        .from('games')
+        .select(`
+          id,
+          name,
+          slug,
+          is_visible,
+          studio:studio_id (
+            name
+          )
+        `);
 
-    if (error) {
+      if (error) {
+        throw error;
+      }
+
+      setGames(data || []);
+    } catch (error) {
       console.error('Error fetching games:', error);
-      return;
+      toast({
+        title: "Error",
+        description: "Failed to load games",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
-
-    setGames(data || []);
-    setLoading(false);
   };
 
   useEffect(() => {

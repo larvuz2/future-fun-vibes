@@ -15,12 +15,12 @@ interface GameData {
   studio: {
     id: string;
     name: string;
-    website_url?: string;
-    twitter_url?: string;
+    website_url?: string | null;
+    twitter_url?: string | null;
   };
   media: {
     profile_picture_url: string;
-    media_1_url: string;
+    media_1_url: string | null;
     media_2_url: string | null;
     media_3_url: string | null;
     media_4_url: string | null;
@@ -30,7 +30,7 @@ interface GameData {
     funding_goal: number;
     current_funding: number;
     funding_end_date: string;
-  };
+  } | null;
 }
 
 export default function GameEditor() {
@@ -78,8 +78,7 @@ export default function GameEditor() {
       if (error) throw error;
 
       if (game) {
-        console.log('Game data fetched:', game);
-        setGameData(game);
+        setGameData(game as GameData);
       }
     } catch (error: any) {
       console.error('Error fetching game:', error);
