@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 interface GameData {
   id: string;
   name: string;
+  is_visible: boolean;
   studio: {
     id: string;
     name: string;
@@ -46,6 +47,7 @@ export default function GameEditor() {
         .select(`
           id,
           name,
+          is_visible,
           studio:studio_id (
             id,
             name,
@@ -99,7 +101,6 @@ export default function GameEditor() {
       fetchGameData();
     }
 
-    // Subscribe to real-time updates
     const channel = supabase
       .channel('game-funding-changes')
       .on(
@@ -127,15 +128,16 @@ export default function GameEditor() {
 
     setSaving(true);
     try {
-      // Start with game update
       const { error: gameError } = await supabase
         .from('games')
-        .update({ name: gameData.name })
+        .update({ 
+          name: gameData.name,
+          is_visible: gameData.is_visible 
+        })
         .eq('id', id);
 
       if (gameError) throw gameError;
 
-      // Update studio
       const { error: studioError } = await supabase
         .from('studios')
         .update({
@@ -147,7 +149,6 @@ export default function GameEditor() {
 
       if (studioError) throw studioError;
 
-      // Update media
       const { error: mediaError } = await supabase
         .from('game_media')
         .update({
@@ -162,7 +163,6 @@ export default function GameEditor() {
 
       if (mediaError) throw mediaError;
 
-      // Handle funding update with upsert
       if (gameData.funding) {
         const fundingData = {
           game_id: id,
@@ -187,7 +187,6 @@ export default function GameEditor() {
         duration: 5000,
       });
 
-      // Fetch updated data to ensure UI reflects current state
       await fetchGameData();
     } catch (error: any) {
       console.error('Error updating game:', error);
@@ -346,6 +345,31 @@ export default function GameEditor() {
                 value={gameData.studio.twitter_url || ''}
                 onChange={(e) => handleInputChange('studio.twitter_url', e.target.value)}
               />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between border-t pt-6 mt-6">
+            <div className="space-y-0.5">
+              <h2 className="text-lg font-semibold">Game Visibility</h2>
+              <p className="text-sm text-muted-foreground">
+                Toggle whether this game should be visible on the main page
+              </p>
+            </div>
+            <div className="space-x-2">
+              <Button
+                type="button"
+                variant={gameData?.is_visible ? "default" : "outline"}
+                onClick={() => setGameData(prev => prev ? {...prev, is_visible: true} : prev)}
+              >
+                Visible
+              </Button>
+              <Button
+                type="button"
+                variant={!gameData?.is_visible ? "default" : "outline"}
+                onClick={() => setGameData(prev => prev ? {...prev, is_visible: false} : prev)}
+              >
+                Hidden
+              </Button>
             </div>
           </div>
 

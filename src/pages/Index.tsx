@@ -1,4 +1,3 @@
-
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { FeaturedCarousel } from "@/components/FeaturedCarousel";
@@ -71,28 +70,47 @@ const featureItems = [
   },
 ];
 
-const Index = () => {
+export default function Index() {
   const location = useLocation();
   const isMobile = useIsMobile();
   const [games, setGames] = useState<GameSlug[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchGames = async () => {
+    const { data: games, error } = await supabase
+      .from('games')
+      .select(`
+        name,
+        slug,
+        studio:studio_id (
+          name
+        ),
+        media:game_media (
+          profile_picture_url,
+          media_1_url,
+          media_2_url,
+          media_3_url,
+          media_4_url,
+          media_5_url
+        ),
+        funding:game_funding (
+          funding_goal,
+          current_funding,
+          funding_end_date
+        )
+      `)
+      .eq('is_visible', true)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching games:', error);
+      return;
+    }
+
+    setGames(games || []);
+  };
+
   useEffect(() => {
-    const fetchGames = async () => {
-      const { data, error } = await supabase
-        .from('games')
-        .select('slug')
-        .order('name');
-
-      if (error) {
-        console.error('Error fetching games:', error);
-        return;
-      }
-
-      setGames(data || []);
-      setLoading(false);
-    };
-
     fetchGames();
 
     // Subscribe to changes
@@ -190,6 +208,4 @@ const Index = () => {
       <Footer />
     </div>
   );
-};
-
-export default Index;
+}
