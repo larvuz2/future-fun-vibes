@@ -13,6 +13,16 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const ADMIN_USER_ID = "b1101d11-a765-4706-84f0-683cf045f956";
 
@@ -32,6 +42,10 @@ interface Game {
 export default function AdminDashboard() {
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
+  const [newGameName, setNewGameName] = useState("");
+  const [newStudioName, setNewStudioName] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -84,12 +98,66 @@ export default function AdminDashboard() {
     fetchGames();
   }, []);
 
-  const handleEdit = (gameId: string) => {
-    navigate(`/admin/games/${gameId}`);
+  const handleCreateGame = async () => {
+    if (!newGameName || !newStudioName) {
+      toast({
+        title: "Error",
+        description: "Please fill in both game name and studio name",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsCreating(true);
+    try {
+      // First create the studio
+      const { data: studioData, error: studioError } = await supabase
+        .from('studios')
+        .insert([{ name: newStudioName }])
+        .select()
+        .single();
+
+      if (studioError) throw studioError;
+
+      // Then create the game
+      const { data: gameData, error: gameError } = await supabase
+        .from('games')
+        .insert([{
+          name: newGameName,
+          studio_id: studioData.id
+        }])
+        .select()
+        .single();
+
+      if (gameError) throw gameError;
+
+      toast({
+        title: "Success",
+        description: "Game created successfully"
+      });
+
+      // Reset form and close dialog
+      setNewGameName("");
+      setNewStudioName("");
+      setDialogOpen(false);
+      
+      // Refresh the games list
+      fetchGames();
+
+    } catch (error: any) {
+      console.error('Error creating game:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create game",
+        variant: "destructive"
+      });
+    } finally {
+      setIsCreating(false);
+    }
   };
 
-  const handleAdd = () => {
-    navigate("/admin/games/new");
+  const handleEdit = (gameId: string) => {
+    navigate(`/admin/games/${gameId}`);
   };
 
   const handleLogout = async () => {
@@ -114,7 +182,50 @@ export default function AdminDashboard() {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Game Management</h1>
         <div className="space-x-4">
-          <Button onClick={handleAdd}>Add New Game</Button>
+          <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <AlertDialogTrigger asChild>
+              <Button>Add New Game</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Create New Game</AlertDialogTitle>
+              </AlertDialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="gameName">Game Name</Label>
+                  <Input
+                    id="gameName"
+                    value={newGameName}
+                    onChange={(e) => setNewGameName(e.target.value)}
+                    placeholder="Enter game name"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="studioName">Studio Name</Label>
+                  <Input
+                    id="studioName"
+                    value={newStudioName}
+                    onChange={(e) => setNewStudioName(e.target.value)}
+                    placeholder="Enter studio name"
+                  />
+                </div>
+              </div>
+              <AlertDialogFooter>
+                <Button
+                  variant="outline"
+                  onClick={() => setDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleCreateGame}
+                  disabled={isCreating}
+                >
+                  {isCreating ? "Creating..." : "Create Game"}
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <Button variant="outline" onClick={handleLogout}>Logout</Button>
         </div>
       </div>

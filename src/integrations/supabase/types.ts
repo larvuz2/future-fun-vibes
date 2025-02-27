@@ -545,6 +545,7 @@ export type Database = {
         Row: {
           created_at: string | null
           id: string
+          is_visible: boolean
           name: string
           slug: string
           status: string | null
@@ -554,6 +555,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           id?: string
+          is_visible?: boolean
           name: string
           slug: string
           status?: string | null
@@ -563,6 +565,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           id?: string
+          is_visible?: boolean
           name?: string
           slug?: string
           status?: string | null
