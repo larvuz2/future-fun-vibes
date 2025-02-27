@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -5,7 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { 
+  Tabs, 
+  TabsContent, 
+  TabsList, 
+  TabsTrigger 
+} from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
+import PollsTab from "@/components/admin/PollsTab";
 
 interface GameData {
   id: string;
@@ -38,6 +46,7 @@ export default function GameEditor() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [gameData, setGameData] = useState<GameData | null>(null);
+  const [activeTab, setActiveTab] = useState("details");
 
   const fetchGameData = async () => {
     try {
@@ -246,7 +255,7 @@ export default function GameEditor() {
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Edit Game</h1>
+        <h1 className="text-2xl font-bold">Edit Game: {gameData.name}</h1>
         <Button 
           variant="outline" 
           onClick={() => navigate('/admin/dashboard')}
@@ -255,117 +264,130 @@ export default function GameEditor() {
         </Button>
       </div>
       
-      <Card className="max-w-4xl mx-auto p-6">
-        <form onSubmit={handleUpdate} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="game_name">Game Name</Label>
-              <Input
-                id="game_name"
-                value={gameData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="studio_name">Studio Name</Label>
-              <Input
-                id="studio_name"
-                value={gameData.studio.name}
-                onChange={(e) => handleInputChange('studio.name', e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="funding_goal">Funding Goal</Label>
-              <Input
-                id="funding_goal"
-                type="number"
-                value={gameData.funding?.funding_goal || ''}
-                onChange={(e) => handleInputChange('funding.funding_goal', Number(e.target.value))}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="current_funding">Current Funding</Label>
-              <Input
-                id="current_funding"
-                type="number"
-                value={gameData.funding?.current_funding || ''}
-                onChange={(e) => handleInputChange('funding.current_funding', Number(e.target.value))}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="profile_picture_url">Profile Picture URL</Label>
-              <Input
-                id="profile_picture_url"
-                value={gameData.media.profile_picture_url}
-                onChange={(e) => handleInputChange('media.profile_picture_url', e.target.value)}
-                required
-              />
-            </div>
-
-            {[1, 2, 3, 4, 5].map((num) => {
-              const key = `media_${num}_url` as keyof typeof gameData.media;
-              return (
-                <div key={num} className="space-y-2">
-                  <Label htmlFor={key}>
-                    Media {num} URL
-                    {num === 1 && (
-                      <span className="text-xs text-muted-foreground ml-1">
-                        (Primary - shown in card)
-                      </span>
-                    )}
-                  </Label>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-2 mb-8">
+          <TabsTrigger value="details">Game Details</TabsTrigger>
+          <TabsTrigger value="polls">Polls</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="details" className="space-y-4">
+          <Card className="max-w-4xl mx-auto p-6">
+            <form onSubmit={handleUpdate} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="game_name">Game Name</Label>
                   <Input
-                    id={key}
-                    value={gameData.media[key] || ''}
-                    onChange={(e) => handleInputChange(`media.${key}`, e.target.value)}
-                    required={num === 1}
+                    id="game_name"
+                    value={gameData.name}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    required
                   />
                 </div>
-              );
-            })}
 
-            <div className="space-y-2">
-              <Label htmlFor="website_url">Website URL</Label>
-              <Input
-                id="website_url"
-                value={gameData.studio.website_url || ''}
-                onChange={(e) => handleInputChange('studio.website_url', e.target.value)}
-              />
-            </div>
+                <div className="space-y-2">
+                  <Label htmlFor="studio_name">Studio Name</Label>
+                  <Input
+                    id="studio_name"
+                    value={gameData.studio.name}
+                    onChange={(e) => handleInputChange('studio.name', e.target.value)}
+                    required
+                  />
+                </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="twitter_url">Twitter URL</Label>
-              <Input
-                id="twitter_url"
-                value={gameData.studio.twitter_url || ''}
-                onChange={(e) => handleInputChange('studio.twitter_url', e.target.value)}
-              />
-            </div>
-          </div>
+                <div className="space-y-2">
+                  <Label htmlFor="funding_goal">Funding Goal</Label>
+                  <Input
+                    id="funding_goal"
+                    type="number"
+                    value={gameData.funding?.funding_goal || ''}
+                    onChange={(e) => handleInputChange('funding.funding_goal', Number(e.target.value))}
+                  />
+                </div>
 
-          <div className="flex justify-end gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigate('/admin/dashboard')}
-            >
-              Cancel
-            </Button>
-            <Button 
-              type="submit"
-              disabled={saving}
-            >
-              {saving ? "Saving..." : "Save Changes"}
-            </Button>
-          </div>
-        </form>
-      </Card>
+                <div className="space-y-2">
+                  <Label htmlFor="current_funding">Current Funding</Label>
+                  <Input
+                    id="current_funding"
+                    type="number"
+                    value={gameData.funding?.current_funding || ''}
+                    onChange={(e) => handleInputChange('funding.current_funding', Number(e.target.value))}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="profile_picture_url">Profile Picture URL</Label>
+                  <Input
+                    id="profile_picture_url"
+                    value={gameData.media.profile_picture_url}
+                    onChange={(e) => handleInputChange('media.profile_picture_url', e.target.value)}
+                    required
+                  />
+                </div>
+
+                {[1, 2, 3, 4, 5].map((num) => {
+                  const key = `media_${num}_url` as keyof typeof gameData.media;
+                  return (
+                    <div key={num} className="space-y-2">
+                      <Label htmlFor={key}>
+                        Media {num} URL
+                        {num === 1 && (
+                          <span className="text-xs text-muted-foreground ml-1">
+                            (Primary - shown in card)
+                          </span>
+                        )}
+                      </Label>
+                      <Input
+                        id={key}
+                        value={gameData.media[key] || ''}
+                        onChange={(e) => handleInputChange(`media.${key}`, e.target.value)}
+                        required={num === 1}
+                      />
+                    </div>
+                  );
+                })}
+
+                <div className="space-y-2">
+                  <Label htmlFor="website_url">Website URL</Label>
+                  <Input
+                    id="website_url"
+                    value={gameData.studio.website_url || ''}
+                    onChange={(e) => handleInputChange('studio.website_url', e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="twitter_url">Twitter URL</Label>
+                  <Input
+                    id="twitter_url"
+                    value={gameData.studio.twitter_url || ''}
+                    onChange={(e) => handleInputChange('studio.twitter_url', e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => navigate('/admin/dashboard')}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit"
+                  disabled={saving}
+                >
+                  {saving ? "Saving..." : "Save Changes"}
+                </Button>
+              </div>
+            </form>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="polls">
+          {gameData && <PollsTab gameId={gameData.id} gameName={gameData.name} />}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
