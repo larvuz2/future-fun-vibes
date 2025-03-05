@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ChatInputDemo } from "@/components/ui/chat-input-demo";
 import { CategoryBubbles } from "@/components/ui/category-bubbles";
 import { useState } from "react";
+import { GradientText } from "@/components/ui/gradient-text";
 
 export function Hero() {
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
@@ -20,7 +21,7 @@ export function Hero() {
   ];
 
   return (
-    <div className="h-auto min-h-[80vh] pt-20 flex items-center justify-center relative overflow-hidden">
+    <div className="h-auto min-h-[70vh] pt-20 flex items-center justify-center relative overflow-hidden">
       <Card className="w-full max-w-none mx-auto bg-background/0 relative overflow-hidden border-0 h-full">
         <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
         
@@ -32,14 +33,20 @@ export function Hero() {
               transition={{ duration: 0.8 }}
               className="flex flex-col items-center text-center max-w-5xl px-4 md:px-0"
             >
-              <motion.h1 
+              <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.8 }}
-                className="text-4xl md:text-6xl font-bold mb-4 text-foreground"
+                className="mb-4"
               >
-                Create a game and share it with the world
-              </motion.h1>
+                <GradientText 
+                  className="text-4xl md:text-6xl font-bold"
+                  colors={["#ffaa40", "#9c40ff", "#3a86ff"]}
+                  animationSpeed={8}
+                >
+                  Create a game and share it with the world
+                </GradientText>
+              </motion.div>
               
               <motion.p 
                 initial={{ opacity: 0 }}
@@ -68,7 +75,7 @@ export function Hero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.8 }}
-                className="w-full max-w-4xl"
+                className="w-full flex justify-center"
               >
                 <ChatInputDemo />
               </motion.div>

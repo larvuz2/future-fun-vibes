@@ -10,7 +10,7 @@ export function ChatInputDemo() {
   const [value, setValue] = useState("")
 
   return (
-    <div className="max-w-3xl min-w-[400px] p-4 w-full">
+    <div className="max-w-3xl w-full p-4">
       <form 
         className="relative rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring p-1"
         onSubmit={(e) => {
