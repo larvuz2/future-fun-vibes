@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Spotlight } from "@/components/ui/spotlight";
 import { motion } from "framer-motion";
 import { GradientText } from "@/components/ui/gradient-text";
+import { ChatInputDemo } from "@/components/ui/chat-input-demo";
 
 export function Hero() {
   const scrollToFeaturedGames = () => {
@@ -15,7 +16,7 @@ export function Hero() {
   };
 
   return (
-    <div className="h-[80vh] -mt-20 flex items-center justify-center relative overflow-hidden">
+    <div className="h-auto min-h-[90vh] -mt-20 flex items-center justify-center relative overflow-hidden">
       <Card className="w-full max-w-none mx-auto bg-background/0 relative overflow-hidden border-0 h-full">
         <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
         
@@ -45,10 +46,19 @@ export function Hero() {
                 Create a game and share it with the world
               </motion.p>
               
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6, duration: 0.8 }}
+                className="w-full max-w-3xl mb-8"
+              >
+                <ChatInputDemo />
+              </motion.div>
+              
               <motion.button
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.6, duration: 0.8 }}
+                transition={{ delay: 0.8, duration: 0.8 }}
                 onClick={scrollToFeaturedGames}
                 className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-3 rounded-full font-medium transition-all"
               >
