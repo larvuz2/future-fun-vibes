@@ -59,8 +59,12 @@ export function Navbar() {
         </div>
         
         <div className="container mx-auto flex items-center justify-between">
-          <Link to="/" className="text-2xl font-bold tracking-tighter hover:text-primary transition-colors">
-            future.fun
+          <Link to="/" className="flex items-center">
+            <img 
+              src="https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/hero-images//metaxooielogo.png" 
+              alt="Future.fun Logo" 
+              className="h-8"
+            />
           </Link>
           <div className="flex gap-8 items-center">
             <a href="#games" onClick={handleGamesClick} className="hidden md:block hover:text-primary transition-colors">Games</a>

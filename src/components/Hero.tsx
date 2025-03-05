@@ -4,8 +4,22 @@ import { Spotlight } from "@/components/ui/spotlight";
 import { motion } from "framer-motion";
 import { GradientText } from "@/components/ui/gradient-text";
 import { ChatInputDemo } from "@/components/ui/chat-input-demo";
+import { CategoryBubbles } from "@/components/ui/category-bubbles";
+import { useState } from "react";
 
 export function Hero() {
+  const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
+  
+  const gameCategories = [
+    "3D Platformer",
+    "Shooter",
+    "2D Platformer",
+    "3D Art",
+    "Racing",
+    "Puzzle",
+    "Strategy"
+  ];
+
   const scrollToFeaturedGames = () => {
     const gamesSection = document.querySelector('#games-grid');
     if (gamesSection) {
@@ -26,31 +40,45 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="flex flex-col items-center text-center max-w-4xl px-4 md:px-0"
+              className="flex flex-col items-center text-center max-w-5xl px-4 md:px-0"
             >
-              <GradientText 
-                className="text-6xl md:text-8xl font-bold mb-6"
-                colors={["#ffaa40", "#9c40ff", "#ffaa40"]}
-                animationSpeed={8}
-                showBorder={false}
+              <motion.h1 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.8 }}
+                className="text-4xl md:text-6xl font-bold mb-4 text-foreground"
               >
-                Future.fun
-              </GradientText>
+                Create a game and share it with the world
+              </motion.h1>
               
               <motion.p 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4, duration: 0.8 }}
-                className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl"
+                className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl"
               >
-                Create a game and share it with the world
+                Type the game that you want to build or choose a template:
               </motion.p>
+              
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+                className="w-full max-w-4xl mb-4"
+              >
+                <CategoryBubbles 
+                  categories={gameCategories} 
+                  selectedCategory={selectedCategory}
+                  onSelect={setSelectedCategory}
+                  className="mb-6"
+                />
+              </motion.div>
               
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.8 }}
-                className="w-full max-w-3xl mb-8"
+                className="w-full max-w-4xl mb-8"
               >
                 <ChatInputDemo />
               </motion.div>
