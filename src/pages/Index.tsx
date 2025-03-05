@@ -1,7 +1,5 @@
-
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
-import { FeaturedCarousel } from "@/components/FeaturedCarousel";
 import { GameCard } from "@/components/GameCard";
 import { FilterBar } from "@/components/FilterBar";
 import { Footer } from "@/components/Footer";
@@ -147,11 +145,7 @@ const Index = () => {
       <Navbar />
       <Hero />
       
-      <div className="relative pt-4 md:pt-8 z-10 my-0 px-0 md:px-[103px]">
-        <FeaturedCarousel />
-      </div>
-      
-      <section id="games-grid" className="relative py-4 md:py-12 z-10">
+      <section id="games-grid" className="relative pt-12 md:pt-16 z-10">
         <div className="container px-4 md:px-6 max-w-7xl">
           <FilterBar />
           
