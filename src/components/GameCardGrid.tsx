@@ -6,70 +6,70 @@ interface GameGridProps {
   gamesList: { slug: string }[];
 }
 
-// Sample data for the placeholder games
+// Updated game placeholders with new images and titles
 const placeholderGames = [
   {
     id: 1,
-    name: "Cosmic Explorer",
-    creator: "Nebula Studios",
+    name: "Sail The World",
+    creator: "Ocean Studios",
     plays: 24532,
-    image: "https://images.unsplash.com/photo-1614469723922-c043ad9fd036?q=80&w=600&auto=format&fit=crop"
+    image: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/hero-images//sail-the-world.png"
   },
   {
     id: 2,
-    name: "Voxel Kingdoms",
-    creator: "BlockCraft Games",
+    name: "Beafish",
+    creator: "Aquatic Games",
     plays: 18974,
-    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=600&auto=format&fit=crop"
+    image: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/hero-images//beafish.png"
   },
   {
     id: 3,
-    name: "Neon Racer",
-    creator: "Velocity Interactive",
+    name: "Space",
+    creator: "Cosmic Interactive",
     plays: 31245,
-    image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=600&auto=format&fit=crop"
+    image: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/hero-images//space.png"
   },
   {
     id: 4,
-    name: "Quantum Quest",
-    creator: "Particle Physics",
+    name: "Astro Breaker",
+    creator: "Stellar Games",
     plays: 15768,
-    image: "https://images.unsplash.com/photo-1636399969264-9b1310218e2d?q=80&w=600&auto=format&fit=crop"
+    image: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/hero-images//astro-breaker.png"
   },
   {
     id: 5,
-    name: "Stellar Odyssey",
-    creator: "Cosmos Games",
+    name: "Bubble Basher",
+    creator: "Pop Studios",
     plays: 28943,
-    image: "https://images.unsplash.com/photo-1548612614-e54e11d47d94?q=80&w=600&auto=format&fit=crop"
+    image: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/hero-images//bubble-basher.png"
   },
   {
     id: 6,
-    name: "Cyber Titans",
-    creator: "Digital Frontiers",
+    name: "Combat Mission",
+    creator: "Tactical Games",
     plays: 42156,
-    image: "https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?q=80&w=600&auto=format&fit=crop"
+    image: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/hero-images//combat-mission.png"
   },
   {
     id: 7,
-    name: "Fractal Worlds",
-    creator: "Recursive Studios",
+    name: "Cars",
+    creator: "Racing Productions",
     plays: 12783,
-    image: "https://images.unsplash.com/photo-1519669556878-63bdad8a1a49?q=80&w=600&auto=format&fit=crop"
+    image: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/hero-images//cars.png"
   },
   {
     id: 8,
-    name: "Polygon Heroes",
-    creator: "Geometry Games",
+    name: "Space Explorer",
+    creator: "Galaxy Games",
     plays: 35214,
-    image: "https://images.unsplash.com/photo-1622979135225-d2ba269cf1ac?q=80&w=600&auto=format&fit=crop"
+    image: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/hero-images//space.png"
   },
   {
     id: 9,
-    name: "Vector Rush",
-    creator: "Linear Labs",
+    name: "Nautical Adventure",
+    creator: "Seafaring Studios",
     plays: 19876,
-    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=600&auto=format&fit=crop"
+    image: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/hero-images//sail-the-world.png"
   }
 ];
 
@@ -87,6 +87,7 @@ export function GameCardGrid({ gamesList }: GameGridProps) {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
             viewport={{ once: true }}
+            className="h-full" // Added height to ensure parent container maintains consistent height
           >
             <GameCardSimple
               name={game.name}

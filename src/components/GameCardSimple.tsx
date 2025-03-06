@@ -22,7 +22,7 @@ export function GameCardSimple({ name, creator, plays, imageUrl, slug }: GameCar
 
   return (
     <Card 
-      className="overflow-hidden glass-card elegant-hover cursor-pointer"
+      className="overflow-hidden glass-card elegant-hover cursor-pointer h-full flex flex-col"
       onClick={handleCardClick}
     >
       <div className="flex flex-col h-full">
@@ -34,7 +34,7 @@ export function GameCardSimple({ name, creator, plays, imageUrl, slug }: GameCar
           />
         </div>
         
-        <div className="p-4 bg-card/40 backdrop-blur-xl">
+        <div className="p-4 bg-card/40 backdrop-blur-xl flex-grow flex flex-col justify-between">
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-3">
               <ProfilePicture
