@@ -1,7 +1,6 @@
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
-import { GameCard } from "@/components/GameCard";
-import { FilterBar } from "@/components/FilterBar";
+import { GameCardGrid } from "@/components/GameCardGrid";
 import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -145,23 +144,9 @@ const Index = () => {
       <Navbar />
       <Hero />
       
-      <section id="games-grid" className="relative pt-12 md:pt-16 z-10">
+      <section id="games-grid" className="relative pt-8 pb-12 z-10">
         <div className="container px-4 md:px-6 max-w-7xl">
-          <FilterBar />
-          
-          <div className="flex flex-col gap-4 md:gap-8 mt-4 md:mt-8">
-            {filteredGames.map((game, index) => (
-              <motion.div 
-                key={game.slug} 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <GameCard gameSlug={game.slug} />
-              </motion.div>
-            ))}
-          </div>
+          <GameCardGrid gamesList={filteredGames} />
         </div>
       </section>
 
