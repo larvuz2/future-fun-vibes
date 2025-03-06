@@ -10,10 +10,10 @@ interface GameGridProps {
 const placeholderGames = [
   {
     id: 1,
-    name: "Sail The World",
-    creator: "Ocean Studios",
+    name: "Capybara Adventure",
+    creator: "Wildlife Studios",
     plays: 24532,
-    image: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/hero-images//sail-the-world.png"
+    image: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/hero-images//NZj8EZrdS_y6bcqK9YHV3g.jpg"
   },
   {
     id: 2,
