@@ -44,7 +44,7 @@ export function Hero() {
                   colors={["#ffaa40", "#9c40ff", "#3a86ff"]}
                   animationSpeed={8}
                 >
-                  Create a game and share it with the world
+                  Idea to Games in Seconds
                 </GradientText>
               </motion.div>
               

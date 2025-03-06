@@ -1,3 +1,4 @@
+
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { GameCardGrid } from "@/components/GameCardGrid";
@@ -25,46 +26,46 @@ const HIDE_ON_MOBILE = [
 
 const featureItems = [
   {
-    title: "PREMIUM QUALITY FOCUS",
-    description: "Console-quality games in your browser. No downloads.",
+    title: "Text-to-Game AI: Build Instantly",
+    description: "Type & Play – Describe your game, and AI builds it instantly.",
     icon: <Star className="w-4 h-4 text-yellow-500" />,
     status: "Featured",
-    tags: ["Quality", "Gaming"],
+    tags: ["AI", "Instant"],
   },
   {
-    title: "INSTANT ACCESS MODEL",
-    description: "Start playing in seconds.",
+    title: "AI-Powered Mechanics",
+    description: "Define actions, physics, and logic—no coding needed.",
     icon: <Clock className="w-4 h-4 text-emerald-500" />,
     status: "Active",
-    tags: ["Speed", "Access"],
+    tags: ["Mechanics", "No-Code"],
   },
   {
-    title: "OWNERSHIP & COMMUNITY",
-    description: "True ownership of your games.",
+    title: "Multiplayer & Backend",
+    description: "Seamless real-time gameplay and hosting.",
     icon: <CheckCircle className="w-4 h-4 text-blue-500" />,
     status: "New",
-    tags: ["Ownership", "Community"],
+    tags: ["Multiplayer", "Hosting"],
   },
   {
-    title: "TECHNOLOGY EDGE",
-    description: "Next-gen graphics in your browser.",
+    title: "Live Editing",
+    description: "Instantly tweak levels, mechanics, and UI.",
     icon: <TrendingUp className="w-4 h-4 text-purple-500" />,
     status: "Advanced",
-    tags: ["Tech", "Innovation"],
+    tags: ["Editing", "Real-time"],
   },
   {
-    title: "CURATED EXPERIENCE",
-    description: "Carefully selected premium games.",
+    title: "One-Click Launch",
+    description: "Publish to web, mobile, or cloud in seconds.",
     icon: <Video className="w-4 h-4 text-pink-500" />,
     status: "Verified",
-    tags: ["Curated", "Premium"],
+    tags: ["Publishing", "Cross-platform"],
   },
   {
-    title: "DEVELOPER FRIENDLY",
-    description: "Direct connection to creators.",
+    title: "AI-Generated Assets",
+    description: "Get 3D models, textures, and animations on demand.",
     icon: <Globe className="w-4 h-4 text-indigo-500" />,
     status: "Active",
-    tags: ["Developers", "Community"],
+    tags: ["Assets", "3D"],
   },
 ];
 
@@ -160,7 +161,7 @@ const Index = () => {
             >
               Platform Features
             </GradientText>
-            <p className="text-muted-foreground mt-2">What sets us apart from other gaming platforms</p>
+            <p className="text-muted-foreground mt-2">🚀 Just type your idea—play within minutes!</p>
           </div>
           <BentoGrid items={featureItems} />
         </div>
