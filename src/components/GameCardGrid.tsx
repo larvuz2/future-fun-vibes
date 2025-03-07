@@ -18,14 +18,14 @@ const placeholderGames = [
   {
     id: 2,
     name: "Beafish",
-    creator: "Aquatic Games",
+    creator: "Athcanft",
     plays: 18974,
     image: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/hero-images//beafish.png"
   },
   {
     id: 3,
     name: "Space",
-    creator: "Cosmic Interactive",
+    creator: "Jasonleowsg",
     plays: 31245,
     image: "https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/hero-images//space.png"
   },
