@@ -14,13 +14,13 @@ export function Footer() {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="space-y-4">
             <Link to="/" className="text-2xl font-bold tracking-tighter">
               future.fun
             </Link>
             <p className="text-muted-foreground">
-              Premium browser-based gaming platform for next-generation experiences
+              AI-powered platform turning text prompts into playable games in seconds - no coding required
             </p>
             <ButtonDemo />
           </div>
@@ -29,18 +29,7 @@ export function Footer() {
             <h4 className="font-semibold">Platform</h4>
             <ul className="space-y-2">
               <li><Link to="/games" className="text-muted-foreground hover:text-primary transition-colors">Games</Link></li>
-              <li><Link to="/how-it-works" className="text-muted-foreground hover:text-primary transition-colors">How It Works</Link></li>
-              <li><Link to="/upload" className="text-muted-foreground hover:text-primary transition-colors">Upload</Link></li>
               <li><Link to="/community" className="text-muted-foreground hover:text-primary transition-colors">Community</Link></li>
-            </ul>
-          </div>
-          
-          <div className="space-y-4">
-            <h4 className="font-semibold">Resources</h4>
-            <ul className="space-y-2">
-              <li><Link to="/documentation" className="text-muted-foreground hover:text-primary transition-colors">Documentation</Link></li>
-              <li><Link to="/documentation#help" className="text-muted-foreground hover:text-primary transition-colors">Help Center</Link></li>
-              <li><Link to="/documentation#blog" className="text-muted-foreground hover:text-primary transition-colors">Blog</Link></li>
             </ul>
           </div>
           

@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/3d-button";
-import { Wallet } from "lucide-react";
 import { LoginPopover } from "./LoginPopover";
 
 export function Navbar() {
@@ -60,17 +59,10 @@ export function Navbar() {
         
         <div className="container mx-auto flex items-center justify-between">
           <Link to="/" className="flex items-center">
-            <img 
-              src="https://vbcltontvlbnaawiqegc.supabase.co/storage/v1/object/public/hero-images//metaxooielogo.png" 
-              alt="Future.fun Logo" 
-              className="h-8"
-            />
+            <span className="text-2xl font-bold tracking-tighter">future.fun</span>
           </Link>
           <div className="flex gap-8 items-center">
             <a href="#games" onClick={handleGamesClick} className="hidden md:block hover:text-primary transition-colors">Games</a>
-            <Link to="/upload" className="hidden md:block hover:text-primary transition-colors">Upload</Link>
-            <Link to="/how-it-works" className="hidden md:block hover:text-primary transition-colors">How It Works</Link>
-            <Link to="/documentation" className="hidden md:block hover:text-primary transition-colors">Documentation</Link>
             <LoginPopover>
               <Button className="bg-[#9b87f5] hover:bg-[#7E69AB] border-[#6E59A5] border-b-4 text-white shadow-md">
                 Join the fun
